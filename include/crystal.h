@@ -82,6 +82,12 @@ class Crystal {
    */
   std::vector<atomStruct> getAtoms() const {return m_atoms;};
 
+  /* Get a vector of atomic numbers: one atomic number for each atom.
+   *
+   * @return The vector of atomic numbers.
+   */
+  std::vector<uint> getVectorOfAtomicNums() const;
+
   /* Get the number of atoms in this crystal.
    *
    * @return The number of atoms in this crystal.
@@ -293,6 +299,16 @@ class Crystal {
    *         it prints an error message and returns -1.
    */
   int getAtomIndexNum(const atomStruct& as) const;
+
+  /* Writes the crystal info to a POSCAR that has filename of 'filename'
+   *
+   * @param filename The name of the POSCAR file to be written. You may include
+   *                 the path if needed.
+   * @param title The title that will go on the first line of the POSCAR
+   *
+   */
+  void writePOSCAR(const std::string& filename,
+                   const std::string& title = " ") const;
 
   /* For debugging: print the atomic number and coordinates of a specific atom.
    *

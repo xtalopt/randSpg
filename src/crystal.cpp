@@ -15,8 +15,12 @@
  ***********************************************************************/
 
 #include <iostream>
+// For setprecision()
+#include <iomanip>
 // for sqrt(), sin(), cos(), etc.
 #include <cmath>
+// for writing to POSCAR
+#include <fstream>
 
 #include "crystal.h"
 #include "spgInit.h"
@@ -153,6 +157,15 @@ atomStruct Crystal::getAtomInCartCoords(const atomStruct& as) const
   // When the value is zero, unfortunately, it can be very slightly negative
   // sometimes... So I commented out this assertion
   //assert(ret.x > 0 && ret.y > 0 && ret.z > 0);
+  return ret;
+}
+
+vector<uint> Crystal::getVectorOfAtomicNums() const
+{
+  vector<uint> ret;
+  for (size_t i = 0; i < m_atoms.size(); i++) {
+    ret.push_back(m_atoms.at(i).atomicNum);
+  }
   return ret;
 }
 
@@ -439,6 +452,71 @@ bool Crystal::areIADsOkay(const atomStruct& as) const
     return false;
   }
   return true;
+}
+
+/* POSCAR format goes as such:
+ *
+ * Title
+ * Scaling factor
+ * Lattice vector for a
+ * Lattice vector for b
+ * Lattice vector for c
+ * Element Symbols
+ * Number of each element
+ * Cartesian or Direct
+ * Atom coordinates
+ *
+ */
+void Crystal::writePOSCAR(const string& filename, const string& title) const
+{
+  ofstream f;
+  f.open(filename);
+  if (!f.is_open()) {
+    cout << "Error in " << __FUNCTION__ << ": failed to open '"
+         << filename << "' for writing!\n";
+    return;
+  }
+
+  // Set up the needed info
+  f << fixed << setprecision(15);
+  vector<vector<double>> latticeVecs = getLatticeVecs();
+  vector<numAndType> atomCounts =
+                            SpgInit::getNumOfEachType(getVectorOfAtomicNums());
+  vector<string> symbols;
+  for (size_t i = 0; i < atomCounts.size(); i++) {
+    symbols.push_back(ElemInfo::getAtomicSymbol(atomCounts.at(i).second));
+  }
+
+  // Write to the POSCAR!
+  f << title << "\n"; // Title
+  f << "1.00000\n"; // Scaling factor
+
+  for (size_t i = 0; i < 3; i++) {  // Lattice vectors
+    for (size_t j = 0; j < 3; j++) {
+      f << " " << setw(20) << latticeVecs[i][j];
+    }
+    f << "\n";
+  }
+
+  for (size_t i = 0; i < symbols.size(); i++) { // Symbols
+    f << "  " << setw(3) << symbols.at(i);
+  }
+  f << "\n";
+
+  for (size_t i = 0; i < atomCounts.size(); i++) { // Atom counts
+    f << "  " << setw(3) << atomCounts.at(i).first;
+  }
+  f << "\n";
+
+  f << "Direct\n"; // We're just going to use fractional coordinates
+
+  for (size_t i = 0; i < m_atoms.size(); i++) { // Atom coords
+    f << "  " << m_atoms.at(i).x << "  " << m_atoms.at(i).y << "  "
+      << m_atoms.at(i).z << "\n";
+  }
+
+  // We're done!
+  f.close();
 }
 
 void Crystal::printAtomInfo(const atomStruct& as)
