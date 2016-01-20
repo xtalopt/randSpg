@@ -27,6 +27,11 @@ class ElemInfo {
 
   static uint getAtomicNum(std::string symbol);
 
+  // This function will read 'comp' and write the result to 'atoms'
+  // 'atoms' is a vector of atomic numbers. One for each atom.
+  // Returns true if the read was successful and false if it was not
+  static bool readComposition(std::string comp, std::vector<uint>& atoms);
+
   static double getVdwRadius(uint atomicNum);
 
   static double getCovalentRadius(uint atomicNum);

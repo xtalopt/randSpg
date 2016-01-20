@@ -27,6 +27,7 @@
 // For FunctionTracker
 #include "functionTracker.h"
 
+#include <cassert>
 #include <tuple>
 #include <iostream>
 

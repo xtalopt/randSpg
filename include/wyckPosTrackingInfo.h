@@ -20,7 +20,9 @@
 #ifndef WYCKPOS_TRACKING_INFO_H
 #define WYCKPOS_TRACKING_INFO_H
 
-#include <xtalopt/spgInit/spgInit.h>
+#include <cassert>
+
+#include "spgInit.h"
 
 // In here, we keep Wyckoff positions that have the same uniqueness and
 // multiplicity. For now, they can only be non-unique

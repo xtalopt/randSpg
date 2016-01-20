@@ -16,6 +16,9 @@
 #ifndef UTILITY_FUNCTIONS_H
 #define UTILITY_FUNCTIONS_H
 
+#include <sstream>
+#include <algorithm>
+
 // Basic split of a string based upon a delimiter.
 static inline std::vector<std::string> split(const std::string& s, char delim)
 {
@@ -103,6 +106,12 @@ inline double deg2rad(double a)
 inline double rad2deg(double a)
 {
   return a * 180.0 / PI;
+}
+
+inline bool containsOnlySpaces(const std::string& str)
+{
+  if (str.find_first_not_of(' ') != std::string::npos) return false;
+  return true;
 }
 
 #endif

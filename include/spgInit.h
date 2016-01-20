@@ -16,7 +16,6 @@
 #ifndef SPG_INIT_H
 #define SPG_INIT_H
 
-#include <Eigen/LU>
 #include <vector>
 #include <tuple>
 #include <utility>
