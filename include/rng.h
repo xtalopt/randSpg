@@ -21,10 +21,17 @@
 
 // C++11 way of generating random numbers in a thread-safe manner...
 // Creating a new distribution each time is supposedly very fast...
-double getRandDouble(double min, double max)
+static inline double getRandDouble(double min, double max)
 {
   thread_local std::mt19937 generator(std::random_device{}());
   std::uniform_real_distribution<double> distribution(min, max);
+  return distribution(generator);
+}
+
+static inline int getRandInt(int min, int max)
+{
+  thread_local std::mt19937 generator(std::random_device{}());
+  std::uniform_int_distribution<int> distribution(min, max);
   return distribution(generator);
 }
 

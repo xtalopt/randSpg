@@ -52,6 +52,5 @@ int main(int argc, char* argv[])
   string filename = string("/home/patrick/src/spgInit/build/") + string(argv[1]) + "_" + to_string(spg);
   string title = string(argv[1]) + " -- spgInit with spg of: " +
                  to_string(spg);
-  c.writePOSCAR(filename, title);
-
+  if (c.getVolume() != 0) c.writePOSCAR(filename, title);
 }

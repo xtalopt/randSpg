@@ -46,20 +46,44 @@ combinations to put atoms in a given spacegroup.
 // This is a vector of assignments
 // in which to place atoms of a pre-known atomic number may be placed
 // It doesn't mean "single" atom as in one atom, but one type of atom
-typedef std::vector<wyckPos> singleAtomPossibility;
-// uint is the atomic number
+
+// This is a vector of similar Wyckoff positions
+// Wyckoff positions are considered similar if they share the same multiplicity
+// and uniqueness
+typedef std::vector<wyckPos> similarWyckPositions;
+
+// This provides a set of choosable positions and how many we are supposed to
+// choose
+struct similarWyckPosAndNumToChoose {
+  uint numToChoose;
+  similarWyckPositions choosablePositions;
+};
+
+typedef std::vector<similarWyckPosAndNumToChoose> assignments;
+
+// We have here an atomic number and the assignments to produce a single
+// possibility for a given atomic number
+struct singleAtomPossibility {
+  uint atomicNum;
+  assignments assigns;
+};
+
+// This represents all possible solutions of the system (for individual
+// atomic numbers. Not all of them together). We assume
+// everything in this vector has the same atomic number.
 typedef std::vector<singleAtomPossibility> singleAtomPossibilities;
-// The uint is an atomic number
+
 // This should be a vector of different atom combinations that give the final
-// desired composition
-typedef std::vector<std::pair<uint, singleAtomPossibility>> systemPossibility;
+// desired composition. We assume possibilities in this vector may
+// have different atomic numbers
+typedef std::vector<singleAtomPossibility> systemPossibility;
 // This represents all possible systems from which a composition can be
 // correctly reconstructed using Wyckoff positions
 typedef std::vector<systemPossibility> systemPossibilities;
 
 class SpgInitCombinatorics {
  public:
-  // Returns all system possibilities that satisfty the constraints given
+  // Returns all system possibilities that satisfy the constraints given
   // by the spacegroup and input atoms
   static systemPossibilities getSystemPossibilities(
                                              uint spg,
@@ -67,47 +91,19 @@ class SpgInitCombinatorics {
                                              bool findOnlyOne = false,
                                              bool onlyNonUnique = false);
 
-  // Return only system possibilities that have the most variety in wyckoff
-  // letters
-  // These could potentially produce more stable structures
-  static systemPossibilities getSystemPossibilitiesWithMostWyckLets(
-                                             uint spg,
-                                             const std::vector<uint>& atoms);
+  // Pick a random system possibility from the system possibilities
+  static systemPossibility getRandomSystemPossibility(const systemPossibilities& sysPoss);
 
-  // Get a random system possibility from all possible ones
-  static systemPossibility getRandomSystemPossibility(
-                                             uint spg,
-                                             const std::vector<uint>& atoms);
+  // Get a random set of atom assignments from all the system possibilities
+  static atomAssignments getRandomAtomAssignments(const systemPossibilities& sysPoss);
 
-  // Get a random system possibility from the ones with most wyckoff letters
-  static systemPossibility getRandomSystemPossibilityWithMostWyckLets(
-                                             uint spg,
-                                             const std::vector<uint>& atoms);
+  static void printSimilarWyckPosAndNumToChoose(const similarWyckPosAndNumToChoose& simPos);
 
-  // Convert system possibility to atom assignment
-  static atomAssignments convertSysPossToAtomAssignments(
-                                             const systemPossibility& poss);
+  static void printSingleAtomPossibility(const singleAtomPossibility& pos);
 
-  // convert atom assignment to system possibility
-  static systemPossibility convertAtomAssignmentsToSysPoss(
-                                              const atomAssignments& assigns);
+  static void printSystemPossibility(const systemPossibility& pos);
 
-  // Get a random atom assignment from all the possibly system probabilities
-  static atomAssignments getRandomAtomAssignments(uint spg,
-                                                const std::vector<uint>& atoms);
-
-  // Get a random atom assignment from the possibilities with most wyckoff
-  // letters
-  static atomAssignments getRandomAtomAssignmentsWithMostWyckLets(
-                                                uint spg,
-                                                const std::vector<uint>& atoms);
-
-  // Returns the first atom assignment found
-  // Should not be used to get random atom assignments because it will
-  // always return the same one. It is used for isSpgPossible()
-  static atomAssignments getFirstPossibleAtomAssignment(
-                                                uint spg,
-                                                const std::vector<uint>& atoms);
+  static void printSystemPossibilities(const systemPossibilities& pos);
 };
 
 #endif

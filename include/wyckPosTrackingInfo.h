@@ -43,7 +43,8 @@ class WyckPosTrackingInfo {
   assert(positions.size() > 0);
 };
 
-  // This is to see if we should keep checking this one duing
+  // This is to see if we should keep checking this one during the recursive
+  // function
   bool keepUsing;
   bool unique;
   uint numTimesUsed;
@@ -53,6 +54,8 @@ class WyckPosTrackingInfo {
   {
     return positions.at(rand() % positions.size());
   };
+
+  std::vector<wyckPos> getPositions() const {return positions;};
 
   const wyckPos& getWyckPosAt(uint i) const {return positions.at(i);};
   size_t getNumPositions() const {return positions.size();};

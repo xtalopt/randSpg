@@ -142,9 +142,12 @@ class SpgInit {
    * @param latticeMaxes A latticeStruct that contains the maxima for a, b, c,
    *                     alpha, beta, and gamma.
    * @param minIADScalingFactor A scaling factor used to scale the minIAD
-   * @param maxAttempts The number of attempts to make to add the atom randomly
-   *                    before the function returns false. Default is 1000.
-   *                    Used in addWyckoffAtomRandomly().
+   * @param numAttempts The max number number of attempts to generate a crystal
+   *                    given these conditions. It will still only find all
+   *                    combinations once (that's the most time consuming
+   *                    step). It will randomly pick combinations for every
+   *                    subsequent attempt from the combinations it found
+   *                    originally.
    *
    * @return A Crystal object with the given spacegroup, atoms,
    * and lattice within the provided lattice constraints. Returns a Crystal
@@ -155,15 +158,14 @@ class SpgInit {
                                 const latticeStruct& latticeMins,
                                 const latticeStruct& latticeMaxes,
                                 double minIADScalingFactor = 0.5,
-                                int maxAttempts = 1000);
-
-  static atomAssignments assignAtomsToWyckPos(uint spg,
-                                              std::vector<uint> atoms);
+                                int numAttempts = 100);
 
   static std::vector<numAndType> getNumOfEachType(
                                    const std::vector<uint>& atoms);
 
   static bool containsUniquePosition(const wyckPos& pos);
+
+  static void printAtomAssignments(const atomAssignments& a);
 
 };
 

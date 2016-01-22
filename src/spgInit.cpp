@@ -384,24 +384,12 @@ bool SpgInit::addWyckoffAtomRandomly(Crystal& crystal, wyckPos& position,
   return true;
 }
 
-// vector<pair<wyckPos, atomic number>>
-// returns an empty vector if the assignment failed
-atomAssignments SpgInit::assignAtomsToWyckPos(uint spg, vector<uint> atoms)
-{
-  START_FT;
-  // Not sure which one is better yet...
-  return SpgInitCombinatorics::getRandomAtomAssignments(spg, atoms);
-  // return SpgInitCombinatorics::getRandomAtomAssignmentsWithMostWyckLets(
-  //                                              spg,
-  //                                              atoms);
-}
-
 Crystal SpgInit::spgInitCrystal(uint spg,
                                 const vector<uint>& atoms,
                                 const latticeStruct& latticeMins,
                                 const latticeStruct& latticeMaxes,
                                 double minIADScalingFactor,
-                                int maxAttempts)
+                                int numAttempts)
 {
   START_FT;
   // First let's get a lattice...
@@ -417,36 +405,56 @@ Crystal SpgInit::spgInitCrystal(uint spg,
     return Crystal();
   }
 
-  atomAssignments assignments = assignAtomsToWyckPos(spg, atoms);
+  systemPossibilities possibilities = SpgInitCombinatorics::getSystemPossibilities(spg, atoms);
 
-  if (assignments.size() == 0) {
-    cout << "Error in SpgInit::spgInitXtal(): atoms were not successfully"
-         << " assigned positions in assignAtomsToWyckPos()\n";
+  if (possibilities.size() == 0) {
+    cout << "Error in SpgInit::" << __FUNCTION__ << "(): this spg '" << spg
+         << "' cannot be generated with this composition\n";
     return Crystal();
   }
 
+  SpgInitCombinatorics::printSystemPossibilities(possibilities);
+
+  for (size_t i = 0; i < numAttempts; i++) {
+    atomAssignments assignments = SpgInitCombinatorics::getRandomAtomAssignments(possibilities);
+
+    printAtomAssignments(assignments);
+
+    if (assignments.size() == 0) {
+      cout << "Error in SpgInit::spgInitXtal(): atoms were not successfully"
+           << " assigned positions in assignAtomsToWyckPos()\n";
+      continue;
+    }
+
 #ifdef SPGINIT_DEBUG
-  cout << "\natomAssignments are the following (atomicNum, wyckLet, wyckPos):"
-       << "\n";
-  for (size_t i = 0; i < assignments.size(); i++)
-    cout << "  " << assignments.at(i).second << ", "
-         << getWyckLet(assignments.at(i).first)
-         << ", " << getWyckCoords(assignments.at(i).first) << "\n";
-  cout << "\n";
+    cout << "\natomAssignments are the following (atomicNum, wyckLet, wyckPos):"
+         << "\n";
+    for (size_t j = 0; j < assignments.size(); j++)
+      cout << "  " << assignments.at(j).second << ", "
+           << getWyckLet(assignments.at(j).first)
+           << ", " << getWyckCoords(assignments.at(j).first) << "\n";
+    cout << "\n";
 #endif
 
-  Crystal crystal(st);
-  for (size_t i = 0; i < assignments.size(); i++) {
-    wyckPos pos = assignments.at(i).first;
-    uint atomicNum = assignments.at(i).second;
-    if (!addWyckoffAtomRandomly(crystal, pos, atomicNum,
-                                spg, maxAttempts)) {
-      return Crystal();
+    Crystal crystal(st);
+    bool assignmentsSuccessful = true;
+    for (size_t j = 0; j < assignments.size(); j++) {
+      wyckPos pos = assignments.at(j).first;
+      uint atomicNum = assignments.at(j).second;
+      if (!addWyckoffAtomRandomly(crystal, pos, atomicNum, spg)) {
+        assignmentsSuccessful = false;
+      }
     }
+
+    // If we succeeded, return the crystal!
+    if (assignmentsSuccessful) return crystal;
+    else continue;
   }
 
-  // Otherwise, we succeeded!!
-  return crystal;
+  // If we made it here, we failed to generate the crystal
+  cout << "After " << numAttempts << " attempts: failed to generate "
+       << "a crystal with the given settings.\n";
+  return Crystal();
 }
 
 bool SpgInit::isSpgPossible(uint spg, const vector<uint>& atoms)
@@ -733,4 +741,13 @@ latticeStruct SpgInit::generateLatticeForSpg(uint spg,
   cout << "Error: " << __FUNCTION__ << " has a problem identifying spg " << spg
        << "\n";
   return st;
+}
+
+void SpgInit::printAtomAssignments(const atomAssignments& a)
+{
+  cout << "printing atom assignments:\n";
+  cout << "Atomic num : Wyckoff letter\n";
+  for (size_t i = 0; i < a.size(); i++) {
+    cout << a.at(i).second << " : " << getWyckLet(a.at(i).first) << "\n";
+  }
 }
