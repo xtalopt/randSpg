@@ -16,6 +16,7 @@
 #ifndef UTILITY_FUNCTIONS_H
 #define UTILITY_FUNCTIONS_H
 
+#include <set>
 #include <sstream>
 #include <algorithm>
 
@@ -44,6 +45,15 @@ static inline void removeEmptyStrings(std::vector<std::string>& v)
   }
 }
 
+template <typename T>
+static inline std::vector<T> removeDuplicates(const std::vector<T>& v)
+{
+  std::vector<T> ret;
+  std::set<T> s(v.begin(), v.end());
+  ret.assign(s.begin(), s.end());
+  return ret;
+}
+
 static inline void removeChar(std::string& s, char c)
 {
   s.erase(std::remove(s.begin(), s.end(), c), s.end());
@@ -67,8 +77,23 @@ splitAndRemoveParenthesis(const std::string& s)
 static inline bool isNumber(const std::string& s)
 {
   std::string::const_iterator it = s.begin();
-  while (it != s.end() && (isdigit(*it) || *it == '-' || *it == '.')) ++it;
+  while (it != s.end() && (isdigit(*it) ||
+         (*it == '-' && it == s.begin()) || // Hyphen must be at beginning
+         *it == '.')) ++it;
   return !s.empty() && it == s.end();
+}
+
+static inline bool contains(const std::string& s, char c)
+{
+  std::size_t found = s.find_first_of(c);
+  if (found != std::string::npos) return true;
+  return false;
+}
+
+static inline bool contains(const std::string& s1, const std::string& s2)
+{
+  if (s1.find(s2) != std::string::npos) return true;
+  return false;
 }
 
 // A simple function used in the std::sort in the function below
@@ -112,6 +137,44 @@ inline bool containsOnlySpaces(const std::string& str)
 {
   if (str.find_first_not_of(' ') != std::string::npos) return false;
   return true;
+}
+
+// Returns a string with leading and trailing whitespace removed
+static std::string trim(const std::string& str,
+                        const std::string& whitespace = " \t")
+{
+  const auto strBegin = str.find_first_not_of(whitespace);
+  if (strBegin == std::string::npos) return ""; // no content
+
+  const auto strEnd = str.find_last_not_of(whitespace);
+  const auto strRange = strEnd - strBegin + 1;
+
+  return str.substr(strBegin, strRange);
+}
+
+// Returns a 'reduced' string. In a reduced string, every series of repeated
+// spaces is reduced to 1 space
+static std::string reduce(const std::string& str,
+                          const std::string& fill = " ",
+                          const std::string& whitespace = " \t")
+{
+  // trim first
+  auto result = trim(str, whitespace);
+
+  // replace sub ranges
+  auto beginSpace = result.find_first_of(whitespace);
+  while (beginSpace != std::string::npos)
+  {
+    const auto endSpace = result.find_first_not_of(whitespace, beginSpace);
+    const auto range = endSpace - beginSpace;
+
+    result.replace(beginSpace, range, fill);
+
+    const auto newStart = beginSpace + fill.length();
+    beginSpace = result.find_first_of(whitespace, newStart);
+  }
+
+  return result;
 }
 
 #endif

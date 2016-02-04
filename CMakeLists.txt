@@ -7,6 +7,7 @@ set(spgInit_SRCS
     src/elemInfo.cpp
     src/main.cpp
     src/spgInitCombinatorics.cpp
+    src/spgInitOptions.cpp
     src/spgInit.cpp)
 
 include_directories(${spgInit_SOURCE_DIR}/include)

@@ -1,0 +1,31 @@
+First line is a comment line
+
+# Anything to the right of a hash is a comment
+
+# Composition is set by atomic symbols followed by number as such:
+composition            = Mg3Al2Si3O12
+
+# Which spacegroups to generate are set as follows (hyphens and commas work)
+spacegroups            = 1-3, 10, 12, 14-19
+
+# lattice mins and maxes set constraints on the lattice to be generated.
+# Distances are in Angstroms and angles are in degrees.
+#                           a,    b,    c, alpha,  beta, gamma
+latticeMins            =  3.0,  3.0,  3.0,  60.0,  60.0,  60.0
+latticeMaxes           = 10.0, 10.0, 10.0, 120.0, 120.0, 120.0
+
+# numOfEachSpgToGenerate tells us how many crystals of each spg to generate
+numOfEachSpgToGenerate = 1
+
+# We can set minimum radii (Angstroms) for individual atoms
+setMinRadius Ti        = 0.5
+
+# Or for all atoms. A min radius for an individual atom trumps this one
+# If the default min radius of the atom is less than this input value, then
+# the min radius of that atom is set to be this value
+# Value is in Angstroms
+setMinRadii            = 0.3
+
+# Verbosity indicates how much output to generate in the log file
+# 'n' is no output, 'r' is regular output, and 'v' is verbose output
+verbosity              = r
