@@ -6,7 +6,7 @@ First line is a comment line
 composition            = Mg3Al2Si3O12
 
 # Which spacegroups to generate are set as follows (hyphens and commas work)
-spacegroups            = 1-3, 10, 12, 14-19
+spacegroups            = 1-3, 5, 7, 14-19
 
 # lattice mins and maxes set constraints on the lattice to be generated.
 # Distances are in Angstroms and angles are in degrees.
@@ -25,6 +25,11 @@ setMinRadius Ti        = 0.5
 # the min radius of that atom is set to be this value
 # Value is in Angstroms
 setMinRadii            = 0.3
+
+# This scaling factor will scale all min radii that were not explicity set
+# The new min radii are equal to (minRadii * scalingFactor)
+# This is particularly useful when changing the pressure of a crystal
+scalingFactor          = 1.00
 
 # Verbosity indicates how much output to generate in the log file
 # 'n' is no output, 'r' is regular output, and 'v' is verbose output

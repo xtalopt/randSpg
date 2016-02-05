@@ -37,6 +37,7 @@ m_numOfEachSpgToGenerate(1),
 m_minRadiusVector(vector<pair<uint, double>>()),
 m_setAllMinRadii(false),
 m_minRadii(0),
+m_scalingFactor(1.0),
 m_verbosity('r')
 {
 
@@ -200,6 +201,9 @@ void SpgInitOptions::interpretLineAndSetOption(string line)
     m_setAllMinRadii = true;
     m_minRadii       = stof(value);
   }
+  else if (option == "scalingFactor") {
+    m_scalingFactor = stof(value);
+  }
   else if (option == "verbosity") {
     if (value != "n" && value != "r" && value != "v") {
       cout << "Error: the value given for verbosity, '" << value << "', is "
@@ -243,11 +247,13 @@ string getSpacegroupsString(vector<uint> v)
             ret += to_string(v.at(j - 1));
             ret += ", ";
             i = j - 1;
+            break;
           }
           // We reached the final value
           else if (j == v.size() - 1) {
             ret += to_string(v.at(j));
             i = j;
+            break;
           }
         }
       }
@@ -302,6 +308,7 @@ string SpgInitOptions::getOptionsString() const
     s << "  " << ElemInfo::getAtomicSymbol(m_minRadiusVector.at(i).first)
       << ": " << m_minRadiusVector.at(i).second << "\n";
   }
+  s << "scalingFactor: " << m_scalingFactor << "\n";
   s << "output verbosity: " << m_verbosity << "\n";
   s << "\n";
   return s.str();

@@ -65,6 +65,8 @@ class SpgInitOptions {
 
   double m_minRadii;
 
+  double m_scalingFactor;
+
   char m_verbosity;
 
 };
