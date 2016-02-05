@@ -38,6 +38,7 @@ m_minRadiusVector(vector<pair<uint, double>>()),
 m_setAllMinRadii(false),
 m_minRadii(0),
 m_scalingFactor(1.0),
+m_maxAttempts(100),
 m_verbosity('r')
 {
 
@@ -204,6 +205,9 @@ void SpgInitOptions::interpretLineAndSetOption(string line)
   else if (option == "scalingFactor") {
     m_scalingFactor = stof(value);
   }
+  else if (option == "maxAttempts") {
+    m_maxAttempts = stoi(value);
+  }
   else if (option == "verbosity") {
     if (value != "n" && value != "r" && value != "v") {
       cout << "Error: the value given for verbosity, '" << value << "', is "
@@ -309,6 +313,7 @@ string SpgInitOptions::getOptionsString() const
       << ": " << m_minRadiusVector.at(i).second << "\n";
   }
   s << "scalingFactor: " << m_scalingFactor << "\n";
+  s << "maxAttempts: " << m_maxAttempts << "\n";
   s << "output verbosity: " << m_verbosity << "\n";
   s << "\n";
   return s.str();

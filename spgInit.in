@@ -15,7 +15,7 @@ latticeMins            =  3.0,  3.0,  3.0,  60.0,  60.0,  60.0
 latticeMaxes           = 10.0, 10.0, 10.0, 120.0, 120.0, 120.0
 
 # numOfEachSpgToGenerate tells us how many crystals of each spg to generate
-numOfEachSpgToGenerate = 1
+numOfEachSpgToGenerate = 2
 
 # We can set minimum radii (Angstroms) for individual atoms
 setMinRadius Ti        = 0.5
@@ -29,8 +29,13 @@ setMinRadii            = 0.3
 # This scaling factor will scale all min radii that were not explicity set
 # The new min radii are equal to (minRadii * scalingFactor)
 # This is particularly useful when changing the pressure of a crystal
-scalingFactor          = 1.00
+scalingFactor          = 0.5
+
+# This sets the maximum number of attempts to generate any given spacegroup
+maxAttempts            = 100
 
 # Verbosity indicates how much output to generate in the log file
 # 'n' is no output, 'r' is regular output, and 'v' is verbose output
 verbosity              = r
+
+# In the output POSCAR, the name is <composition>_<spg>_<number>

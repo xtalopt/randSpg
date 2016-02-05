@@ -21,40 +21,61 @@
 
 using namespace std;
 
+// These are externs declared in spgInit.h
+string e_outputFilename = "spgInit.out";
+char e_verbosity = 'r';
+
 int main(int argc, char* argv[])
 {
-  SpgInitOptions options = SpgInitOptions::readOptions("spgInit.in");
-  options.printOptions();
-
-  if (argc != 3) {
-    cout << "Usage: ./spgInit <composition> <spacegroup>\n";
+  if (argc != 2) {
+    cout << "Usage: ./spgInit <inputFileName>\n";
     return -1;
   }
+
+  SpgInitOptions options = SpgInitOptions::readOptions(argv[1]);
+  options.printOptions();
 
   vector<uint> atoms;
 
-  if (!ElemInfo::readComposition(argv[1], atoms)) {
-    cout << "Error: Composition, " << argv[1] << ", is an invalid composition.\n";
+  string comp = options.getComposition();
+
+  if (!ElemInfo::readComposition(comp, atoms)) {
+    cout << "Error: Composition, " << comp << ", is an invalid composition.\n";
     return -1;
   }
 
-  latticeStruct mins, maxes;
-  mins.a = 3.0; maxes.a = 20.0;
-  mins.b = 3.0; maxes.b = 20.0;
-  mins.c = 3.0; maxes.c = 20.0;
-  mins.alpha = 60.0; maxes.alpha = 120.0;
-  mins.beta  = 60.0; maxes.beta  = 120.0;
-  mins.gamma = 60.0; maxes.gamma = 120.0;
+  // Set the min radius
+  ElemInfo::setMinRadius(options.getMinRadii());
 
-  uint spg = atoi(argv[2]);
+  // Set some explicit min radii
+  vector<pair<uint, double>> minRadiusVector = options.getMinRadiusVector();
+  for (size_t i = 0; i < minRadiusVector.size(); i++) {
+    uint atomicNum = minRadiusVector.at(i).first;
+    double rad = minRadiusVector.at(i).second;
+    ElemInfo::setRadius(atomicNum, rad);
+  }
 
-  double minIADScalingFactor = 0.5;
+  // Set up lattice mins and maxes
+  latticeStruct mins  = options.getLatticeMins();
+  latticeStruct maxes = options.getLatticeMaxes();
 
-  Crystal c = SpgInit::spgInitCrystal(spg, atoms, mins, maxes,
-                                      minIADScalingFactor);
+  // Set up various other options
+  vector<uint> spacegroups = options.getSpacegroups();
+  int numOfEach = options.getNumOfEachSpgToGenerate();
+  double minIADScalingFactor = options.getScalingFactor();
+  int maxAttempts = options.getMaxAttempts();
 
-  string filename = string("/home/patrick/src/spgInit/build/") + string(argv[1]) + "_" + to_string(spg);
-  string title = string(argv[1]) + " -- spgInit with spg of: " +
-                 to_string(spg);
-  if (c.getVolume() != 0) c.writePOSCAR(filename, title);
+  for (size_t i = 0; i < spacegroups.size(); i++) {
+    uint spg = spacegroups.at(i);
+    for (size_t j = 0; j < numOfEach; j++) {
+      Crystal c = SpgInit::spgInitCrystal(spg, atoms, mins, maxes,
+                                          minIADScalingFactor, maxAttempts);
+
+      string filename = string("/home/patrick/src/spgInit/build/") + comp +
+                        "_" + to_string(spg) + "_" + to_string(j + 1);
+      string title = comp + " -- spgInit with spg of: " + to_string(spg);
+      // The volume is set to zero if the job failed.
+      if (c.getVolume() != 0) c.writePOSCAR(filename, title);
+    }
+  }
 }

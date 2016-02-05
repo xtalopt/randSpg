@@ -310,14 +310,34 @@ class Crystal {
   void writePOSCAR(const std::string& filename,
                    const std::string& title = " ") const;
 
+  /* Get a printable string that contains the atom info
+   *
+   * @param as The atom for which to obtain coords.
+   *
+   * @return The printable string that contains the atom info.
+   */
+  static std::string getAtomInfoString(const atomStruct& as);
+
   /* For debugging: print the atomic number and coordinates of a specific atom.
    *
    * @param as The atom for which to print coords.
    */
   static void printAtomInfo(const atomStruct& as);
+
+  /* Get a printable string that contains atom info for all atoms in the cell.
+   *
+   * @return The printable string that contains the info on the atoms.
+   */
+  std::string getAtomInfoString() const;
+
   /* For debugging: print the atom info for every atom in the cell.
    */
   void printAtomInfo() const;
+
+  /*  Get a printable string that contains the lattice info of the cell.
+   */
+  std::string getLatticeInfoString() const;
+
   /* For debugging: print the lattice info of the cell (a, b, c, alpha, beta,
    * and gamma)
    */
@@ -325,6 +345,11 @@ class Crystal {
   /* For debugging: print the lattice vectors
    */
   void printLatticeVecs() const;
+
+  /* Get a printable string that contains atom info and lattice info of a cell
+   */
+  std::string getCrystalInfoString() const;
+
   /* For debugging: print atom info and lattice info of a cell
    */
   void printCrystalInfo() const;

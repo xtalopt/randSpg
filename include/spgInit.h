@@ -21,6 +21,12 @@
 #include <utility>
 
 #include "crystal.h"
+#include "spgInitOptions.h"
+
+// output file name
+extern std::string e_outputFilename;
+// verbosity
+extern char e_verbosity;
 
 // wyckPos is a tuple of a char (representing the Wyckoff letter),
 // an int (representing the multiplicity), and a string (that contains the first
@@ -42,10 +48,6 @@ typedef std::vector<atomAssignment> atomAssignments;
 typedef std::pair<uint, uint> numAndType;
 
 typedef std::pair<std::string, std::string> fillCellInfo;
-
-namespace XtalOpt {
-  struct XtalCompositionStruct;
-}
 
 class SpgInit {
  public:

@@ -188,93 +188,6 @@ double SpgInit::interpretComponent(const string& component,
   }
 
   return result;
-/*
-  // If it's just a number, just return the float equivalent
-  if (isNumber(component)) return stof(component);
-
-  // '2x' throws off this alrogithm. Just add it here...
-  // There is no '2y' or '2z', and when '2x' occurs, it is alone...
-  if (component == "2x") return 2 * x;
-
-  // If the position is not a number, there are 3 cases that need to be dealt with:
-  // 1. Just a variable x, y, or z
-  // 2. A negative x, y, or z
-  // 3. a +/- x, y, or z with a float added or subtracted from it
-
-  int i = 0;
-  bool varIsNeg = false;
-
-  double ret = 0;
-
-  // Determine whether it is negative or not
-  if (component.at(i) == '-') {
-    varIsNeg = true;
-    i++;
-  }
-
-  // Determine whether it is x, y, or z
-  switch (component.at(i)) {
-    case 'x':
-      ret = (varIsNeg) ? -1 * x : x;
-      break;
-    case 'y':
-      ret = (varIsNeg) ? -1 * y : y;
-      break;
-    case 'z':
-      ret = (varIsNeg) ? -1 * z : z;
-      break;
-    default:
-      cout << "Error reading string component: " << component
-           << " in interpretComponent()\n";
-      return -1;
-  }
-
-  // If it's just a single variable, return the double for that variable
-  if (component.size() == i + 1) return ret;
-
-  // If not, then we must be adding or subtracting a float to it
-  i++;
-  bool adding = true;
-  if (component.at(i) == '+') adding = true;
-  else if (component.at(i) == '-') adding = false;
-  else {
-    cout << "Error reading string component: " << component
-         << " in interpretComponenet()\n";
-    return -1;
-  }
-
-  i++;
-
-  // Find the float at the end
-  if (isNumber(component.substr(i))) {
-    double f = stof(component.substr(i));
-    ret += (adding) ? f : -1 * f;
-  }
-  else {
-    switch (component.at(i)) {
-      case 'x':
-        ret += (adding) ? x : -1 * x;
-        break;
-      case 'y':
-        ret += (adding) ? y : -1 * y;
-        break;
-      case 'z':
-        ret += (adding) ? z : -1 * z;
-        break;
-      default:
-        cout << "Error reading string component: " << component
-           << " in interpretComponenet()\n";
-        return -1;
-    }
-    if (component.size() != i + 1) {
-      cout << "Error reading string component: " << component
-           << " in interpretComponenet()\n";
-      return -1;
-    }
-  }
-
-  return ret;
-*/
 }
 
 const wyckoffPositions& SpgInit::getWyckoffPositions(uint spg)
@@ -453,7 +366,7 @@ Crystal SpgInit::spgInitCrystal(uint spg,
 
   // If we made it here, we failed to generate the crystal
   cout << "After " << numAttempts << " attempts: failed to generate "
-       << "a crystal with the given settings.\n";
+       << "a crystal of spg " << spg << ".\n";
   return Crystal();
 }
 

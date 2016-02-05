@@ -15,6 +15,7 @@
  ***********************************************************************/
 
 #include <iostream>
+#include <sstream>
 
 #include "rng.h"
 #include "spgInit.h"
@@ -522,37 +523,65 @@ atomAssignments SpgInitCombinatorics::getRandomAtomAssignments(const systemPossi
   return ret;
 }
 
+string SpgInitCombinatorics::getSimilarWyckPosAndNumToChooseString(const similarWyckPosAndNumToChoose& simPos)
+{
+  stringstream s;
+  s << "   printing similar Wyck pos and num to choose:\n";
+  s << "   numToChoose is: " << simPos.numToChoose << "\n";
+  if (simPos.choosablePositions.size() != 0)
+    s << "   uniqueness is: "
+      << (SpgInit::containsUniquePosition(simPos.choosablePositions.at(0)) ? "true\n" : "false\n");
+  s << "   Wyckoff positions are:\n    { ";
+  for (size_t i = 0; i < simPos.choosablePositions.size(); i++) {
+    s << SpgInit::getWyckLet(simPos.choosablePositions.at(i)) << " ";
+  }
+  s << "}\n";
+  return s.str();
+}
+
 void SpgInitCombinatorics::printSimilarWyckPosAndNumToChoose(const similarWyckPosAndNumToChoose& simPos)
 {
-  cout << "   printing similar Wyck pos and num to choose:\n";
-  cout << "   numToChoose is: " << simPos.numToChoose << "\n";
-  if (simPos.choosablePositions.size() != 0)
-    cout << "   uniqueness is: "
-         << (SpgInit::containsUniquePosition(simPos.choosablePositions.at(0)) ? "true\n" : "false\n");
-  cout << "   Wyckoff positions are:\n    { ";
-  for (size_t i = 0; i < simPos.choosablePositions.size(); i++) {
-    cout << SpgInit::getWyckLet(simPos.choosablePositions.at(i)) << " ";
+  cout << getSimilarWyckPosAndNumToChooseString(simPos);
+}
+
+string SpgInitCombinatorics::getSingleAtomPossibilityString(const singleAtomPossibility& pos)
+{
+  stringstream s;
+  s << "  Printing single atom possibility:\n";
+  s << "  atomicNum is: " << pos.atomicNum << "\n";
+  for (size_t i = 0; i < pos.assigns.size(); i++) {
+    s << getSimilarWyckPosAndNumToChooseString(pos.assigns.at(i));
   }
-  cout << "}\n";
+  return s.str();
 }
 
 void SpgInitCombinatorics::printSingleAtomPossibility(const singleAtomPossibility& pos)
 {
-  cout << "  Printing single atom possibility:\n";
-  cout << "  atomicNum is: " << pos.atomicNum << "\n";
-  for (size_t i = 0; i < pos.assigns.size(); i++) {
-    printSimilarWyckPosAndNumToChoose(pos.assigns.at(i));
-  }
+  cout << getSingleAtomPossibilityString(pos);
+}
+
+string SpgInitCombinatorics::getSystemPossibilityString(const systemPossibility& pos)
+{
+  stringstream s;
+  s << "\n Printing system possibility:\n";
+  for (size_t i = 0; i < pos.size(); i++) s << getSingleAtomPossibilityString(pos.at(i));
+  return s.str();
 }
 
 void SpgInitCombinatorics::printSystemPossibility(const systemPossibility& pos)
 {
-  cout << "\n Printing system possibility:\n";
-  for (size_t i = 0; i < pos.size(); i++) printSingleAtomPossibility(pos.at(i));
+  cout << getSystemPossibilityString(pos);
+}
+
+string SpgInitCombinatorics::getSystemPossibilitiesString(const systemPossibilities& pos)
+{
+  stringstream s;
+  s << "Printing system possibilities:\n";
+  for (size_t i = 0; i < pos.size(); i++) s << getSystemPossibilityString(pos.at(i));
+  return s.str();
 }
 
 void SpgInitCombinatorics::printSystemPossibilities(const systemPossibilities& pos)
 {
-  cout << "Printing system possibilities:\n";
-  for (size_t i = 0; i < pos.size(); i++) printSystemPossibility(pos.at(i));
+  cout << getSystemPossibilitiesString(pos);
 }

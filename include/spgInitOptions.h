@@ -13,6 +13,9 @@
 
  ***********************************************************************/
 
+#ifndef SPG_INIT_OPTIONS_H
+#define SPG_INIT_OPTIONS_H
+
 #include <string>
 #include <vector>
 
@@ -50,6 +53,23 @@ class SpgInitOptions {
    */
   void printOptions() const;
 
+  // Getters
+  std::string getFileName() const {return m_filename;};
+  std::string getComposition() const {return m_composition;};
+  std::vector<uint> getSpacegroups() const {return m_spacegroups;};
+  bool latticeMinsSet() const {return m_latticeMinsSet;};
+  bool latticeMaxesSet() const {return m_latticeMaxesSet;};
+  latticeStruct getLatticeMins()  const {return m_latticeMins;};
+  latticeStruct getLatticeMaxes() const {return m_latticeMaxes;};
+  uint getNumOfEachSpgToGenerate() const {return m_numOfEachSpgToGenerate;};
+  std::vector<std::pair<uint, double>> getMinRadiusVector() const {return m_minRadiusVector;};
+  bool setAllMinRadii() const {return m_setAllMinRadii;};
+  double getMinRadii() const {return m_minRadii;};
+  double getScalingFactor() const {return m_scalingFactor;};
+  int getMaxAttempts() const {return m_maxAttempts;};
+  char getVerbosity() const {return m_verbosity;};
+
+ private:
   std::string m_filename, m_composition;
 
   std::vector<uint> m_spacegroups;
@@ -67,6 +87,10 @@ class SpgInitOptions {
 
   double m_scalingFactor;
 
+  int m_maxAttempts;
+
   char m_verbosity;
 
 };
+
+#endif

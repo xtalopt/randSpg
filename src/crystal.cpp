@@ -519,25 +519,46 @@ void Crystal::writePOSCAR(const string& filename, const string& title) const
   f.close();
 }
 
+string Crystal::getAtomInfoString(const atomStruct& as)
+{
+  stringstream s;
+  s << "  For " << as.atomicNum << ", coords are: ("
+    << as.x << "," << as.y << "," << as.z << ")\n";
+  return s.str();
+}
+
 void Crystal::printAtomInfo(const atomStruct& as)
 {
-  cout << "  For " << as.atomicNum << ", coords are: ("
-       << as.x << "," << as.y << "," << as.z << ")\n";
+  cout << getAtomInfoString(as);
+}
+
+string Crystal::getAtomInfoString() const
+{
+  stringstream s;
+  for (size_t i = 0; i < m_atoms.size(); i++) s << getAtomInfoString(m_atoms.at(i));
+  return s.str();
 }
 
 void Crystal::printAtomInfo() const
 {
-  for (size_t i = 0; i < m_atoms.size(); i++) printAtomInfo(m_atoms.at(i));
+  cout << getAtomInfoString();
+}
+
+string Crystal::getLatticeInfoString() const
+{
+  stringstream s;
+  s << "a: " << m_lattice.a << "\n";
+  s << "b: " << m_lattice.b << "\n";
+  s << "c: " << m_lattice.c << "\n";
+  s << "alpha: " << m_lattice.alpha << "\n";
+  s << "beta: " << m_lattice.beta << "\n";
+  s << "gamma: " << m_lattice.gamma << "\n";
+  return s.str();
 }
 
 void Crystal::printLatticeInfo() const
 {
-  cout << "a: " << m_lattice.a << "\n";
-  cout << "b: " << m_lattice.b << "\n";
-  cout << "c: " << m_lattice.c << "\n";
-  cout << "alpha: " << m_lattice.alpha << "\n";
-  cout << "beta: " << m_lattice.beta << "\n";
-  cout << "gamma: " << m_lattice.gamma << "\n";
+  cout << getLatticeInfoString();
 }
 
 void Crystal::printLatticeVecs() const
@@ -552,10 +573,16 @@ void Crystal::printLatticeVecs() const
   }
 }
 
+string Crystal::getCrystalInfoString() const
+{
+  stringstream s;
+  s << "\n**** Printing Crystal Info ****\n";
+  s << getLatticeInfoString() << getAtomInfoString();
+  s << "**** End Crystal Info ****\n\n";
+  return s.str();
+}
+
 void Crystal::printCrystalInfo() const
 {
-  cout << "\n**** Printing Crystal Info ****\n";
-  printLatticeInfo();
-  printAtomInfo();
-  cout << "**** End Crystal Info ****\n\n";
+  cout << getCrystalInfoString();
 }

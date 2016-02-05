@@ -97,11 +97,19 @@ class SpgInitCombinatorics {
   // Get a random set of atom assignments from all the system possibilities
   static atomAssignments getRandomAtomAssignments(const systemPossibilities& sysPoss);
 
+  static std::string getSimilarWyckPosAndNumToChooseString(const similarWyckPosAndNumToChoose& simPos);
+
   static void printSimilarWyckPosAndNumToChoose(const similarWyckPosAndNumToChoose& simPos);
+
+  static std::string getSingleAtomPossibilityString(const singleAtomPossibility& pos);
 
   static void printSingleAtomPossibility(const singleAtomPossibility& pos);
 
+  static std::string getSystemPossibilityString(const systemPossibility& pos);
+
   static void printSystemPossibility(const systemPossibility& pos);
+
+  static std::string getSystemPossibilitiesString(const systemPossibilities& pos);
 
   static void printSystemPossibilities(const systemPossibilities& pos);
 };
