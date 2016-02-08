@@ -67,6 +67,7 @@ class SpgInitOptions {
   double getMinRadii() const {return m_minRadii;};
   double getScalingFactor() const {return m_scalingFactor;};
   int getMaxAttempts() const {return m_maxAttempts;};
+  std::string getOutputDir() const {return m_outputDir;};
   char getVerbosity() const {return m_verbosity;};
 
  private:
@@ -88,6 +89,8 @@ class SpgInitOptions {
   double m_scalingFactor;
 
   int m_maxAttempts;
+
+  std::string m_outputDir;
 
   char m_verbosity;
 

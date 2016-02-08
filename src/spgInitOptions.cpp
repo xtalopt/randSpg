@@ -39,6 +39,7 @@ m_setAllMinRadii(false),
 m_minRadii(0),
 m_scalingFactor(1.0),
 m_maxAttempts(100),
+m_outputDir("."),
 m_verbosity('r')
 {
 
@@ -208,6 +209,9 @@ void SpgInitOptions::interpretLineAndSetOption(string line)
   else if (option == "maxAttempts") {
     m_maxAttempts = stoi(value);
   }
+  else if (option == "outputDir") {
+    m_outputDir = value;
+  }
   else if (option == "verbosity") {
     if (value != "n" && value != "r" && value != "v") {
       cout << "Error: the value given for verbosity, '" << value << "', is "
@@ -314,6 +318,7 @@ string SpgInitOptions::getOptionsString() const
   }
   s << "scalingFactor: " << m_scalingFactor << "\n";
   s << "maxAttempts: " << m_maxAttempts << "\n";
+  s << "outputDir: " << m_outputDir << "\n";
   s << "output verbosity: " << m_verbosity << "\n";
   s << "\n";
   return s.str();

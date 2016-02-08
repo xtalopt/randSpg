@@ -44,6 +44,8 @@ int main(int argc, char* argv[])
     return -1;
   }
 
+  e_verbosity = options.getVerbosity();
+
   // Set the min radius
   ElemInfo::setMinRadius(options.getMinRadii());
 
@@ -64,6 +66,13 @@ int main(int argc, char* argv[])
   int numOfEach = options.getNumOfEachSpgToGenerate();
   double minIADScalingFactor = options.getScalingFactor();
   int maxAttempts = options.getMaxAttempts();
+  string outDir = options.getOutputDir();
+
+#ifdef _WIN32
+  outDir += "\\";
+#else
+  outDir += "/";
+#endif
 
   for (size_t i = 0; i < spacegroups.size(); i++) {
     uint spg = spacegroups.at(i);
@@ -71,8 +80,8 @@ int main(int argc, char* argv[])
       Crystal c = SpgInit::spgInitCrystal(spg, atoms, mins, maxes,
                                           minIADScalingFactor, maxAttempts);
 
-      string filename = string("/home/patrick/src/spgInit/build/") + comp +
-                        "_" + to_string(spg) + "_" + to_string(j + 1);
+      string filename = outDir + comp + "_" + to_string(spg) +
+                        "-" + to_string(j + 1);
       string title = comp + " -- spgInit with spg of: " + to_string(spg);
       // The volume is set to zero if the job failed.
       if (c.getVolume() != 0) c.writePOSCAR(filename, title);
