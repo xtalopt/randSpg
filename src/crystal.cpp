@@ -210,7 +210,7 @@ vector<vector<double>> Crystal::getLatticeVecs() const
   // Express it as 0 instead
   for (size_t i = 0; i < 3; i++) {
     for (size_t j = 0; j < 3; j++) {
-      if (vecs[i][j] < 1e-7) vecs[i][j] = 0;
+      if (fabs(vecs[i][j]) < 1e-7) vecs[i][j] = 0;
     }
   }
 

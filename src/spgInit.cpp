@@ -28,6 +28,7 @@
 #include "functionTracker.h"
 
 #include <cassert>
+#include <fstream>
 #include <tuple>
 #include <iostream>
 
@@ -326,12 +327,18 @@ Crystal SpgInit::spgInitCrystal(uint spg,
     return Crystal();
   }
 
-  SpgInitCombinatorics::printSystemPossibilities(possibilities);
+  //SpgInitCombinatorics::printSystemPossibilities(possibilities);
+  // If we desire verbose output, print the system possibility to the log file
+  if (e_verbosity == 'v')
+    appendToLogFile(SpgInitCombinatorics::getSystemPossibilitiesString(possibilities));
 
   for (size_t i = 0; i < numAttempts; i++) {
     atomAssignments assignments = SpgInitCombinatorics::getRandomAtomAssignments(possibilities);
 
-    printAtomAssignments(assignments);
+    //printAtomAssignments(assignments);
+    // If we desire verbose output, print the atom assignments to the log file
+    if (e_verbosity == 'v')
+      appendToLogFile(getAtomAssignmentsString(assignments));
 
     if (assignments.size() == 0) {
       cout << "Error in SpgInit::spgInitXtal(): atoms were not successfully"
@@ -656,11 +663,35 @@ latticeStruct SpgInit::generateLatticeForSpg(uint spg,
   return st;
 }
 
+string SpgInit::getAtomAssignmentsString(const atomAssignments& a)
+{
+  stringstream s;
+  s << "printing atom assignments:\n";
+  s << "Atomic num : Wyckoff letter\n";
+  for (size_t i = 0; i < a.size(); i++) {
+    s << a.at(i).second << " : " << getWyckLet(a.at(i).first) << "\n";
+  }
+  return s.str();
+}
+
 void SpgInit::printAtomAssignments(const atomAssignments& a)
 {
-  cout << "printing atom assignments:\n";
-  cout << "Atomic num : Wyckoff letter\n";
-  for (size_t i = 0; i < a.size(); i++) {
-    cout << a.at(i).second << " : " << getWyckLet(a.at(i).first) << "\n";
+  cout << getAtomAssignmentsString(a);
+}
+
+// The name of the log file is available in the header as an extern
+void SpgInit::appendToLogFile(const std::string& text)
+{
+  fstream fs;
+  fs.open(e_logfilename, std::fstream::out | std::fstream::app);
+
+  if (!fs.is_open()) {
+    cout << "Error opening log file, " << e_logfilename << ".\n"
+         << "The program will keep running, but log info will not be written.\n";
+    return;
   }
+
+  fs << text;
+
+  fs.close();
 }

@@ -13,6 +13,8 @@
 
  ***********************************************************************/
 
+// To remove the log file
+#include <cstdio>
 #include <iostream>
 
 #include "elemInfo.h"
@@ -22,7 +24,7 @@
 using namespace std;
 
 // These are externs declared in spgInit.h
-string e_outputFilename = "spgInit.out";
+string e_logfilename = "spgInit.log";
 char e_verbosity = 'r';
 
 int main(int argc, char* argv[])
@@ -31,6 +33,9 @@ int main(int argc, char* argv[])
     cout << "Usage: ./spgInit <inputFileName>\n";
     return -1;
   }
+
+  // If there is an old log file here, remove it
+  remove(e_logfilename.c_str());
 
   SpgInitOptions options = SpgInitOptions::readOptions(argv[1]);
   options.printOptions();

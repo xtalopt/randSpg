@@ -24,7 +24,7 @@
 #include "spgInitOptions.h"
 
 // output file name
-extern std::string e_outputFilename;
+extern std::string e_logfilename;
 // verbosity
 extern char e_verbosity;
 
@@ -167,7 +167,11 @@ class SpgInit {
 
   static bool containsUniquePosition(const wyckPos& pos);
 
+  static std::string getAtomAssignmentsString(const atomAssignments& a);
+
   static void printAtomAssignments(const atomAssignments& a);
+
+  static void appendToLogFile(const std::string& text);
 
 };
 
