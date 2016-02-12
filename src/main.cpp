@@ -82,11 +82,14 @@ int main(int argc, char* argv[])
   for (size_t i = 0; i < spacegroups.size(); i++) {
     uint spg = spacegroups.at(i);
     for (size_t j = 0; j < numOfEach; j++) {
+      string filename = outDir + comp + "_" + to_string(spg) +
+                        "-" + to_string(j + 1);
+      if (e_verbosity != 'n')
+        SpgInit::appendToLogFile(string("\n**** ") + filename + " ****\n");
+
       Crystal c = SpgInit::spgInitCrystal(spg, atoms, mins, maxes,
                                           minIADScalingFactor, maxAttempts);
 
-      string filename = outDir + comp + "_" + to_string(spg) +
-                        "-" + to_string(j + 1);
       string title = comp + " -- spgInit with spg of: " + to_string(spg);
       // The volume is set to zero if the job failed.
       if (c.getVolume() != 0) c.writePOSCAR(filename, title);

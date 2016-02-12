@@ -336,8 +336,8 @@ Crystal SpgInit::spgInitCrystal(uint spg,
     atomAssignments assignments = SpgInitCombinatorics::getRandomAtomAssignments(possibilities);
 
     //printAtomAssignments(assignments);
-    // If we desire verbose output, print the atom assignments to the log file
-    if (e_verbosity == 'v')
+    // If we desire any output, print the atom assignments to the log file
+    if (e_verbosity == 'r' || e_verbosity == 'v')
       appendToLogFile(getAtomAssignmentsString(assignments));
 
     if (assignments.size() == 0) {
@@ -367,8 +367,19 @@ Crystal SpgInit::spgInitCrystal(uint spg,
     }
 
     // If we succeeded, return the crystal!
-    if (assignmentsSuccessful) return crystal;
-    else continue;
+    if (assignmentsSuccessful) {
+      appendToLogFile("*** Success! ***\n");
+      return crystal;
+    }
+    else {
+      if (e_verbosity == 'r' || e_verbosity == 'v') {
+        stringstream ss;
+        ss << "Failed to add atoms to satisfy MinIAD.\nObtaining new atom "
+           << "assignments and trying again. Failure count: " << i + 1 << "\n\n";
+        appendToLogFile(ss.str());
+      }
+      continue;
+    }
   }
 
   // If we made it here, we failed to generate the crystal
