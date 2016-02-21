@@ -91,6 +91,22 @@ class SpgInitCombinatorics {
                                              bool findOnlyOne = false,
                                              bool onlyNonUnique = false);
 
+  // This removes all possibilities for which the wyckLet is NOT in the possible
+  // setup. This does not guarantee, however, that the wyckoff position will be
+  // used. You must force it to be selected with a special function that
+  // I'll be writing soon...
+  static systemPossibilities removePossibilitiesWithoutWyckPos(
+                                       const systemPossibilities& sysPos,
+                                       char wyckLet,
+                                       uint minNumUses = 1);
+
+  // This calls removePossibilitiesWithoutWyckPos() for the most general
+  // Wyckoff position for the spacegroup
+  static systemPossibilities removePossibilitiesWithoutGeneralWyckPos(
+                                           const systemPossibilities& sysPos,
+                                           uint spg,
+                                           uint minNumUses = 1);
+
   // Pick a random system possibility from the system possibilities
   static systemPossibility getRandomSystemPossibility(const systemPossibilities& sysPoss);
 

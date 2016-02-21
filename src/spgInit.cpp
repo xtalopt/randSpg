@@ -321,6 +321,10 @@ Crystal SpgInit::spgInitCrystal(uint spg,
 
   systemPossibilities possibilities = SpgInitCombinatorics::getSystemPossibilities(spg, atoms);
 
+  // TEMPORARY - force the most general Wyckoff position to be used at least
+  // once
+  possibilities = SpgInitCombinatorics::removePossibilitiesWithoutGeneralWyckPos(possibilities, spg);
+
   if (possibilities.size() == 0) {
     cout << "Error in SpgInit::" << __FUNCTION__ << "(): this spg '" << spg
          << "' cannot be generated with this composition\n";

@@ -468,6 +468,51 @@ SpgInitCombinatorics::getSystemPossibilities(uint spg,
   return sysPossibilities;
 }
 
+uint countNumTimesWyckPosMayBeUsed(const systemPossibility& sysPos,
+                                   char wyckLet)
+{
+  uint numTimesUsed = 0;
+  for (size_t i = 0; i < sysPos.size(); i++) {
+    const singleAtomPossibility& sinPos = sysPos.at(i);
+    const assignments& assigns = sinPos.assigns;
+    for (size_t j = 0; j < assigns.size(); j++) {
+      uint numToChoose = assigns.at(j).numToChoose;
+      const similarWyckPositions& cp = assigns.at(j).choosablePositions;
+      for (size_t k = 0; k < cp.size(); k++) {
+        const wyckPos& wp = cp.at(k);
+        if (SpgInit::getWyckLet(wp) == wyckLet) {
+          // If this is a unique wyckoff position, we may only use it once
+          if (SpgInit::containsUniquePosition(wp)) return 1;
+          // Otherwise, we can use it up to the maximum number of times
+          else numTimesUsed += numToChoose;
+        }
+      }
+    }
+  }
+  return numTimesUsed;
+}
+
+systemPossibilities SpgInitCombinatorics::removePossibilitiesWithoutWyckPos(
+                                          const systemPossibilities& sysPos,
+                                          char wyckLet,
+                                          uint minNumUses)
+{
+  systemPossibilities ret;
+  for (size_t i = 0; i < sysPos.size(); i++) {
+    uint numTimesUsed = countNumTimesWyckPosMayBeUsed(sysPos.at(i), wyckLet);
+    if (numTimesUsed >= minNumUses) ret.push_back(sysPos.at(i));
+  }
+  return ret;
+}
+
+systemPossibilities SpgInitCombinatorics::removePossibilitiesWithoutGeneralWyckPos(const systemPossibilities& sysPos,
+   uint spg,
+   uint minNumUses)
+{
+  const wyckoffPositions& wp = SpgInit::getWyckoffPositions(spg);
+  return removePossibilitiesWithoutWyckPos(sysPos, SpgInit::getWyckLet(wp.at(wp.size() - 1)), minNumUses);
+}
+
 // We call this when a unique position is assigned when getting
 // atom assignments.
 // It removes the unique position from the possibilities so that it will
