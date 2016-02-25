@@ -302,22 +302,12 @@ Crystal SpgInit::spgInitCrystal(uint spg,
                                 const vector<uint>& atoms,
                                 const latticeStruct& latticeMins,
                                 const latticeStruct& latticeMaxes,
-                                double minIADScalingFactor,
+                                double IADScalingFactor,
                                 int numAttempts)
 {
   START_FT;
-  // First let's get a lattice...
-  latticeStruct st = generateLatticeForSpg(spg, latticeMins, latticeMaxes);
 
-  ElemInfo::applyScalingFactor(minIADScalingFactor);
-
-  // Make sure it's a valid lattice
-  if (st.a == 0 || st.b == 0 || st.c == 0 ||
-      st.alpha == 0 || st.beta == 0 || st.gamma == 0) {
-    cout << "Error in SpgInit::spgInitXtal(): an invalid lattice was "
-         << "generated.\n";
-    return Crystal();
-  }
+  ElemInfo::applyScalingFactor(IADScalingFactor);
 
   systemPossibilities possibilities = SpgInitCombinatorics::getSystemPossibilities(spg, atoms);
 
@@ -337,6 +327,18 @@ Crystal SpgInit::spgInitCrystal(uint spg,
     appendToLogFile(SpgInitCombinatorics::getSystemPossibilitiesString(possibilities));
 
   for (size_t i = 0; i < numAttempts; i++) {
+    // First let's get a lattice...
+    latticeStruct st = generateLatticeForSpg(spg, latticeMins, latticeMaxes);
+
+    // Make sure it's a valid lattice
+    if (st.a == 0 || st.b == 0 || st.c == 0 ||
+        st.alpha == 0 || st.beta == 0 || st.gamma == 0) {
+      cout << "Error in SpgInit::spgInitXtal(): an invalid lattice was "
+           << "generated.\n";
+      return Crystal();
+    }
+
+    // Now, let's assign some atoms!
     atomAssignments assignments = SpgInitCombinatorics::getRandomAtomAssignments(possibilities);
 
     //printAtomAssignments(assignments);
