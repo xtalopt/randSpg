@@ -34,7 +34,7 @@ m_latticeMaxesSet(false),
 m_latticeMins(defaultLatticeMins),
 m_latticeMaxes(defaultLatticeMaxes),
 m_numOfEachSpgToGenerate(1),
-m_minRadiusVector(vector<pair<uint, double>>()),
+m_radiusVector(vector<pair<uint, double>>()),
 m_setAllMinRadii(false),
 m_minRadii(0),
 m_scalingFactor(1.0),
@@ -188,16 +188,16 @@ void SpgInitOptions::interpretLineAndSetOption(string line)
   else if (option == "numOfEachSpgToGenerate") {
     m_numOfEachSpgToGenerate = stoi(value);
   }
-  else if (contains(option, "setMinRadius")) {
-    // There should be a space after 'setMinRadius' with the atomic symbol there
+  else if (contains(option, "setRadius")) {
+    // There should be a space after 'setRadius' with the atomic symbol there
     vector<string> tempSplit = split(option, ' ');
     if (tempSplit.size() != 2) {
-      cout << "Error reading 'setMinRadius' option: " << line
-           << "\nProper format is: setMinRadius <atomicSymbol> = <value>\n";
+      cout << "Error reading 'setRadius' option: " << line
+           << "\nProper format is: setRadius <atomicSymbol> = <value>\n";
       exit(EXIT_FAILURE);
     }
     uint atomicNum = ElemInfo::getAtomicNum(tempSplit.at(1));
-    m_minRadiusVector.push_back(make_pair(atomicNum, stof(value)));
+    m_radiusVector.push_back(make_pair(atomicNum, stof(value)));
   }
   else if (option == "setMinRadii") {
     m_setAllMinRadii = true;
@@ -312,9 +312,9 @@ string SpgInitOptions::getOptionsString() const
     s << "default minRadii: " << m_minRadii << "\n";
   }
   s << "explicity set minRadii: \n";
-  for (size_t i = 0; i < m_minRadiusVector.size(); i++) {
-    s << "  " << ElemInfo::getAtomicSymbol(m_minRadiusVector.at(i).first)
-      << ": " << m_minRadiusVector.at(i).second << "\n";
+  for (size_t i = 0; i < m_radiusVector.size(); i++) {
+    s << "  " << ElemInfo::getAtomicSymbol(m_radiusVector.at(i).first)
+      << ": " << m_radiusVector.at(i).second << "\n";
   }
   s << "scalingFactor: " << m_scalingFactor << "\n";
   s << "maxAttempts: " << m_maxAttempts << "\n";

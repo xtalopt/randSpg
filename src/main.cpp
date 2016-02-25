@@ -55,10 +55,10 @@ int main(int argc, char* argv[])
   ElemInfo::setMinRadius(options.getMinRadii());
 
   // Set some explicit min radii
-  vector<pair<uint, double>> minRadiusVector = options.getMinRadiusVector();
-  for (size_t i = 0; i < minRadiusVector.size(); i++) {
-    uint atomicNum = minRadiusVector.at(i).first;
-    double rad = minRadiusVector.at(i).second;
+  vector<pair<uint, double>> radiusVector = options.getRadiusVector();
+  for (size_t i = 0; i < radiusVector.size(); i++) {
+    uint atomicNum = radiusVector.at(i).first;
+    double rad = radiusVector.at(i).second;
     ElemInfo::setRadius(atomicNum, rad);
   }
 

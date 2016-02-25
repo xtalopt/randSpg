@@ -62,7 +62,7 @@ class SpgInitOptions {
   latticeStruct getLatticeMins()  const {return m_latticeMins;};
   latticeStruct getLatticeMaxes() const {return m_latticeMaxes;};
   uint getNumOfEachSpgToGenerate() const {return m_numOfEachSpgToGenerate;};
-  std::vector<std::pair<uint, double>> getMinRadiusVector() const {return m_minRadiusVector;};
+  std::vector<std::pair<uint, double>> getRadiusVector() const {return m_radiusVector;};
   bool setAllMinRadii() const {return m_setAllMinRadii;};
   double getMinRadii() const {return m_minRadii;};
   double getScalingFactor() const {return m_scalingFactor;};
@@ -80,7 +80,7 @@ class SpgInitOptions {
 
   uint m_numOfEachSpgToGenerate;
 
-  std::vector<std::pair<uint, double>> m_minRadiusVector;
+  std::vector<std::pair<uint, double>> m_radiusVector;
 
   bool m_setAllMinRadii;
 

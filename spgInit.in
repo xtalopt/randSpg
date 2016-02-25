@@ -18,7 +18,7 @@ latticeMaxes           = 10.0, 10.0, 10.0, 120.0, 120.0, 120.0
 numOfEachSpgToGenerate = 2
 
 # We can set minimum radii (Angstroms) for individual atoms
-setMinRadius Ti        = 0.5
+setRadius Ti        = 0.5
 
 # Or for all atoms. A min radius for an individual atom trumps this one
 # If the default min radius of the atom is less than this input value, then
@@ -26,8 +26,8 @@ setMinRadius Ti        = 0.5
 # Value is in Angstroms
 setMinRadii            = 0.3
 
-# This scaling factor will scale all min radii that were not explicity set
-# The new min radii are equal to (minRadii * scalingFactor)
+# This scaling factor will scale all radii that were not explicity set
+# The new radii are equal to (radius * scalingFactor)
 # This is particularly useful when changing the pressure of a crystal
 scalingFactor          = 0.5
 
