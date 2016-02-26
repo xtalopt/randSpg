@@ -303,6 +303,8 @@ Crystal SpgInit::spgInitCrystal(uint spg,
                                 const latticeStruct& latticeMins,
                                 const latticeStruct& latticeMaxes,
                                 double IADScalingFactor,
+                                double minVolume,
+                                double maxVolume,
                                 int numAttempts)
 {
   START_FT;
@@ -329,6 +331,7 @@ Crystal SpgInit::spgInitCrystal(uint spg,
   for (size_t i = 0; i < numAttempts; i++) {
     // First let's get a lattice...
     latticeStruct st = generateLatticeForSpg(spg, latticeMins, latticeMaxes);
+    Crystal crystal(st);
 
     // Make sure it's a valid lattice
     if (st.a == 0 || st.b == 0 || st.c == 0 ||
@@ -337,6 +340,12 @@ Crystal SpgInit::spgInitCrystal(uint spg,
            << "generated.\n";
       return Crystal();
     }
+
+    // Rescale the volume of the crystal if necessary
+    if (maxVolume != -1 && crystal.getVolume() > maxVolume)
+      crystal.rescaleVolume(maxVolume);
+    else if (minVolume != -1 && crystal.getVolume() < minVolume)
+      crystal.rescaleVolume(minVolume);
 
     // Now, let's assign some atoms!
     atomAssignments assignments = SpgInitCombinatorics::getRandomAtomAssignments(possibilities);
@@ -362,7 +371,6 @@ Crystal SpgInit::spgInitCrystal(uint spg,
     cout << "\n";
 #endif
 
-    Crystal crystal(st);
     bool assignmentsSuccessful = true;
     for (size_t j = 0; j < assignments.size(); j++) {
       wyckPos pos = assignments.at(j).first;

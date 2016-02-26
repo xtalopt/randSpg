@@ -14,6 +14,13 @@ spacegroups            = 1-3, 5, 7, 14-19
 latticeMins            =  3.0,  3.0,  3.0,  60.0,  60.0,  60.0
 latticeMaxes           = 10.0, 10.0, 10.0, 120.0, 120.0, 120.0
 
+# minVolume and maxVolume specify constraints on the volume in Angstroms
+# If the volume is not within this range, it will be rescaled so that it is
+# If you remove minVolume or specify it to be -1, there will be no minVolume
+# Same goes for maxVolume
+minVolume              = 450
+maxVolume              = 500
+
 # numOfEachSpgToGenerate tells us how many crystals of each spg to generate
 numOfEachSpgToGenerate = 2
 
@@ -41,4 +48,4 @@ outputDir              = temp
 # 'n' is no output, 'r' is regular output, and 'v' is verbose output
 verbosity              = r
 
-# In the output POSCAR, the name is <composition>_<spg>_<number>
+# In the output POSCAR, the name is <composition>_<spg>-<index>

@@ -144,6 +144,10 @@ class SpgInit {
    * @param latticeMaxes A latticeStruct that contains the maxima for a, b, c,
    *                     alpha, beta, and gamma.
    * @param IADScalingFactor A scaling factor used to scale the IAD
+   * @param minVolume The minimum volume for the crystal to be generated.
+   *                  If set to -1, there is no minimum volume.
+   * @param maxVolume The maximum volume for the crystal to be generated.
+   *                  If set to -1, there is no maximum volume.
    * @param numAttempts The max number number of attempts to generate a crystal
    *                    given these conditions. It will still only find all
    *                    combinations once (that's the most time consuming
@@ -160,6 +164,8 @@ class SpgInit {
                                 const latticeStruct& latticeMins,
                                 const latticeStruct& latticeMaxes,
                                 double IADScalingFactor = 0.5,
+                                double minVolume = -1.0,
+                                double maxVolume = -1.0,
                                 int numAttempts = 100);
 
   static std::vector<numAndType> getNumOfEachType(

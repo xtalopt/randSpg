@@ -227,6 +227,13 @@ double Crystal::getVolume() const
 
 void Crystal::rescaleVolume(double newVolume)
 {
+  if (newVolume < 0) {
+    cout << "Error! Crystal::rescaleVolume() was called to rescale the volume "
+         << "to be a negative number, " << newVolume << "! Volume will not be "
+         << "rescaled.\n";
+    return;
+  }
+
   double scalingFactor = pow(newVolume / getVolume(), 1.0/3.0);
 
   // Since atoms are all in fractional coordinates, we don't have to worry

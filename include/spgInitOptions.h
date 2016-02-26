@@ -66,6 +66,8 @@ class SpgInitOptions {
   bool setAllMinRadii() const {return m_setAllMinRadii;};
   double getMinRadii() const {return m_minRadii;};
   double getScalingFactor() const {return m_scalingFactor;};
+  double getMinVolume() const {return m_minVolume;};
+  double getMaxVolume() const {return m_maxVolume;};
   int getMaxAttempts() const {return m_maxAttempts;};
   std::string getOutputDir() const {return m_outputDir;};
   char getVerbosity() const {return m_verbosity;};
@@ -87,6 +89,8 @@ class SpgInitOptions {
   double m_minRadii;
 
   double m_scalingFactor;
+
+  double m_minVolume, m_maxVolume;
 
   int m_maxAttempts;
 

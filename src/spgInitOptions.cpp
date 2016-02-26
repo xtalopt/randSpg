@@ -38,6 +38,8 @@ m_radiusVector(vector<pair<uint, double>>()),
 m_setAllMinRadii(false),
 m_minRadii(0),
 m_scalingFactor(1.0),
+m_minVolume(-1),
+m_maxVolume(-1),
 m_maxAttempts(100),
 m_outputDir("."),
 m_verbosity('r')
@@ -206,6 +208,12 @@ void SpgInitOptions::interpretLineAndSetOption(string line)
   else if (option == "scalingFactor") {
     m_scalingFactor = stof(value);
   }
+  else if (option == "minVolume") {
+    m_minVolume = stof(value);
+  }
+  else if (option == "maxVolume") {
+    m_maxVolume = stof(value);
+  }
   else if (option == "maxAttempts") {
     m_maxAttempts = stoi(value);
   }
@@ -306,6 +314,12 @@ string SpgInitOptions::getOptionsString() const
     s << getLatticeString(m_latticeMaxes);
   }
   else s << "latticeMaxes:\n" << getLatticeString(m_latticeMaxes);
+
+  if (m_minVolume == -1) s << "minVolume: none\n";
+  else s << "minVolume: " << m_minVolume << "\n";
+
+  if (m_maxVolume == -1) s << "maxVolume: none\n";
+  else s << "maxVolume: " << m_maxVolume << "\n";
 
   s << "numOfEachSpgToGenerate: " << m_numOfEachSpgToGenerate << "\n";
   if (m_setAllMinRadii) {

@@ -69,7 +69,9 @@ int main(int argc, char* argv[])
   // Set up various other options
   vector<uint> spacegroups = options.getSpacegroups();
   int numOfEach = options.getNumOfEachSpgToGenerate();
-  double minIADScalingFactor = options.getScalingFactor();
+  double IADScalingFactor = options.getScalingFactor();
+  double minVolume = options.getMinVolume();
+  double maxVolume = options.getMaxVolume();
   int maxAttempts = options.getMaxAttempts();
   string outDir = options.getOutputDir();
 
@@ -88,7 +90,8 @@ int main(int argc, char* argv[])
         SpgInit::appendToLogFile(string("\n**** ") + filename + " ****\n");
 
       Crystal c = SpgInit::spgInitCrystal(spg, atoms, mins, maxes,
-                                          minIADScalingFactor, maxAttempts);
+                                          IADScalingFactor, minVolume,
+                                          maxVolume, maxAttempts);
 
       string title = comp + " -- spgInit with spg of: " + to_string(spg);
       // The volume is set to zero if the job failed.
