@@ -1,0 +1,21 @@
+
+******    SpgInit    ******
+
+In order to compile, one simply needs cmake and a c++11 compiler.
+
+For ubuntu, you may install cmake by entering "sudo apt-get install cmake"
+
+Compilation instructions:
+
+Enter the following into a terminal from the root spgInit directory
+
+  mkdir build; cd build; cmake ..; make -j3
+
+The program should be compiled!
+
+To run the program, use the executable that is created in the build directory
+as follows:
+  ./spgInit <inputFileName>
+
+A sample input file with instructions is included in the root
+directory: spgInit.in
