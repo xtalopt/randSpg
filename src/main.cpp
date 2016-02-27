@@ -18,6 +18,7 @@
 #include <iostream>
 
 #include "elemInfo.h"
+#include "fileSystemUtils.h"
 #include "spgInit.h"
 #include "spgInitOptions.h"
 
@@ -80,6 +81,9 @@ int main(int argc, char* argv[])
 #else
   outDir += "/";
 #endif
+
+  // Defined in fileSystemUtils.h
+  mkDir(outDir);
 
   for (size_t i = 0; i < spacegroups.size(); i++) {
     uint spg = spacegroups.at(i);
