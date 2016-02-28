@@ -492,6 +492,32 @@ uint countNumTimesWyckPosMayBeUsed(const systemPossibility& sysPos,
   return numTimesUsed;
 }
 
+uint countNumTimesWyckPosMayBeUsedForSpecificAtom(
+                                   const systemPossibility& sysPos,
+                                   char wyckLet,
+                                   uint atomicNum)
+{
+  uint numTimesUsed = 0;
+  for (size_t i = 0; i < sysPos.size(); i++) {
+    const singleAtomPossibility& sinPos = sysPos.at(i);
+    if (sinPos.atomicNum != atomicNum) continue;
+    const assignments& assigns = sinPos.assigns;
+    for (size_t j = 0; j < assigns.size(); j++) {
+      uint numToChoose = assigns.at(j).numToChoose;
+      const similarWyckPositions& cp = assigns.at(j).choosablePositions;
+      for (size_t k = 0; k < cp.size(); k++) {
+        const wyckPos& wp = cp.at(k);
+        if (SpgInit::getWyckLet(wp) == wyckLet) {
+          // If this is a unique wyckoff position, we may only use it once
+          if (SpgInit::containsUniquePosition(wp)) return 1;
+          // Otherwise, we can use it up to the maximum number of times
+          else numTimesUsed += numToChoose;
+        }
+      }
+    }
+  }
+  return numTimesUsed;
+}
 systemPossibilities SpgInitCombinatorics::removePossibilitiesWithoutWyckPos(
                                           const systemPossibilities& sysPos,
                                           char wyckLet,
@@ -500,6 +526,21 @@ systemPossibilities SpgInitCombinatorics::removePossibilitiesWithoutWyckPos(
   systemPossibilities ret;
   for (size_t i = 0; i < sysPos.size(); i++) {
     uint numTimesUsed = countNumTimesWyckPosMayBeUsed(sysPos.at(i), wyckLet);
+    if (numTimesUsed >= minNumUses) ret.push_back(sysPos.at(i));
+  }
+  return ret;
+}
+
+// This version also specifies the atomic number
+systemPossibilities SpgInitCombinatorics::removePossibilitiesWithoutWyckPos(
+                                          const systemPossibilities& sysPos,
+                                          char wyckLet,
+                                          uint minNumUses,
+                                          uint atomicNum)
+{
+  systemPossibilities ret;
+  for (size_t i = 0; i < sysPos.size(); i++) {
+    uint numTimesUsed = countNumTimesWyckPosMayBeUsedForSpecificAtom(sysPos.at(i), wyckLet, atomicNum);
     if (numTimesUsed >= minNumUses) ret.push_back(sysPos.at(i));
   }
   return ret;
@@ -541,10 +582,51 @@ systemPossibility SpgInitCombinatorics::getRandomSystemPossibility(const systemP
 // Get random atom assignments from all the possible system possibilities
 atomAssignments SpgInitCombinatorics::getRandomAtomAssignments(const systemPossibilities& sysPoss)
 {
+  // We will call the one with the "forcedWyckPositions" vector as an
+  // empty vector
+  return getRandomAtomAssignments(sysPoss, vector<pair<uint, wyckPos>>());
+}
+
+void decrementChoiceFromSystemPossibility(systemPossibility& sysPos, uint atomicNum, const wyckPos& wyckPos)
+{
+  // Remove this from the system possibility
+  for (size_t i = 0; i < sysPos.size(); i++) {
+    if (sysPos.at(i).atomicNum != atomicNum) continue;
+    bool decrementComplete = false;
+    for (size_t j = 0; j < sysPos.at(i).assigns.size(); j++) {
+      similarWyckPosAndNumToChoose& simAndNum = sysPos.at(i).assigns.at(j);
+      similarWyckPositions& simPos = simAndNum.choosablePositions;
+      // If we find that the position is used here, decrement the choosable
+      // positions and break. We are done.
+      for (size_t k = 0; k < simPos.size(); k++) {
+        if (simPos.at(k) == wyckPos) {
+          simAndNum.numToChoose--;
+          decrementComplete = true;
+          break;
+        }
+      }
+      // If we have decremented, we are done.
+      if (decrementComplete) break;
+    }
+    if (decrementComplete) break;
+  }
+}
+
+atomAssignments SpgInitCombinatorics::getRandomAtomAssignments(const systemPossibilities& sysPoss, const vector<pair<uint, wyckPos>>& forcedWyckPositions)
+{
   START_FT;
   atomAssignments ret;
   // Pick a random system possibility to use
   systemPossibility tempPos = getRandomSystemPossibility(sysPoss);
+
+  // Add the forced Wyckoff positions
+  for (size_t i = 0; i < forcedWyckPositions.size(); i++) {
+    wyckPos pos = forcedWyckPositions.at(i).second;
+    uint atomicNum = forcedWyckPositions.at(i).first;
+    ret.push_back(make_pair(pos, atomicNum));
+    decrementChoiceFromSystemPossibility(tempPos, atomicNum, pos);
+  }
+
   for (size_t i = 0; i < tempPos.size(); i++) {
     uint atomicNum = tempPos.at(i).atomicNum;
     for (size_t j = 0; j < tempPos.at(i).assigns.size(); j++) {

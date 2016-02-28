@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
   input.manualAtomicRadii = options.getRadiusVector();
   input.minVolume = options.getMinVolume();
   input.maxVolume = options.getMaxVolume();
-  // input.forcedWyckAssignments = options.getForcedWyckAssignments(); // to be added soon!
+  input.forcedWyckAssignments = options.getForcedWyckAssignments();
   input.verbosity = options.getVerbosity();
   input.maxAttempts = options.getMaxAttempts();
   // input.forceMostGeneralWyckPos = options.forceMostGeneralWyckPos(); // to be added soon!

@@ -203,6 +203,17 @@ const wyckoffPositions& SpgInit::getWyckoffPositions(uint spg)
   return wyckoffPositionsDatabase.at(spg);
 }
 
+wyckPos SpgInit::getWyckPosFromWyckLet(uint spg, char wyckLet)
+{
+  const wyckoffPositions& wyckpos = getWyckoffPositions(spg);
+  for (size_t i = 0; i < wyckpos.size(); i++) {
+    if (getWyckLet(wyckpos.at(i)) == wyckLet) return wyckpos.at(i);
+  }
+  cout << "Error in " << __FUNCTION__ << ": wyckLet '" << wyckLet
+       << "' not found in spg '" << spg  << "'!\n";
+  return wyckPos();
+}
+
 const fillCellInfo& SpgInit::getFillCellInfo(uint spg)
 {
   if (spg < 1 || spg > 230) {
@@ -312,7 +323,7 @@ Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
   const std::vector<std::pair<uint, double>>& manualAtomicRadii = input.manualAtomicRadii;
   double minVolume                                              = input.minVolume;
   double maxVolume                                              = input.maxVolume;
-  const vector<pair<uint, char>>& forcedWyckAssignments         = input.forcedWyckAssignments;
+  vector<pair<uint, char>> forcedWyckAssignments                = input.forcedWyckAssignments;
   char verbosity                                                = input.verbosity;
   int numAttempts                                               = input.maxAttempts;
   bool forceMostGeneralWyckPos                                  = input.forceMostGeneralWyckPos;
@@ -332,13 +343,36 @@ Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
 
   systemPossibilities possibilities = SpgInitCombinatorics::getSystemPossibilities(spg, atoms);
 
+  if (possibilities.size() == 0) {
+    cout << "Error in SpgInit::" << __FUNCTION__ << "(): this spg '" << spg
+         << "' cannot be generated with this composition\n";
+    return Crystal();
+  }
+
   // force the most general Wyckoff position to be used at least once?
   if (forceMostGeneralWyckPos)
     possibilities = SpgInitCombinatorics::removePossibilitiesWithoutGeneralWyckPos(possibilities, spg);
 
   if (possibilities.size() == 0) {
     cout << "Error in SpgInit::" << __FUNCTION__ << "(): this spg '" << spg
-         << "' cannot be generated with this composition\n";
+         << "' cannot be generated with this composition.\n";
+    cout << "It can be generated if option 'forceMostGeneralWyckPos' is "
+         << "turned off, but the correct spacegroup will not be guaranteed.\n";
+    return Crystal();
+  }
+
+  // Limit the possibilities to be only those that allow the forced Wyckoff
+  // assignments to be satisfied.
+  // TODO: make it so repeated forced Wyckoff assignments work
+  for (size_t i = 0; i < forcedWyckAssignments.size(); i++) {
+    possibilities = SpgInitCombinatorics::removePossibilitiesWithoutWyckPos(possibilities, forcedWyckAssignments.at(i).second, 1, forcedWyckAssignments.at(i).first);
+  }
+
+  if (possibilities.size() == 0) {
+    cout << "Error in SpgInit::" << __FUNCTION__ << "(): this spg '" << spg
+         << "' cannot be generated with this composition due to the forced "
+         << "Wyckoff position constraints.\nPlease change them or remove them "
+         << "if you wish to generate the space group.\n";
     return Crystal();
   }
 
@@ -346,6 +380,13 @@ Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
   // If we desire verbose output, print the system possibility to the log file
   if (verbosity == 'v')
     appendToLogFile(SpgInitCombinatorics::getSystemPossibilitiesString(possibilities));
+
+  // Create a modified forced wyck vector for later...
+  vector<pair<uint, wyckPos>> modifiedForcedWyckVector;
+  for (size_t i = 0; i < forcedWyckAssignments.size(); i++)
+    modifiedForcedWyckVector.push_back(make_pair(
+               forcedWyckAssignments.at(i).first,
+               getWyckPosFromWyckLet(spg, forcedWyckAssignments.at(i).second)));
 
   for (size_t i = 0; i < numAttempts; i++) {
     // First let's get a lattice...
@@ -367,7 +408,7 @@ Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
       crystal.rescaleVolume(minVolume);
 
     // Now, let's assign some atoms!
-    atomAssignments assignments = SpgInitCombinatorics::getRandomAtomAssignments(possibilities);
+    atomAssignments assignments = SpgInitCombinatorics::getRandomAtomAssignments(possibilities, modifiedForcedWyckVector);
 
     //printAtomAssignments(assignments);
     // If we desire any output, print the atom assignments to the log file

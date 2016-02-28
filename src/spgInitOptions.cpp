@@ -34,6 +34,7 @@ m_latticeMaxesSet(false),
 m_latticeMins(defaultLatticeMins),
 m_latticeMaxes(defaultLatticeMaxes),
 m_numOfEachSpgToGenerate(1),
+m_forcedWyckAssignments(vector<pair<uint, char>>()),
 m_radiusVector(vector<pair<uint, double>>()),
 m_setAllMinRadii(false),
 m_minRadii(0),
@@ -189,6 +190,16 @@ void SpgInitOptions::interpretLineAndSetOption(string line)
   }
   else if (option == "numOfEachSpgToGenerate") {
     m_numOfEachSpgToGenerate = stoi(value);
+  }
+  else if (contains(option, "forceWyckPos")) {
+    vector<string> tempSplit = split(option, ' ');
+    if (tempSplit.size() != 2 || value.size() != 1) {
+      cout << "Error reading 'forceWyckPos' option: " << line
+           << "\nProper format is: forceWyckPos <atomicSymbol> = <char>\n";
+      exit(EXIT_FAILURE);
+    }
+    uint atomicNum = ElemInfo::getAtomicNum(tempSplit.at(1));
+    m_forcedWyckAssignments.push_back(make_pair(atomicNum, value.at(0)));
   }
   else if (contains(option, "setRadius")) {
     // There should be a space after 'setRadius' with the atomic symbol there

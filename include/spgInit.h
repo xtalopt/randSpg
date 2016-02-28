@@ -124,6 +124,8 @@ class SpgInit {
    */
   static const wyckoffPositions& getWyckoffPositions(uint spg);
 
+  static wyckPos getWyckPosFromWyckLet(uint spg, char wyckLet);
+
   static const fillCellInfo& getFillCellInfo(uint spg);
 
   static std::vector<std::string> getVectorOfDuplications(uint spg);

@@ -3,10 +3,10 @@ First line is a comment line
 # Anything to the right of a hash is a comment
 
 # Composition is set by atomic symbols followed by number as such:
-composition            = Mg3Al2Si3O12
+composition            = Mg4Al2
 
 # Which spacegroups to generate are set as follows (hyphens and commas work)
-spacegroups            = 1-3, 5, 7, 14-19
+spacegroups            = 1-20, 22, 25, 28-30
 
 # lattice mins and maxes set constraints on the lattice to be generated.
 # Distances are in Angstroms and angles are in degrees.
@@ -22,10 +22,16 @@ minVolume              = 450
 maxVolume              = 500
 
 # numOfEachSpgToGenerate tells us how many crystals of each spg to generate
-numOfEachSpgToGenerate = 2
+numOfEachSpgToGenerate = 3
+
+# For advanced users: this allows us to force an element to be assigned
+# to a specific Wyckoff position
+
+#forceWyckPos Mg        = a
 
 # We can set minimum radii (Angstroms) for individual atoms
-setRadius Ti        = 0.5
+
+#setRadius Ti           = 0.5
 
 # Or for all atoms. A min radius for an individual atom trumps this one
 # If the default min radius of the atom is less than this input value, then

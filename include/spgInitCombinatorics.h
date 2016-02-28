@@ -100,6 +100,13 @@ class SpgInitCombinatorics {
                                        char wyckLet,
                                        uint minNumUses = 1);
 
+  // This one specifies the atomic number also
+  static systemPossibilities removePossibilitiesWithoutWyckPos(
+                                          const systemPossibilities& sysPos,
+                                          char wyckLet,
+                                          uint minNumUses,
+                                          uint atomicNum);
+
   // This calls removePossibilitiesWithoutWyckPos() for the most general
   // Wyckoff position for the spacegroup
   static systemPossibilities removePossibilitiesWithoutGeneralWyckPos(
@@ -112,6 +119,10 @@ class SpgInitCombinatorics {
 
   // Get a random set of atom assignments from all the system possibilities
   static atomAssignments getRandomAtomAssignments(const systemPossibilities& sysPoss);
+
+  static atomAssignments getRandomAtomAssignments(
+             const systemPossibilities& sysPoss,
+             const std::vector<std::pair<uint, wyckPos>>& forcedWyckPositions);
 
   static std::string getSimilarWyckPosAndNumToChooseString(const similarWyckPosAndNumToChoose& simPos);
 
