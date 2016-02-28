@@ -298,24 +298,43 @@ bool SpgInit::addWyckoffAtomRandomly(Crystal& crystal, wyckPos& position,
   return true;
 }
 
-Crystal SpgInit::spgInitCrystal(uint spg,
-                                const vector<uint>& atoms,
-                                const latticeStruct& latticeMins,
-                                const latticeStruct& latticeMaxes,
-                                double IADScalingFactor,
-                                double minVolume,
-                                double maxVolume,
-                                int numAttempts)
+Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
 {
   START_FT;
 
+  // So we don't have to say 'input.<option>' for every call
+  uint spg                                                      = input.spg;
+  const vector<uint>& atoms                                     = input.atoms;
+  const latticeStruct& latticeMins                              = input.latticeMins;
+  const latticeStruct& latticeMaxes                             = input.latticeMaxes;
+  double IADScalingFactor                                       = input.IADScalingFactor;
+  double minRadius                                              = input.minRadius;
+  const std::vector<std::pair<uint, double>>& manualAtomicRadii = input.manualAtomicRadii;
+  double minVolume                                              = input.minVolume;
+  double maxVolume                                              = input.maxVolume;
+  const vector<pair<uint, char>>& forcedWyckAssignments         = input.forcedWyckAssignments;
+  char verbosity                                                = input.verbosity;
+  int numAttempts                                               = input.maxAttempts;
+  bool forceMostGeneralWyckPos                                  = input.forceMostGeneralWyckPos;
+
+  // Set the min radius
+  ElemInfo::setMinRadius(minRadius);
+
+  // Set some explicit radii
+  for (size_t i = 0; i < manualAtomicRadii.size(); i++) {
+    uint atomicNum = manualAtomicRadii.at(i).first;
+    double rad = manualAtomicRadii.at(i).second;
+    ElemInfo::setRadius(atomicNum, rad);
+  }
+
+  // Change the atomic radii as necessary
   ElemInfo::applyScalingFactor(IADScalingFactor);
 
   systemPossibilities possibilities = SpgInitCombinatorics::getSystemPossibilities(spg, atoms);
 
-  // TEMPORARY - force the most general Wyckoff position to be used at least
-  // once
-  possibilities = SpgInitCombinatorics::removePossibilitiesWithoutGeneralWyckPos(possibilities, spg);
+  // force the most general Wyckoff position to be used at least once?
+  if (forceMostGeneralWyckPos)
+    possibilities = SpgInitCombinatorics::removePossibilitiesWithoutGeneralWyckPos(possibilities, spg);
 
   if (possibilities.size() == 0) {
     cout << "Error in SpgInit::" << __FUNCTION__ << "(): this spg '" << spg
@@ -325,7 +344,7 @@ Crystal SpgInit::spgInitCrystal(uint spg,
 
   //SpgInitCombinatorics::printSystemPossibilities(possibilities);
   // If we desire verbose output, print the system possibility to the log file
-  if (e_verbosity == 'v')
+  if (verbosity == 'v')
     appendToLogFile(SpgInitCombinatorics::getSystemPossibilitiesString(possibilities));
 
   for (size_t i = 0; i < numAttempts; i++) {
@@ -352,7 +371,7 @@ Crystal SpgInit::spgInitCrystal(uint spg,
 
     //printAtomAssignments(assignments);
     // If we desire any output, print the atom assignments to the log file
-    if (e_verbosity == 'r' || e_verbosity == 'v')
+    if (verbosity == 'r' || verbosity == 'v')
       appendToLogFile(getAtomAssignmentsString(assignments));
 
     if (assignments.size() == 0) {
@@ -382,11 +401,11 @@ Crystal SpgInit::spgInitCrystal(uint spg,
 
     // If we succeeded, return the crystal!
     if (assignmentsSuccessful) {
-      appendToLogFile("*** Success! ***\n");
+      if (verbosity != 'n') appendToLogFile("*** Success! ***\n");
       return crystal;
     }
     else {
-      if (e_verbosity == 'r' || e_verbosity == 'v') {
+      if (verbosity == 'r' || verbosity == 'v') {
         stringstream ss;
         ss << "Failed to add atoms to satisfy MinIAD.\nObtaining new atom "
            << "assignments and trying again. Failure count: " << i + 1 << "\n\n";

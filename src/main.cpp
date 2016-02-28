@@ -52,28 +52,27 @@ int main(int argc, char* argv[])
 
   e_verbosity = options.getVerbosity();
 
-  // Set the min radius
-  ElemInfo::setMinRadius(options.getMinRadii());
-
-  // Set some explicit min radii
-  vector<pair<uint, double>> radiusVector = options.getRadiusVector();
-  for (size_t i = 0; i < radiusVector.size(); i++) {
-    uint atomicNum = radiusVector.at(i).first;
-    double rad = radiusVector.at(i).second;
-    ElemInfo::setRadius(atomicNum, rad);
-  }
-
   // Set up lattice mins and maxes
   latticeStruct mins  = options.getLatticeMins();
   latticeStruct maxes = options.getLatticeMaxes();
 
+  // Create the input
+  spgInitInput input(1, atoms, mins, maxes);
+
+  // Add various other input options
+  input.IADScalingFactor = options.getScalingFactor();
+  input.minRadius = options.getMinRadii();
+  input.manualAtomicRadii = options.getRadiusVector();
+  input.minVolume = options.getMinVolume();
+  input.maxVolume = options.getMaxVolume();
+  // input.forcedWyckAssignments = options.getForcedWyckAssignments(); // to be added soon!
+  input.verbosity = options.getVerbosity();
+  input.maxAttempts = options.getMaxAttempts();
+  // input.forceMostGeneralWyckPos = options.forceMostGeneralWyckPos(); // to be added soon!
+
   // Set up various other options
   vector<uint> spacegroups = options.getSpacegroups();
   int numOfEach = options.getNumOfEachSpgToGenerate();
-  double IADScalingFactor = options.getScalingFactor();
-  double minVolume = options.getMinVolume();
-  double maxVolume = options.getMaxVolume();
-  int maxAttempts = options.getMaxAttempts();
   string outDir = options.getOutputDir();
 
 #ifdef _WIN32
@@ -87,15 +86,15 @@ int main(int argc, char* argv[])
 
   for (size_t i = 0; i < spacegroups.size(); i++) {
     uint spg = spacegroups.at(i);
+    // Change the input spg to have the right spacegroup
+    input.spg = spg;
     for (size_t j = 0; j < numOfEach; j++) {
       string filename = outDir + comp + "_" + to_string(spg) +
                         "-" + to_string(j + 1);
       if (e_verbosity != 'n')
         SpgInit::appendToLogFile(string("\n**** ") + filename + " ****\n");
 
-      Crystal c = SpgInit::spgInitCrystal(spg, atoms, mins, maxes,
-                                          IADScalingFactor, minVolume,
-                                          maxVolume, maxAttempts);
+      Crystal c = SpgInit::spgInitCrystal(input);
 
       string title = comp + " -- spgInit with spg of: " + to_string(spg);
       // The volume is set to zero if the job failed.

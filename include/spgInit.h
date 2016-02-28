@@ -49,6 +49,63 @@ typedef std::pair<uint, uint> numAndType;
 
 typedef std::pair<std::string, std::string> fillCellInfo;
 
+// Utility struct for creating input for the spgInitCrystal function
+struct spgInitInput {
+  uint spg;
+  std::vector<uint> atoms;
+  latticeStruct latticeMins;
+  latticeStruct latticeMaxes;
+  double IADScalingFactor;
+  double minRadius;
+  std::vector<std::pair<uint, double>> manualAtomicRadii;
+  double minVolume;
+  double maxVolume;
+  std::vector<std::pair<uint, char>> forcedWyckAssignments;
+  char verbosity;
+  int maxAttempts;
+  bool forceMostGeneralWyckPos; // If this is not true, then we are not
+                                // guaranteed to get the right spg
+  // Most basic constructor
+  spgInitInput(uint _spg, const std::vector<uint>& _atoms,
+               const latticeStruct& _lmins,
+               const latticeStruct& _lmaxes) :
+                   spg(_spg),
+                   atoms(_atoms),
+                   latticeMins(_lmins),
+                   latticeMaxes(_lmaxes),
+                   IADScalingFactor(1.0),
+                   minRadius(0.0),
+                   manualAtomicRadii(std::vector<std::pair<uint, double>>()),
+                   minVolume(-1.0),
+                   maxVolume(-1.0),
+                   forcedWyckAssignments(std::vector<std::pair<uint, char>>()),
+                   verbosity('n'),
+                   maxAttempts(100),
+                   forceMostGeneralWyckPos(true) {}
+  // Defining-everything constructor
+  spgInitInput(uint _spg, const std::vector<uint>& _atoms,
+               const latticeStruct& _lmins,
+               const latticeStruct& _lmaxes,
+               double _IADSF, double _minRadius,
+               const std::vector<std::pair<uint, double>>& _mar,
+               double _minVolume, double _maxVolume,
+               std::vector<std::pair<uint, char>> _fwa,
+               char _v, int _maxAttempts, bool _fmgwp) :
+                   spg(_spg),
+                   atoms(_atoms),
+                   latticeMins(_lmins),
+                   latticeMaxes(_lmaxes),
+                   IADScalingFactor(_IADSF),
+                   minRadius(_minRadius),
+                   manualAtomicRadii(_mar),
+                   minVolume(_minVolume),
+                   maxVolume(_maxVolume),
+                   forcedWyckAssignments(_fwa),
+                   verbosity(_v),
+                   maxAttempts(_maxAttempts),
+                   forceMostGeneralWyckPos(_fmgwp) {}
+};
+
 class SpgInit {
  public:
 
@@ -159,14 +216,7 @@ class SpgInit {
    * and lattice within the provided lattice constraints. Returns a Crystal
    * with zero volume if it failed to generate one successfully.
    */
-  static Crystal spgInitCrystal(uint spg,
-                                const std::vector<uint>& atomTypes,
-                                const latticeStruct& latticeMins,
-                                const latticeStruct& latticeMaxes,
-                                double IADScalingFactor = 0.5,
-                                double minVolume = -1.0,
-                                double maxVolume = -1.0,
-                                int numAttempts = 100);
+  static Crystal spgInitCrystal(const spgInitInput& input);
 
   static std::vector<numAndType> getNumOfEachType(
                                    const std::vector<uint>& atoms);

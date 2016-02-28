@@ -80,7 +80,7 @@ class SpgInitOptions {
   void setLatticeMaxes(const latticeStruct& ls) {m_latticeMaxes = ls; m_latticeMaxesSet = true;};
   void setNumOfEachSpgToGenerate(uint u) {m_numOfEachSpgToGenerate = u;};
   void setRadiusVector(const std::vector<std::pair<uint, double>>& v) {m_radiusVector = v;};
-  void setMinRadii(double d) {m_minRadii = d; m_setAllMinRadii = true};
+  void setMinRadii(double d) {m_minRadii = d; m_setAllMinRadii = true;};
   void setScalingFactor(double d) {m_scalingFactor = d;};
   void setMinVolume(double d) {m_minVolume = d;};
   void setMaxVolume(double d) {m_maxVolume = d;};
