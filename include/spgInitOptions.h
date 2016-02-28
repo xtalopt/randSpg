@@ -72,30 +72,68 @@ class SpgInitOptions {
   std::string getOutputDir() const {return m_outputDir;};
   char getVerbosity() const {return m_verbosity;};
 
+  // Setters
+  void setFileName(const std::string& s) {m_filename = s;};
+  void setComposition(const std::string& s) {m_composition = s;};
+  void setSpacegroups(const std::vector<uint>& v) {m_spacegroups = v;};
+  void setLatticeMins(const latticeStruct& ls) {m_latticeMins = ls; m_latticeMinsSet = true;};
+  void setLatticeMaxes(const latticeStruct& ls) {m_latticeMaxes = ls; m_latticeMaxesSet = true;};
+  void setNumOfEachSpgToGenerate(uint u) {m_numOfEachSpgToGenerate = u;};
+  void setRadiusVector(const std::vector<std::pair<uint, double>>& v) {m_radiusVector = v;};
+  void setMinRadii(double d) {m_minRadii = d; m_setAllMinRadii = true};
+  void setScalingFactor(double d) {m_scalingFactor = d;};
+  void setMinVolume(double d) {m_minVolume = d;};
+  void setMaxVolume(double d) {m_maxVolume = d;};
+  void setMaxAttempts(int i) {m_maxAttempts = i;};
+  void setOutputDir(const std::string& s) {m_outputDir = s;};
+  void setVerbosity(char c) {m_verbosity = c;};
+
  private:
+  // m_filename: string for the filename that the options were read from
+  // m_composition: string for the composition (e. g. Mg3Al2)
   std::string m_filename, m_composition;
 
+  // m_spacegroups: vector of unsigned integers representing the spacegroups
   std::vector<uint> m_spacegroups;
 
+  // m_latticeMinsSet and m_latticeMaxesSet: automatically set true if the user
+  // sets the respective option.
   bool m_latticeMinsSet, m_latticeMaxesSet;
+
+  // m_latticeMins and m_latticeMaxes: contains a list of the respective mins
+  // or maxes for the lattice to be generated.
   latticeStruct m_latticeMins, m_latticeMaxes;
 
+  // m_numOfEachSpgToGenerate: the number of each spg to generate
   uint m_numOfEachSpgToGenerate;
 
+  // m_radiusVector: a vector of pairs containing each atomic number
+  // whose radius the user wants to manually set and the value for the radius
+  // Each pair is as such: <atomicNum, newRadius>
   std::vector<std::pair<uint, double>> m_radiusVector;
 
+  // m_setAllMinRadii: automatically set true if m_minRadii is set
   bool m_setAllMinRadii;
 
+  // m_minRadii: the minimum radius for all atoms
   double m_minRadii;
 
+  // m_scalingFactor: the scaling factor for the atomic radii
+  // new radii will be default radii * scaling factor
   double m_scalingFactor;
 
+  // m_minVolume, m_maxVolume: the min and max volume of the crystals
   double m_minVolume, m_maxVolume;
 
+  // m_maxAttempts: the maximum number of attempts to generate a crystal
+  // that has that composition, spacegroup, lattice constraints, and IADs
   int m_maxAttempts;
 
+  // m_outputDir: the name of the output directory
   std::string m_outputDir;
 
+  // m_verbosity: the verbosity of the log file: 'n' for none, 'r' for regular,
+  // and 'v' for verbose.
   char m_verbosity;
 
 };
