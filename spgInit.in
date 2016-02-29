@@ -25,7 +25,10 @@ maxVolume              = 500
 numOfEachSpgToGenerate = 3
 
 # For advanced users: this allows us to force an element to be assigned
-# to a specific Wyckoff position
+# to a specific Wyckoff position. If you wish to force an element to be in
+# the same Wyckoff position multiple times, just repeat the tag multiple times
+# i. e. add 'forceWyckPos Mg = a' on as many lines as you want to force the
+# Wyckoff position
 
 #forceWyckPos Mg        = a
 

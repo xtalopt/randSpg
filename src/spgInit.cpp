@@ -309,11 +309,57 @@ bool SpgInit::addWyckoffAtomRandomly(Crystal& crystal, wyckPos& position,
   return true;
 }
 
+// This just converts the second element in the pair (the 'char') to a wyckPos
+static vector<pair<uint, wyckPos>>
+getModifiedForcedWyckVector(const vector<pair<uint, char>>& v, uint spg)
+{
+  vector<pair<uint, wyckPos>> ret;
+  for (size_t i = 0; i < v.size(); i++)
+    ret.push_back(make_pair(v.at(i).first,
+                          SpgInit::getWyckPosFromWyckLet(spg, v.at(i).second)));
+  return ret;
+}
+
+// Convenience function for counting the number of times a forced Wyck
+// assignment is used and storing the information in a vector of tuples
+static vector<tuple<uint, char, uint>>
+getForcedWyckAssignmentsAndNumber(const vector<pair<uint, char>>& forcedWyckAssignments)
+{
+  vector<pair<uint, char>> alreadyUsedForcedWyckAssignments;
+  // The tuple is as follows: <atomicNum, wyckLet, numTimesUsed>
+  vector<tuple<uint, char, uint>> forcedWyckAssignmentsAndNumber;
+  for (size_t i = 0; i < forcedWyckAssignments.size(); i++) {
+    // Check to see if we've already looked at this assignment
+    bool alreadyUsed = false;
+    for (size_t j = 0; j < alreadyUsedForcedWyckAssignments.size(); j++) {
+      if (forcedWyckAssignments.at(i) ==
+          alreadyUsedForcedWyckAssignments.at(j)) {
+        alreadyUsed = true;
+        break;
+      }
+    }
+    // If we've already looked at it, just continue
+    if (alreadyUsed) continue;
+    // Now count how many times we use this
+    uint numTimesUsed = 1;
+    for (size_t j = i + 1; j < forcedWyckAssignments.size(); j++) {
+      if (forcedWyckAssignments.at(i) == forcedWyckAssignments.at(j))
+        numTimesUsed++;
+    }
+    alreadyUsedForcedWyckAssignments.push_back(forcedWyckAssignments.at(i));
+    forcedWyckAssignmentsAndNumber.push_back(make_tuple(
+      forcedWyckAssignments.at(i).first,
+      forcedWyckAssignments.at(i).second,
+      numTimesUsed));
+  }
+  return forcedWyckAssignmentsAndNumber;
+}
+
 Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
 {
   START_FT;
 
-  // So we don't have to say 'input.<option>' for every call
+  // Convenience: so we don't have to say 'input.<option>' for every call
   uint spg                                                      = input.spg;
   const vector<uint>& atoms                                     = input.atoms;
   const latticeStruct& latticeMins                              = input.latticeMins;
@@ -363,9 +409,16 @@ Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
 
   // Limit the possibilities to be only those that allow the forced Wyckoff
   // assignments to be satisfied.
-  // TODO: make it so repeated forced Wyckoff assignments work
-  for (size_t i = 0; i < forcedWyckAssignments.size(); i++) {
-    possibilities = SpgInitCombinatorics::removePossibilitiesWithoutWyckPos(possibilities, forcedWyckAssignments.at(i).second, 1, forcedWyckAssignments.at(i).first);
+  vector<pair<uint, char>> alreadyUsedForcedWyckAssignments;
+  // The tuple is as follows: <atomicNum, wyckLet, numTimesUsed>
+  vector<tuple<uint, char, uint>> forcedWyckAssignmentsAndNumber = getForcedWyckAssignmentsAndNumber(forcedWyckAssignments);
+
+  for (size_t i = 0; i < forcedWyckAssignmentsAndNumber.size(); i++) {
+    possibilities =
+      SpgInitCombinatorics::removePossibilitiesWithoutWyckPos(possibilities,
+                  get<1>(forcedWyckAssignmentsAndNumber.at(i)),
+                  get<2>(forcedWyckAssignmentsAndNumber.at(i)),
+                  get<0>(forcedWyckAssignmentsAndNumber.at(i)));
   }
 
   if (possibilities.size() == 0) {
@@ -382,12 +435,9 @@ Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
     appendToLogFile(SpgInitCombinatorics::getSystemPossibilitiesString(possibilities));
 
   // Create a modified forced wyck vector for later...
-  vector<pair<uint, wyckPos>> modifiedForcedWyckVector;
-  for (size_t i = 0; i < forcedWyckAssignments.size(); i++)
-    modifiedForcedWyckVector.push_back(make_pair(
-               forcedWyckAssignments.at(i).first,
-               getWyckPosFromWyckLet(spg, forcedWyckAssignments.at(i).second)));
+  vector<pair<uint, wyckPos>> modifiedForcedWyckVector = getModifiedForcedWyckVector(forcedWyckAssignments, spg);
 
+  // Begin the attempt loop!
   for (size_t i = 0; i < numAttempts; i++) {
     // First let's get a lattice...
     latticeStruct st = generateLatticeForSpg(spg, latticeMins, latticeMaxes);
