@@ -1,5 +1,5 @@
 /**********************************************************************
-  SpgInitCombinatorics.h - Functions for solving the complicated combinatorics
+  SpgGenCombinatorics.h - Functions for solving the complicated combinatorics
                            problems for spacegroup initialization
 
   Copyright (C) 2015 - 2016 by Patrick S. Avery
@@ -40,8 +40,8 @@ The 'rooms' are spacegroups, the 'boxes' are Wyckoff positions, and the
 combinations to put atoms in a given spacegroup.
 */
 
-#ifndef SPG_INIT_COMBINATORICS_H
-#define SPG_INIT_COMBINATORICS_H
+#ifndef SPG_GEN_COMBINATORICS_H
+#define SPG_GEN_COMBINATORICS_H
 
 // This is a vector of assignments
 // in which to place atoms of a pre-known atomic number may be placed
@@ -81,7 +81,7 @@ typedef std::vector<singleAtomPossibility> systemPossibility;
 // correctly reconstructed using Wyckoff positions
 typedef std::vector<systemPossibility> systemPossibilities;
 
-class SpgInitCombinatorics {
+class SpgGenCombinatorics {
  public:
   // Returns all system possibilities that satisfy the constraints given
   // by the spacegroup and input atoms

@@ -1,5 +1,5 @@
 /**********************************************************************
-  spgInit.cpp - Functions for spacegroup initizialization.
+  spgGen.cpp - Functions for spacegroup generation.
 
   Copyright (C) 2015 - 2016 by Patrick S. Avery
 
@@ -15,8 +15,8 @@
 
 #include "elemInfo.h"
 
-#include "spgInit.h"
-#include "spgInitCombinatorics.h"
+#include "spgGen.h"
+#include "spgGenCombinatorics.h"
 #include "wyckoffDatabase.h"
 #include "fillCellDatabase.h"
 #include "utilityFunctions.h"
@@ -33,8 +33,8 @@
 #include <iostream>
 
 // Define these for debug output
-//#define SPGINIT_DEBUG
-//#define SPGINIT_WYCK_DEBUG
+//#define SPGGEN_DEBUG
+//#define SPGGEN_WYCK_DEBUG
 
 // Uncomment the right side of this line to output function starts and endings
 #define START_FT //FunctionTracker functionTracker(__FUNCTION__);
@@ -45,17 +45,17 @@ using namespace std;
 static inline bool spgMultsAreAllEven(uint spg)
 {
   START_FT;
-  wyckoffPositions wyckVector = SpgInit::getWyckoffPositions(spg);
+  wyckoffPositions wyckVector = SpgGen::getWyckoffPositions(spg);
   // An error message should already be printed if this returns false
   if (wyckVector.size() == 0) return false;
 
   for (size_t i = 0; i < wyckVector.size(); i++) {
-    if (numIsOdd(SpgInit::getMultiplicity(wyckVector.at(i)))) return false;
+    if (numIsOdd(SpgGen::getMultiplicity(wyckVector.at(i)))) return false;
   }
   return true;
 }
 
-vector<numAndType> SpgInit::getNumOfEachType(const vector<uint>& atoms)
+vector<numAndType> SpgGen::getNumOfEachType(const vector<uint>& atoms)
 {
   START_FT;
   vector<uint> atomsAlreadyCounted;
@@ -76,7 +76,7 @@ vector<numAndType> SpgInit::getNumOfEachType(const vector<uint>& atoms)
 }
 
 // A unique position is a position that has no x, y, or z in it
-bool SpgInit::containsUniquePosition(const wyckPos& pos)
+bool SpgGen::containsUniquePosition(const wyckPos& pos)
 {
   vector<string> xyzStrings = split(getWyckCoords(pos), ',');
   assert(xyzStrings.size() == 3);
@@ -136,13 +136,13 @@ bool getNumberInFirstTerm(const string& s, double& result, size_t& len)
 }
 
 // This might be a little bit too long to be inline...
-double SpgInit::interpretComponent(const string& component,
+double SpgGen::interpretComponent(const string& component,
                                    double x, double y, double z)
 {
   START_FT;
 
   if (component.size() == 0) {
-    cout << "Error in SpgInit::interpretComponent(): component is empty!\n";
+    cout << "Error in SpgGen::interpretComponent(): component is empty!\n";
     return -1;
   }
 
@@ -191,7 +191,7 @@ double SpgInit::interpretComponent(const string& component,
   return result;
 }
 
-const wyckoffPositions& SpgInit::getWyckoffPositions(uint spg)
+const wyckoffPositions& SpgGen::getWyckoffPositions(uint spg)
 {
   START_FT;
   if (spg < 1 || spg > 230) {
@@ -203,7 +203,7 @@ const wyckoffPositions& SpgInit::getWyckoffPositions(uint spg)
   return wyckoffPositionsDatabase.at(spg);
 }
 
-wyckPos SpgInit::getWyckPosFromWyckLet(uint spg, char wyckLet)
+wyckPos SpgGen::getWyckPosFromWyckLet(uint spg, char wyckLet)
 {
   const wyckoffPositions& wyckpos = getWyckoffPositions(spg);
   for (size_t i = 0; i < wyckpos.size(); i++) {
@@ -214,7 +214,7 @@ wyckPos SpgInit::getWyckPosFromWyckLet(uint spg, char wyckLet)
   return wyckPos();
 }
 
-const fillCellInfo& SpgInit::getFillCellInfo(uint spg)
+const fillCellInfo& SpgGen::getFillCellInfo(uint spg)
 {
   if (spg < 1 || spg > 230) {
     cout << "Error. getFillCellInfo() was called for a spacegroup "
@@ -224,7 +224,7 @@ const fillCellInfo& SpgInit::getFillCellInfo(uint spg)
   return fillCellVector.at(spg);
 }
 
-vector<string> SpgInit::getVectorOfDuplications(uint spg)
+vector<string> SpgGen::getVectorOfDuplications(uint spg)
 {
   fillCellInfo fcInfo = getFillCellInfo(spg);
   string duplicateString = fcInfo.first;
@@ -234,7 +234,7 @@ vector<string> SpgInit::getVectorOfDuplications(uint spg)
   return ret;
 }
 
-vector<string> SpgInit::getVectorOfFillPositions(uint spg)
+vector<string> SpgGen::getVectorOfFillPositions(uint spg)
 {
   fillCellInfo fcInfo = getFillCellInfo(spg);
   string positionsString = fcInfo.second;
@@ -242,11 +242,11 @@ vector<string> SpgInit::getVectorOfFillPositions(uint spg)
   return ret;
 }
 
-bool SpgInit::addWyckoffAtomRandomly(Crystal& crystal, wyckPos& position,
+bool SpgGen::addWyckoffAtomRandomly(Crystal& crystal, wyckPos& position,
                                      uint atomicNum, uint spg, int maxAttempts)
 {
   START_FT;
-#ifdef SPGINIT_WYCK_DEBUG
+#ifdef SPGGEN_WYCK_DEBUG
   cout << "At beginning of addWyckoffAtomRandomly(), atom info is:\n";
   crystal.printAtomInfo();
   cout << "Attempting to add an atom of atomicNum " << atomicNum
@@ -300,7 +300,7 @@ bool SpgInit::addWyckoffAtomRandomly(Crystal& crystal, wyckPos& position,
 
   if (!success) return false;
 
-#ifdef SPGINIT_WYCK_DEBUG
+#ifdef SPGGEN_WYCK_DEBUG
     cout << "After an atom with atomic num " << atomicNum << " was added and "
          << "the cell filled, the following is the atom info:\n";
     crystal.printAtomInfo();
@@ -316,7 +316,7 @@ getModifiedForcedWyckVector(const vector<pair<uint, char>>& v, uint spg)
   vector<pair<uint, wyckPos>> ret;
   for (size_t i = 0; i < v.size(); i++)
     ret.push_back(make_pair(v.at(i).first,
-                          SpgInit::getWyckPosFromWyckLet(spg, v.at(i).second)));
+                          SpgGen::getWyckPosFromWyckLet(spg, v.at(i).second)));
   return ret;
 }
 
@@ -355,7 +355,7 @@ getForcedWyckAssignmentsAndNumber(const vector<pair<uint, char>>& forcedWyckAssi
   return forcedWyckAssignmentsAndNumber;
 }
 
-Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
+Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
 {
   START_FT;
 
@@ -387,20 +387,20 @@ Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
   // Change the atomic radii as necessary
   ElemInfo::applyScalingFactor(IADScalingFactor);
 
-  systemPossibilities possibilities = SpgInitCombinatorics::getSystemPossibilities(spg, atoms);
+  systemPossibilities possibilities = SpgGenCombinatorics::getSystemPossibilities(spg, atoms);
 
   if (possibilities.size() == 0) {
-    cout << "Error in SpgInit::" << __FUNCTION__ << "(): this spg '" << spg
+    cout << "Error in SpgGen::" << __FUNCTION__ << "(): this spg '" << spg
          << "' cannot be generated with this composition\n";
     return Crystal();
   }
 
   // force the most general Wyckoff position to be used at least once?
   if (forceMostGeneralWyckPos)
-    possibilities = SpgInitCombinatorics::removePossibilitiesWithoutGeneralWyckPos(possibilities, spg);
+    possibilities = SpgGenCombinatorics::removePossibilitiesWithoutGeneralWyckPos(possibilities, spg);
 
   if (possibilities.size() == 0) {
-    cout << "Error in SpgInit::" << __FUNCTION__ << "(): this spg '" << spg
+    cout << "Error in SpgGen::" << __FUNCTION__ << "(): this spg '" << spg
          << "' cannot be generated with this composition.\n";
     cout << "It can be generated if option 'forceMostGeneralWyckPos' is "
          << "turned off, but the correct spacegroup will not be guaranteed.\n";
@@ -415,24 +415,24 @@ Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
 
   for (size_t i = 0; i < forcedWyckAssignmentsAndNumber.size(); i++) {
     possibilities =
-      SpgInitCombinatorics::removePossibilitiesWithoutWyckPos(possibilities,
+      SpgGenCombinatorics::removePossibilitiesWithoutWyckPos(possibilities,
                   get<1>(forcedWyckAssignmentsAndNumber.at(i)),
                   get<2>(forcedWyckAssignmentsAndNumber.at(i)),
                   get<0>(forcedWyckAssignmentsAndNumber.at(i)));
   }
 
   if (possibilities.size() == 0) {
-    cout << "Error in SpgInit::" << __FUNCTION__ << "(): this spg '" << spg
+    cout << "Error in SpgGen::" << __FUNCTION__ << "(): this spg '" << spg
          << "' cannot be generated with this composition due to the forced "
          << "Wyckoff position constraints.\nPlease change them or remove them "
          << "if you wish to generate the space group.\n";
     return Crystal();
   }
 
-  //SpgInitCombinatorics::printSystemPossibilities(possibilities);
+  //SpgGenCombinatorics::printSystemPossibilities(possibilities);
   // If we desire verbose output, print the system possibility to the log file
   if (verbosity == 'v')
-    appendToLogFile(SpgInitCombinatorics::getSystemPossibilitiesString(possibilities));
+    appendToLogFile(SpgGenCombinatorics::getSystemPossibilitiesString(possibilities));
 
   // Create a modified forced wyck vector for later...
   vector<pair<uint, wyckPos>> modifiedForcedWyckVector = getModifiedForcedWyckVector(forcedWyckAssignments, spg);
@@ -446,7 +446,7 @@ Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
     // Make sure it's a valid lattice
     if (st.a == 0 || st.b == 0 || st.c == 0 ||
         st.alpha == 0 || st.beta == 0 || st.gamma == 0) {
-      cout << "Error in SpgInit::spgInitXtal(): an invalid lattice was "
+      cout << "Error in SpgGen::spgGenXtal(): an invalid lattice was "
            << "generated.\n";
       return Crystal();
     }
@@ -458,7 +458,7 @@ Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
       crystal.rescaleVolume(minVolume);
 
     // Now, let's assign some atoms!
-    atomAssignments assignments = SpgInitCombinatorics::getRandomAtomAssignments(possibilities, modifiedForcedWyckVector);
+    atomAssignments assignments = SpgGenCombinatorics::getRandomAtomAssignments(possibilities, modifiedForcedWyckVector);
 
     //printAtomAssignments(assignments);
     // If we desire any output, print the atom assignments to the log file
@@ -466,12 +466,12 @@ Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
       appendToLogFile(getAtomAssignmentsString(assignments));
 
     if (assignments.size() == 0) {
-      cout << "Error in SpgInit::spgInitXtal(): atoms were not successfully"
+      cout << "Error in SpgGen::spgGenXtal(): atoms were not successfully"
            << " assigned positions in assignAtomsToWyckPos()\n";
       continue;
     }
 
-#ifdef SPGINIT_DEBUG
+#ifdef SPGGEN_DEBUG
     cout << "\natomAssignments are the following (atomicNum, wyckLet, wyckPos):"
          << "\n";
     for (size_t j = 0; j < assignments.size(); j++)
@@ -512,7 +512,7 @@ Crystal SpgInit::spgInitCrystal(const spgInitInput& input)
   return Crystal();
 }
 
-bool SpgInit::isSpgPossible(uint spg, const vector<uint>& atoms)
+bool SpgGen::isSpgPossible(uint spg, const vector<uint>& atoms)
 {
   START_FT;
 
@@ -536,7 +536,7 @@ bool SpgInit::isSpgPossible(uint spg, const vector<uint>& atoms)
   // If the test failed, we must just try to assign atoms and see if it works
   // The third boolean parameter is telling it to find only one combination
   // This speeds it up significantly
-  if (SpgInitCombinatorics::getSystemPossibilities(spg, atoms,
+  if (SpgGenCombinatorics::getSystemPossibilities(spg, atoms,
                                                    true, false).size() == 0)
     return false;
 
@@ -559,7 +559,7 @@ static inline T getLargest(const T& a, const T& b, const T& c)
   else return c;
 }
 
-latticeStruct SpgInit::generateLatticeForSpg(uint spg,
+latticeStruct SpgGen::generateLatticeForSpg(uint spg,
                                              const latticeStruct& mins,
                                              const latticeStruct& maxes)
 {
@@ -798,7 +798,7 @@ latticeStruct SpgInit::generateLatticeForSpg(uint spg,
   return st;
 }
 
-string SpgInit::getAtomAssignmentsString(const atomAssignments& a)
+string SpgGen::getAtomAssignmentsString(const atomAssignments& a)
 {
   stringstream s;
   s << "printing atom assignments:\n";
@@ -809,13 +809,13 @@ string SpgInit::getAtomAssignmentsString(const atomAssignments& a)
   return s.str();
 }
 
-void SpgInit::printAtomAssignments(const atomAssignments& a)
+void SpgGen::printAtomAssignments(const atomAssignments& a)
 {
   cout << getAtomAssignmentsString(a);
 }
 
 // The name of the log file is available in the header as an extern
-void SpgInit::appendToLogFile(const std::string& text)
+void SpgGen::appendToLogFile(const std::string& text)
 {
   fstream fs;
   fs.open(e_logfilename, std::fstream::out | std::fstream::app);

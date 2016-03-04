@@ -1,5 +1,5 @@
 /**********************************************************************
-  spgInitOptions.cpp - Options class for spacegroup initialization.
+  spgGenOptions.cpp - Options class for spacegroup generation.
 
   Copyright (C) 2015 - 2016 by Patrick S. Avery
 
@@ -17,7 +17,7 @@
 #include <iostream>
 
 #include "elemInfo.h"
-#include "spgInitOptions.h"
+#include "spgGenOptions.h"
 #include "utilityFunctions.h"
 
 using namespace std;
@@ -25,7 +25,7 @@ using namespace std;
 latticeStruct defaultLatticeMins(3.0, 3.0, 3.0, 60.0, 60.0, 60.0);
 latticeStruct defaultLatticeMaxes(10.0, 10.0, 10.0, 120.0, 120.0, 120.0);
 
-SpgInitOptions::SpgInitOptions() :
+SpgGenOptions::SpgGenOptions() :
 m_filename(""),
 m_composition(""),
 m_spacegroups(vector<uint>()),
@@ -50,9 +50,9 @@ m_verbosity('r')
 }
 
 // This function is static
-SpgInitOptions SpgInitOptions::readOptions(string filename)
+SpgGenOptions SpgGenOptions::readOptions(string filename)
 {
-  SpgInitOptions options;
+  SpgGenOptions options;
 
   ifstream f;
   f.open(filename);
@@ -148,7 +148,7 @@ latticeStruct interpretLatticeString(const string& s)
   return ret;
 }
 
-void SpgInitOptions::interpretLineAndSetOption(string line)
+void SpgGenOptions::interpretLineAndSetOption(string line)
 {
   // First, trim it
   line = trim(line);
@@ -318,7 +318,7 @@ string getLatticeString(const latticeStruct& l)
   return s.str();
 }
 
-string SpgInitOptions::getOptionsString() const
+string SpgGenOptions::getOptionsString() const
 {
   stringstream s;
   s << "\n*** Options from '" << m_filename
@@ -361,7 +361,7 @@ string SpgInitOptions::getOptionsString() const
   return s.str();
 }
 
-void SpgInitOptions::printOptions() const
+void SpgGenOptions::printOptions() const
 {
   cout << getOptionsString();
 }

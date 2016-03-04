@@ -23,7 +23,7 @@
 #include <fstream>
 
 #include "crystal.h"
-#include "spgInit.h"
+#include "spgGen.h"
 #include "utilityFunctions.h"
 
 // For atomic radii and symbols
@@ -361,8 +361,8 @@ bool Crystal::fillCellWithAtom(uint spg, const atomStruct& as)
     return false;
   }
 
-  vector<string> dupVec = SpgInit::getVectorOfDuplications(spg);
-  vector<string> fpVec = SpgInit::getVectorOfFillPositions(spg);
+  vector<string> dupVec = SpgGen::getVectorOfDuplications(spg);
+  vector<string> fpVec = SpgGen::getVectorOfFillPositions(spg);
 
   double x = as.x;
   double y = as.y;
@@ -384,11 +384,11 @@ bool Crystal::fillCellWithAtom(uint spg, const atomStruct& as)
       if (j == 0 && k == 0) continue;
       vector<string> fpComponents = split(fpVec.at(k), ',');
 
-      double newX = SpgInit::interpretComponent(fpComponents.at(0),
+      double newX = SpgGen::interpretComponent(fpComponents.at(0),
                                                 x, y, z) + dupX;
-      double newY = SpgInit::interpretComponent(fpComponents.at(1),
+      double newY = SpgGen::interpretComponent(fpComponents.at(1),
                                                 x, y, z) + dupY;
-      double newZ = SpgInit::interpretComponent(fpComponents.at(2),
+      double newZ = SpgGen::interpretComponent(fpComponents.at(2),
                                                 x, y, z) + dupZ;
 
       atomStruct newAtom(atomicNum, newX, newY, newZ);
@@ -488,7 +488,7 @@ void Crystal::writePOSCAR(const string& filename, const string& title) const
   f << fixed << setprecision(15);
   vector<vector<double>> latticeVecs = getLatticeVecs();
   vector<numAndType> atomCounts =
-                            SpgInit::getNumOfEachType(getVectorOfAtomicNums());
+                            SpgGen::getNumOfEachType(getVectorOfAtomicNums());
   vector<string> symbols;
   for (size_t i = 0; i < atomCounts.size(); i++) {
     symbols.push_back(ElemInfo::getAtomicSymbol(atomCounts.at(i).second));

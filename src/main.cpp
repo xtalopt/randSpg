@@ -1,5 +1,5 @@
 /**********************************************************************
-  main.cpp -- Main function for spacegroup initialization.
+  main.cpp -- Main function for spacegroup generation.
 
   Copyright (C) 2015 - 2016 by Patrick S. Avery
 
@@ -19,26 +19,26 @@
 
 #include "elemInfo.h"
 #include "fileSystemUtils.h"
-#include "spgInit.h"
-#include "spgInitOptions.h"
+#include "spgGen.h"
+#include "spgGenOptions.h"
 
 using namespace std;
 
-// These are externs declared in spgInit.h
-string e_logfilename = "spgInit.log";
+// These are externs declared in spgGen.h
+string e_logfilename = "spgGen.log";
 char e_verbosity = 'r';
 
 int main(int argc, char* argv[])
 {
   if (argc != 2) {
-    cout << "Usage: ./spgInit <inputFileName>\n";
+    cout << "Usage: ./spgGen <inputFileName>\n";
     return -1;
   }
 
   // If there is an old log file here, remove it
   remove(e_logfilename.c_str());
 
-  SpgInitOptions options = SpgInitOptions::readOptions(argv[1]);
+  SpgGenOptions options = SpgGenOptions::readOptions(argv[1]);
   options.printOptions();
 
   vector<uint> atoms;
@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
   latticeStruct maxes = options.getLatticeMaxes();
 
   // Create the input
-  spgInitInput input(1, atoms, mins, maxes);
+  spgGenInput input(1, atoms, mins, maxes);
 
   // Add various other input options
   input.IADScalingFactor = options.getScalingFactor();
@@ -92,11 +92,11 @@ int main(int argc, char* argv[])
       string filename = outDir + comp + "_" + to_string(spg) +
                         "-" + to_string(j + 1);
       if (e_verbosity != 'n')
-        SpgInit::appendToLogFile(string("\n**** ") + filename + " ****\n");
+        SpgGen::appendToLogFile(string("\n**** ") + filename + " ****\n");
 
-      Crystal c = SpgInit::spgInitCrystal(input);
+      Crystal c = SpgGen::spgGenCrystal(input);
 
-      string title = comp + " -- spgInit with spg of: " + to_string(spg);
+      string title = comp + " -- spgGen with spg of: " + to_string(spg);
       // The volume is set to zero if the job failed.
       if (c.getVolume() != 0) c.writePOSCAR(filename, title);
     }

@@ -1,5 +1,5 @@
 /**********************************************************************
-  spgInitOptions.h - Options class for spacegroup initialization.
+  spgGenOptions.h - Options class for spacegroup initialization.
 
   Copyright (C) 2015 - 2016 by Patrick S. Avery
 
@@ -13,8 +13,8 @@
 
  ***********************************************************************/
 
-#ifndef SPG_INIT_OPTIONS_H
-#define SPG_INIT_OPTIONS_H
+#ifndef SPG_GEN_OPTIONS_H
+#define SPG_GEN_OPTIONS_H
 
 #include <string>
 #include <vector>
@@ -22,18 +22,18 @@
 // This is for 'latticeStruct'
 #include "crystal.h"
 
-class SpgInitOptions {
+class SpgGenOptions {
  public:
-  explicit SpgInitOptions();
+  explicit SpgGenOptions();
 
-  /* Reads options from a specified file and returns a SpgInitOptions object
+  /* Reads options from a specified file and returns a SpgGenOptions object
    * that has the options set.
    *
    * @param filename The name of the file to be read.
    *
-   * @return The SpgInitOptions object that has the options set.
+   * @return The SpgGenOptions object that has the options set.
    */
-  static SpgInitOptions readOptions(std::string filename);
+  static SpgGenOptions readOptions(std::string filename);
 
   /* Reads a line and sets an option based upon the contents
    *

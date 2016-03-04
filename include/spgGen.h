@@ -1,5 +1,5 @@
 /**********************************************************************
-  spgInit.h - Header file for spacegroup initialization functions
+  spgGen.h - Header file for spacegroup initialization functions
 
   Copyright (C) 2015 - 2016 by Patrick S. Avery
 
@@ -13,15 +13,15 @@
 
  ***********************************************************************/
 
-#ifndef SPG_INIT_H
-#define SPG_INIT_H
+#ifndef SPG_GEN_H
+#define SPG_GEN_H
 
 #include <vector>
 #include <tuple>
 #include <utility>
 
 #include "crystal.h"
-#include "spgInitOptions.h"
+#include "spgGenOptions.h"
 
 // output file name
 extern std::string e_logfilename;
@@ -49,8 +49,8 @@ typedef std::pair<uint, uint> numAndType;
 
 typedef std::pair<std::string, std::string> fillCellInfo;
 
-// Utility struct for creating input for the spgInitCrystal function
-struct spgInitInput {
+// Utility struct for creating input for the spgGenCrystal function
+struct spgGenInput {
   uint spg;
   std::vector<uint> atoms;
   latticeStruct latticeMins;
@@ -66,7 +66,7 @@ struct spgInitInput {
   bool forceMostGeneralWyckPos; // If this is not true, then we are not
                                 // guaranteed to get the right spg
   // Most basic constructor
-  spgInitInput(uint _spg, const std::vector<uint>& _atoms,
+  spgGenInput(uint _spg, const std::vector<uint>& _atoms,
                const latticeStruct& _lmins,
                const latticeStruct& _lmaxes) :
                    spg(_spg),
@@ -83,7 +83,7 @@ struct spgInitInput {
                    maxAttempts(100),
                    forceMostGeneralWyckPos(true) {}
   // Defining-everything constructor
-  spgInitInput(uint _spg, const std::vector<uint>& _atoms,
+  spgGenInput(uint _spg, const std::vector<uint>& _atoms,
                const latticeStruct& _lmins,
                const latticeStruct& _lmaxes,
                double _IADSF, double _minRadius,
@@ -106,7 +106,7 @@ struct spgInitInput {
                    forceMostGeneralWyckPos(_fmgwp) {}
 };
 
-class SpgInit {
+class SpgGen {
  public:
 
   static char getWyckLet(const wyckPos& pos) {return std::get<0>(pos);};
@@ -218,7 +218,7 @@ class SpgInit {
    * and lattice within the provided lattice constraints. Returns a Crystal
    * with zero volume if it failed to generate one successfully.
    */
-  static Crystal spgInitCrystal(const spgInitInput& input);
+  static Crystal spgGenCrystal(const spgGenInput& input);
 
   static std::vector<numAndType> getNumOfEachType(
                                    const std::vector<uint>& atoms);
