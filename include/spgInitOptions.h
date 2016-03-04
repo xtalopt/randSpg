@@ -62,6 +62,7 @@ class SpgInitOptions {
   latticeStruct getLatticeMins()  const {return m_latticeMins;};
   latticeStruct getLatticeMaxes() const {return m_latticeMaxes;};
   uint getNumOfEachSpgToGenerate() const {return m_numOfEachSpgToGenerate;};
+  bool forceMostGeneralWyckPos() const {return m_forceMostGeneralWyckPos;};
   std::vector<std::pair<uint, char>> getForcedWyckAssignments() const {return m_forcedWyckAssignments;};
   std::vector<std::pair<uint, double>> getRadiusVector() const {return m_radiusVector;};
   bool setAllMinRadii() const {return m_setAllMinRadii;};
@@ -80,6 +81,7 @@ class SpgInitOptions {
   void setLatticeMins(const latticeStruct& ls) {m_latticeMins = ls; m_latticeMinsSet = true;};
   void setLatticeMaxes(const latticeStruct& ls) {m_latticeMaxes = ls; m_latticeMaxesSet = true;};
   void setNumOfEachSpgToGenerate(uint u) {m_numOfEachSpgToGenerate = u;};
+  void setForceMostGeneralWyckPos(bool b) {m_forceMostGeneralWyckPos = b;};
   void setForcedWyckoffAssignments(std::vector<std::pair<uint, char>> v) {m_forcedWyckAssignments = v;};
   void setRadiusVector(const std::vector<std::pair<uint, double>>& v) {m_radiusVector = v;};
   void setMinRadii(double d) {m_minRadii = d; m_setAllMinRadii = true;};
@@ -108,6 +110,8 @@ class SpgInitOptions {
 
   // m_numOfEachSpgToGenerate: the number of each spg to generate
   uint m_numOfEachSpgToGenerate;
+
+  bool m_forceMostGeneralWyckPos;
 
   // m_forcedWyckAssignments: a vector of pairs containing an atomic number
   // and a Wyckoff assignment that the user wants to force

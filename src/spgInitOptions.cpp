@@ -34,6 +34,7 @@ m_latticeMaxesSet(false),
 m_latticeMins(defaultLatticeMins),
 m_latticeMaxes(defaultLatticeMaxes),
 m_numOfEachSpgToGenerate(1),
+m_forceMostGeneralWyckPos(true),
 m_forcedWyckAssignments(vector<pair<uint, char>>()),
 m_radiusVector(vector<pair<uint, double>>()),
 m_setAllMinRadii(false),
@@ -190,6 +191,17 @@ void SpgInitOptions::interpretLineAndSetOption(string line)
   }
   else if (option == "numOfEachSpgToGenerate") {
     m_numOfEachSpgToGenerate = stoi(value);
+  }
+  else if (option == "forceMostGeneralWyckPos") {
+    if (value.at(0) == 'F' || value.at(0) == 'f') 
+      m_forceMostGeneralWyckPos = false;
+    else if (value.at(0) == 'T' || value.at(0) == 't')
+      m_forceMostGeneralWyckPos = true;
+    else {
+      cout << "Error reading 'forceMostGeneralWyckPos' setting: " << value
+           << "\nValid settings are 'True' or 'False' or 'T' or 'F'\n";
+      cout << "The value will remain the default: true\n";
+    }
   }
   else if (contains(option, "forceWyckPos")) {
     vector<string> tempSplit = split(option, ' ');

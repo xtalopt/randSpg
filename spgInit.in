@@ -24,6 +24,17 @@ maxVolume              = 500
 # numOfEachSpgToGenerate tells us how many crystals of each spg to generate
 numOfEachSpgToGenerate = 3
 
+# For advanced users: by default, the program will only generate a spacegroup
+# for a crystal if it can use the most general Wyckoff position at least
+# once. This is because the spacegroup is not guaranteed if the most
+# general Wyckoff position is not used at least once. The user, however,
+# may turn off that option here by setting it to false.
+# If this is the case, more compositions may be generated for a particular
+# spacegroup, but they may not be the correct spacegroup (about a 50 or 60%
+# chance overall - but it differs with each spacegroup)
+
+#forceMostGeneralWyckPos = false
+
 # For advanced users: this allows us to force an element to be assigned
 # to a specific Wyckoff position. If you wish to force an element to be in
 # the same Wyckoff position multiple times, just repeat the tag multiple times

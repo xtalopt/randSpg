@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
   input.forcedWyckAssignments = options.getForcedWyckAssignments();
   input.verbosity = options.getVerbosity();
   input.maxAttempts = options.getMaxAttempts();
-  // input.forceMostGeneralWyckPos = options.forceMostGeneralWyckPos(); // to be added soon!
+  input.forceMostGeneralWyckPos = options.forceMostGeneralWyckPos();
 
   // Set up various other options
   vector<uint> spacegroups = options.getSpacegroups();
