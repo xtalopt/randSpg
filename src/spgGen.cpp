@@ -432,7 +432,7 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
   //SpgGenCombinatorics::printSystemPossibilities(possibilities);
   // If we desire verbose output, print the system possibility to the log file
   if (verbosity == 'v')
-    appendToLogFile(SpgGenCombinatorics::getSystemPossibilitiesString(possibilities));
+    appendToLogFile(SpgGenCombinatorics::getVerbosePossibilitiesString(possibilities));
 
   // Create a modified forced wyck vector for later...
   vector<pair<uint, wyckPos>> modifiedForcedWyckVector = getModifiedForcedWyckVector(forcedWyckAssignments, spg);

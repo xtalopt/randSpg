@@ -138,6 +138,9 @@ class SpgGenCombinatorics {
 
   static std::string getSystemPossibilitiesString(const systemPossibilities& pos);
 
+  // To be added to the log file when the user specifies 'verbose' output
+  static std::string getVerbosePossibilitiesString(const systemPossibilities& pos);
+
   static void printSystemPossibilities(const systemPossibilities& pos);
 };
 

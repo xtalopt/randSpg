@@ -708,6 +708,34 @@ string SpgGenCombinatorics::getSystemPossibilitiesString(const systemPossibiliti
   return s.str();
 }
 
+string SpgGenCombinatorics::getVerbosePossibilitiesString(const systemPossibilities& pos)
+{
+  stringstream s;
+  s << "Printing system possibilities:\n";
+  for (size_t i = 0; i < pos.size(); i++) {
+    const systemPossibility& sysPos = pos.at(i);
+    s << "  Possibility " << i+1 << ":\n";
+    for (size_t j = 0; j < sysPos.size(); j++) {
+      const singleAtomPossibility& sinPos = sysPos.at(j);
+      s << "    For atomicNum: " << sinPos.atomicNum << "\n";
+      for (size_t k = 0; k < sinPos.assigns.size(); k++) {
+        const similarWyckPosAndNumToChoose& simPos = sinPos.assigns.at(k);
+        s << "      We will choose " << simPos.numToChoose 
+          << " of the following positions:\n        { ";
+        for (size_t l = 0; l < simPos.choosablePositions.size(); l++) {
+          s << SpgGen::getWyckLet(simPos.choosablePositions.at(l)) << " ";
+        }
+        s << "}\n";
+        if (simPos.choosablePositions.size() != 0)
+          s << "        uniqueness is: "
+            << (SpgGen::containsUniquePosition(simPos.choosablePositions.at(0)) ? "true - positions are not re-usable\n" : "false - positions are re-usable\n");
+      }
+    }
+    s << "  End of possibility " << i+1 << "\n\n";
+  }
+  return s.str();
+}
+
 void SpgGenCombinatorics::printSystemPossibilities(const systemPossibilities& pos)
 {
   cout << getSystemPossibilitiesString(pos);
