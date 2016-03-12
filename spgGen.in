@@ -6,7 +6,7 @@ First line is a comment line
 composition            = Mg4Al2
 
 # Which spacegroups to generate are set as follows (hyphens and commas work)
-spacegroups            = 1-20, 22, 25, 28-30
+spacegroups            = 1-8, 10, 25, 28, 30-32
 
 # lattice mins and maxes set constraints on the lattice to be generated.
 # Distances are in Angstroms and angles are in degrees.

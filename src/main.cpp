@@ -24,10 +24,6 @@
 
 using namespace std;
 
-// These are externs declared in spgGen.h
-string e_logfilename = "spgGen.log";
-char e_verbosity = 'r';
-
 int main(int argc, char* argv[])
 {
   if (argc != 2) {
@@ -39,7 +35,9 @@ int main(int argc, char* argv[])
   remove(e_logfilename.c_str());
 
   SpgGenOptions options = SpgGenOptions::readOptions(argv[1]);
-  options.printOptions();
+
+  // Write the options to the log file
+  SpgGen::appendToLogFile(options.getOptionsString());
 
   vector<uint> atoms;
 

@@ -41,6 +41,10 @@
 
 using namespace std;
 
+// These are externs declared in spgGen.h
+string e_logfilename = "spgGen.log";
+char e_verbosity = 'r';
+
 // Check if all the multiplicities of a spacegroup are even
 static inline bool spgMultsAreAllEven(uint spg)
 {
