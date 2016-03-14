@@ -1,6 +1,9 @@
 
 ******    SpgGen    ******
 
+
+**** UNIX COMPILATION ****
+
 In order to compile, one simply needs cmake and a c++11 compiler.
 
 For ubuntu, you may install cmake by entering "sudo apt-get install cmake"
@@ -18,4 +21,49 @@ as follows:
   ./spgGen <inputFileName>
 
 A sample input file with instructions is included in the root
-directory: spgGen.in
+directory: spgGen.in. You may copy it to the build directory and then run
+
+  ./spgGen spgGen.in
+
+For the sample input file, the results are stored in a directory called "temp",
+and log information is stored in "spgGen.log". Check them out!
+
+The results are stored as POSAR files. If you wish to convert them to another
+file format, you may want to look into OpenBabel.
+
+
+
+**** WINDOWS MSVC COMPILATION ****
+
+In order to compile with Windows, one needs cmake and MSVC 2013 or greater
+(other Windows compilers may work as well, but the CMakeLists.txt or
+code may need to be adjusted a little bit)
+
+You will then need to open an MSVC command prompt (see http://stackoverflow.com/questions/21476588/where-is-developer-command-prompt-for-vs2013
+for an example of how to do this). The MSVC command prompt has all of the
+environments set up like we need to be.
+
+From the MSVC command prompt, find the spgGen root directory, and then
+type the following commands in the prompt:
+
+  mkdir build
+  cd build
+  cmake .. -G "NMake Makefiles"
+  nmake
+
+If all goes well, your spgGen.exe file should now be present in the directory!
+
+To run the program, use the executable that is created in the build directory
+as follows:
+  spgGen.exe <inputFileName>
+
+A sample input file with instructions is included in the root
+directory: spgGen.in. You may copy it to the build directory and then run
+
+  spgGen.exe spgGen.in
+
+For the sample input file, the results are stored in a directory called "temp",
+and log information is stored in "spgGen.log". Check them out!
+
+The results are stored as POSAR files. If you wish to convert them to another
+file format, you may want to look into OpenBabel.

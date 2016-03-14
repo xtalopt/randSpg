@@ -20,6 +20,14 @@
 #include <cstdlib>
 #include <vector>
 
+// For some reason, uint isn't always defined on windows...
+#ifdef _WIN32
+#ifndef UNSIGNEDINT
+#define UNSIGNEDINT
+typedef unsigned int uint;
+#endif
+#endif
+
 // Keep these as fractional coordinates
 struct atomStruct {
   unsigned int atomicNum;

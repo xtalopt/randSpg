@@ -21,12 +21,16 @@
 #include <sys/types.h> // required for stat.h
 #include <sys/stat.h>
 
+// Needed for CreateDirectory()
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 bool mkDir(std::string path, bool printErrorMessage = false) {
   if (path == ".") return true;
-  mode_t nMode = 0733; // UNIX style permissions
   int errNo = 0;
-#if defined(_WIN32)
-  errNo = _mkdir(path.c_str());
+#ifdef _WIN32
+  errNo = CreateDirectory(path.c_str(), NULL);
 #else
   errNo = mkdir(path.c_str(), nMode);
 #endif

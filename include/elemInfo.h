@@ -21,6 +21,14 @@
 
 #include <iostream>
 
+// For some reason, uint isn't always defined on windows...
+#ifdef _WIN32
+#ifndef UNSIGNEDINT
+#define UNSIGNEDINT
+typedef unsigned int uint;
+#endif
+#endif
+
 class ElemInfo {
  public:
   static std::string getAtomicSymbol(uint atomicNum);
