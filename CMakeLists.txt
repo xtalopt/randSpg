@@ -5,13 +5,26 @@ cmake_minimum_required(VERSION 2.6)
 set(spgGen_SRCS
     src/crystal.cpp
     src/elemInfo.cpp
-    src/main.cpp
     src/spgGenCombinatorics.cpp
     src/spgGenOptions.cpp
     src/spgGen.cpp)
 
 include_directories(${spgGen_SOURCE_DIR}/include)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+add_library (spgGeneration ${spgGen_SRCS})
 
-add_executable (spgGen ${spgGen_SRCS})
+# C++11 is required. MSVC should not need a flag 
+if(UNIX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+endif()
+
+add_executable (spgGen src/main.cpp)
+target_link_libraries (spgGen spgGeneration)
+
+option( BUILD_CGI
+        "Whether to compile the CGI handler in addition to the spgGen code."
+        OFF )
+if(BUILD_CGI)
+  add_executable (spgGen.cgi cgi/spgGen-cgi.cpp)
+  target_link_libraries (spgGen.cgi spgGeneration)
+endif(BUILD_CGI)
