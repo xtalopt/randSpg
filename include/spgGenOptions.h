@@ -88,7 +88,7 @@ class SpgGenOptions {
   std::string getOutputDir() const {return m_outputDir;};
   char getVerbosity() const {return m_verbosity;};
   // This will return false if the options are invalid
-  bool areOptionsValid() const {return m_optionsAreValid;};
+  bool optionsAreValid() const {return m_optionsAreValid;};
 
   // Setters
   void setFileName(const std::string& s) {m_filename = s;};

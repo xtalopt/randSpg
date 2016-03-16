@@ -38,6 +38,35 @@ static inline void replace(std::string& s, char oldChar, char newChar)
   std::replace(s.begin(), s.end(), oldChar, newChar);
 }
 
+// Replace every occurrence of a string with another string
+static void replaceAll(std::string& str,
+                       const std::string& from,
+                       const std::string& to) {
+  if(from.empty()) return;
+  size_t start_pos = 0;
+  while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+    str.replace(start_pos, from.length(), to);
+    start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+  }
+}
+
+// Replaces all occurrences of "\n" with "<br>" in a string
+static inline std::string useHTMLReturns(const std::string& str)
+{
+  std::string ret = str;
+  replaceAll(ret, "\n", "<br>");
+  return ret;
+}
+
+static inline std::string removeSpacesAndReturns(const std::string& str)
+{
+  std::string ret = str;
+  ret.erase(std::remove(ret.begin(), ret.end(), '\n'), ret.end());
+  ret.erase(std::remove(ret.begin(), ret.end(), '\r'), ret.end());
+  ret.erase(std::remove(ret.begin(), ret.end(), ' '), ret.end());
+  return ret;
+}
+
 static inline void removeEmptyStrings(std::vector<std::string>& v)
 {
   for (size_t i = 0; i < v.size(); i++) {

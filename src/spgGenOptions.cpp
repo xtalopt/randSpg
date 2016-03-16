@@ -59,7 +59,7 @@ SpgGenOptions SpgGenOptions::readOptions(string filename)
   f.open(filename);
 
   if (!f.is_open()) {
-    cout << "Error: " << filename << " was not opened successfully! Please "
+    cerr << "Error: " << filename << " was not opened successfully! Please "
          << "check the permissions and that it exists.\n";
     options.m_optionsAreValid = false;
     return options;
@@ -98,14 +98,14 @@ SpgGenOptions SpgGenOptions::readOptionsFromCharArray(const char* input,
   // Check to make sure the composition and some spacegroups were set.
   // If not, exit as a failure
   if (options.m_composition == "") {
-    cout << "Error: option 'composition' was not set in " << filename << "!\n"
+    cerr << "Error: option 'composition' was not set in " << filename << "!\n"
          << "Please set the composition.\n";
     options.m_optionsAreValid = false;
     return options;
   }
 
   else if (options.m_spacegroups.size() == 0) {
-    cout << "Error: option 'spacegroups' was not set in " << filename << "!\n"
+    cerr << "Error: option 'spacegroups' was not set in " << filename << "!\n"
          << "Please set the spacegroups.\n";
     options.m_optionsAreValid = false;
     return options;
@@ -131,7 +131,7 @@ vector<uint> createSpgVector(string s)
       vector<string> hyphenSplit = split(ssplit.at(i), '-');
 
       if (hyphenSplit.size() != 2) {
-        cout << "Error understanding the spacegroups option. Please verify that"
+        cerr << "Error understanding the spacegroups option. Please verify that"
              << " it is properly formatted with commas and hyphens.\n";
         return ret;
       }
@@ -157,8 +157,8 @@ latticeStruct interpretLatticeString(const string& s)
   latticeStruct ret;
   vector<string> theSplit = split(s, ',');
   if (theSplit.size() != 6) {
-    cout << "Error reading lattice string: " << s << "!\n";
-    cout << "Please make sure it is formatted correctly.\n";
+    cerr << "Error reading lattice string: " << s << "!\n";
+    cerr << "Please make sure it is formatted correctly.\n";
     return ret;
   }
 
@@ -190,9 +190,8 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
 
   // If this is not two, then there is some kind of error in the line
   if (theSplit.size() != 2) {
-    cout << "In options files, '" << this->m_filename << "', error reading "
+    cerr << "In options files, '" << this->m_filename << "', error reading "
          << "the following line: '" << line << "'\n";
-    m_optionsAreValid = false;
     return;
   }
 
@@ -223,15 +222,15 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
     else if (value.at(0) == 'T' || value.at(0) == 't')
       m_forceMostGeneralWyckPos = true;
     else {
-      cout << "Error reading 'forceMostGeneralWyckPos' setting: " << value
+      cerr << "Error reading 'forceMostGeneralWyckPos' setting: " << value
            << "\nValid settings are 'True' or 'False' or 'T' or 'F'\n";
-      cout << "The value will remain the default: true\n";
+      cerr << "The value will remain the default: true\n";
     }
   }
   else if (contains(option, "forceWyckPos")) {
     vector<string> tempSplit = split(option, ' ');
     if (tempSplit.size() != 2 || value.size() != 1) {
-      cout << "Error reading 'forceWyckPos' option: " << line
+      cerr << "Error reading 'forceWyckPos' option: " << line
            << "\nProper format is: forceWyckPos <atomicSymbol> = <char>\n";
       m_optionsAreValid = false;
       return;
@@ -243,7 +242,7 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
     // There should be a space after 'setRadius' with the atomic symbol there
     vector<string> tempSplit = split(option, ' ');
     if (tempSplit.size() != 2) {
-      cout << "Error reading 'setRadius' option: " << line
+      cerr << "Error reading 'setRadius' option: " << line
            << "\nProper format is: setRadius <atomicSymbol> = <value>\n";
       m_optionsAreValid = false;
       return;
@@ -271,8 +270,8 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
     m_outputDir = value;
   }
   else if (option == "verbosity") {
-    if (value != "n" && value != "r" && value != "v") {
-      cout << "Error: the value given for verbosity, '" << value << "', is "
+    if (value.at(0) != 'n' && value.at(0) != 'r' && value.at(0) != 'v') {
+      cerr << "Error: the value given for verbosity, '" << value << "', is "
            << "not a valid option!\nValid options are: 'n' for no output, "
            << "'r' for regular output, or 'v' for verbose output\n";
       m_optionsAreValid = false;
@@ -281,7 +280,7 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
     m_verbosity = value.at(0);
   }
   else {
-    cout << "Warning: the following line contained an unrecognizable option: "
+    cerr << "Warning: the following line contained an unrecognizable option: "
          << line << "\n";
   }
 

@@ -308,6 +308,14 @@ class Crystal {
    */
   int getAtomIndexNum(const atomStruct& as) const;
 
+  /* Returns the crystal info as a string that has the format of a POSCAR
+   *
+   * @param title The title that will go on the first line of the POSCAR
+   *
+   * @return The string containing the POSCAR
+   */
+  std::string getPOSCARString(const std::string& title = " ") const;
+
   /* Writes the crystal info to a POSCAR that has filename of 'filename'
    *
    * @param filename The name of the POSCAR file to be written. You may include
