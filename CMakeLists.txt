@@ -11,7 +11,7 @@ set(spgGen_SRCS
 
 include_directories(${spgGen_SOURCE_DIR}/include)
 
-add_library (spgGeneration ${spgGen_SRCS})
+add_library (SpgGenerate ${spgGen_SRCS})
 
 # C++11 is required. MSVC should not need a flag 
 if(UNIX)
@@ -19,12 +19,12 @@ if(UNIX)
 endif()
 
 add_executable (spgGen src/main.cpp)
-target_link_libraries (spgGen spgGeneration)
+target_link_libraries (spgGen SpgGenerate)
 
 option( BUILD_CGI
         "Whether to compile the CGI handler in addition to the spgGen code."
         OFF )
 if(BUILD_CGI)
   add_executable (spgGen.cgi cgi/spgGen-cgi.cpp)
-  target_link_libraries (spgGen.cgi spgGeneration)
+  target_link_libraries (spgGen.cgi SpgGenerate)
 endif(BUILD_CGI)

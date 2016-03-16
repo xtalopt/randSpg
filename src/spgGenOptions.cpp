@@ -63,15 +63,35 @@ SpgGenOptions SpgGenOptions::readOptions(string filename)
     exit(EXIT_FAILURE);
   }
 
+  // So that we avoid code duplication, read the contents of this file into
+  // a string and call the other function. We are assuming that
+  // the input file is going to be small so this should not cause any
+  // memory issues...
+
+  string temp;
+  string inputStr;
+  while (getline(f, temp)) inputStr += (temp + "\n");
+  f.close();
+
+  return readOptionsFromCharArray(inputStr.c_str(), filename);
+}
+
+// This version of the function reads a character array that contains the full
+// input. It is used for the html version of the code
+SpgGenOptions SpgGenOptions::readOptionsFromCharArray(const char* input,
+                                                      string filename)
+{
+  SpgGenOptions options;
   options.m_filename = filename;
 
+  string stdstr(input);
+  istringstream lines(stdstr);
   string line;
-  // First line is a comment, so ignore it
-  std::getline(f, line);
-  // Read each line and set options
-  while (std::getline(f, line)) options.interpretLineAndSetOption(line);
 
-  f.close();
+  // First line is a comment, so ignore it
+  std::getline(lines, line);
+  // Read each line and set options
+  while (std::getline(lines, line)) options.interpretLineAndSetOption(line);
 
   // Check to make sure the composition and some spacegroups were set.
   // If not, exit as a failure
@@ -193,7 +213,7 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
     m_numOfEachSpgToGenerate = stoi(value);
   }
   else if (option == "forceMostGeneralWyckPos") {
-    if (value.at(0) == 'F' || value.at(0) == 'f') 
+    if (value.at(0) == 'F' || value.at(0) == 'f')
       m_forceMostGeneralWyckPos = false;
     else if (value.at(0) == 'T' || value.at(0) == 't')
       m_forceMostGeneralWyckPos = true;

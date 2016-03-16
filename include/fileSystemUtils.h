@@ -32,6 +32,7 @@ bool mkDir(std::string path, bool printErrorMessage = false) {
 #ifdef _WIN32
   errNo = CreateDirectory(path.c_str(), NULL);
 #else
+  mode_t nMode = 0733; // UNIX style permissions
   errNo = mkdir(path.c_str(), nMode);
 #endif
   if (errNo != 0) {

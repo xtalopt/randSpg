@@ -35,6 +35,20 @@ class SpgGenOptions {
    */
   static SpgGenOptions readOptions(std::string filename);
 
+  /* Reads the options from a character array (in the complete format of 
+   * the input file) and returns a SpgGenOptions object that has the options
+   * set.
+   * 
+   * @param input A character array containing the whole input file that is 
+   *              to be read. 
+   *
+   * @param filename The optional name of the file. It is only used when
+   *                 printing error messages.
+   * @return The SpgGenOptions object that has the options set.
+   */
+  static SpgGenOptions readOptionsFromCharArray(const char* input, 
+                                                std::string filename = "");
+
   /* Reads a line and sets an option based upon the contents
    *
    * @param line The line to be interpreted

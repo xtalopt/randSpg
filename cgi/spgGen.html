@@ -1,0 +1,117 @@
+<html>
+<body>
+<title>SpgGen: Generate Random Crystals with Specific Spacegroups</title>
+
+<form action="http://localhost:8000/spgGen.cgi" method=post>
+
+<h1>SpgGen: Generate Random Crystals with Specific Spacegroups</h1>
+
+A sample input is given in the text area below.<br>
+Change it around as needed and click "submit" when you are ready for <b>SpgGen</b> to generate the crystal structures!
+<br>
+<br>
+<textarea name="spgGenInput" rows=30 cols=100>
+First line is a comment line
+
+# Anything to the right of a hash is a comment
+
+# Composition is set by atomic symbols followed by number as such:
+composition            = Mg4Al2
+
+# Which spacegroups to generate are set as follows (hyphens and commas work)
+spacegroups            = 1-8, 10, 25, 28, 30-32
+
+# lattice mins and maxes set constraints on the lattice to be generated.
+# Distances are in Angstroms and angles are in degrees.
+#                           a,    b,    c, alpha,  beta, gamma
+latticeMins            =  3.0,  3.0,  3.0,  60.0,  60.0,  60.0
+latticeMaxes           = 10.0, 10.0, 10.0, 120.0, 120.0, 120.0
+
+# minVolume and maxVolume specify constraints on the volume in Angstroms
+# If the volume is not within this range, it will be rescaled so that it is
+# If you remove minVolume or specify it to be -1, there will be no minVolume
+# Same goes for maxVolume
+minVolume              = 450
+maxVolume              = 500
+
+# numOfEachSpgToGenerate tells us how many crystals of each spg to generate
+numOfEachSpgToGenerate = 3
+
+# For advanced users: by default, the program will only generate a spacegroup
+# for a crystal if it can use the most general Wyckoff position at least
+# once. This is because the spacegroup is not guaranteed if the most
+# general Wyckoff position is not used at least once. The user, however,
+# may turn off that option here by setting it to false.
+# If this is the case, more compositions may be generated for a particular
+# spacegroup, but they may not be the correct spacegroup (about a 50 or 60%
+# chance overall - but it differs with each spacegroup)
+
+#forceMostGeneralWyckPos = false
+
+# For advanced users: this allows us to force an element to be assigned
+# to a specific Wyckoff position. If you wish to force an element to be in
+# the same Wyckoff position multiple times, just repeat the tag multiple times
+# i. e. add 'forceWyckPos Mg = a' on as many lines as you want to force the
+# Wyckoff position
+
+#forceWyckPos Mg        = a
+
+# We can set minimum radii (Angstroms) for individual atoms
+
+#setRadius Ti           = 0.5
+
+# Or for all atoms. A min radius for an individual atom trumps this one
+# If the default min radius of the atom is less than this input value, then
+# the min radius of that atom is set to be this value
+# Value is in Angstroms
+setMinRadii            = 0.3
+
+# This scaling factor will scale all radii that were not explicity set
+# The new radii are equal to (radius * scalingFactor)
+# This is particularly useful when changing the pressure of a crystal
+scalingFactor          = 0.5
+
+# This sets the maximum number of attempts to generate any given spacegroup
+maxAttempts            = 100
+
+# This sets the output directory
+outputDir              = temp
+
+# Verbosity indicates how much output to generate in the log file
+# 'n' is no output, 'r' is regular output, and 'v' is verbose output
+verbosity              = r
+
+# In the output POSCAR, the name is <composition>_<spg>-<index>
+</textarea>
+<br>
+<br>
+
+<input type=submit value="Submit">
+</form>
+
+<h2>Notes:</h2>
+<ul>
+  <li>
+    The POSCAR format is specified <a href="http://cms.mpi.univie.ac.at/vasp/vasp/POSCAR_file.html">here</a>.
+  </li>
+  <li>
+    If you wish to visualize the crystal using the <a href="http://avogadro.cc/wiki/Main_Page">Avogadro</a> molecular editor, copy the POSCAR of the crystal,  click the "Crystallography" menu at the top of Avogadro, and select "Import Crystal from Clipboard...".
+  </li>
+  <li>
+    If you wish to use another format, you may convert it using <a href="http://openbabel.org/wiki/Main_Page">OpenBabel</a>.
+  </li>
+</ul>
+
+<h2>About:</h2>
+<b>SpgGen</b> is an algorithm developed
+by <a href="mailto:psavery@buffalo.edu">Patrick Avery</a>.
+<b>SpgGen</b> generates random crystals of specific spacegroups and allows 
+the user to
+specify a lot of information such as minimum interatomic distances, volume 
+constraints, etc. The <b>source code</b> is available under
+the <a href="http://opensource.org/licenses/BSD-3-Clause">"New" BSD
+open source license</a>
+and may be viewed at <a href="http://www.github.com/psavery/spgGen">its Github
+repository</a>. 
+</body>
+</html>
