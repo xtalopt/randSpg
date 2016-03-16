@@ -44,7 +44,8 @@ m_minVolume(-1),
 m_maxVolume(-1),
 m_maxAttempts(100),
 m_outputDir("."),
-m_verbosity('r')
+m_verbosity('r'),
+m_optionsAreValid(true)
 {
 
 }
@@ -60,7 +61,8 @@ SpgGenOptions SpgGenOptions::readOptions(string filename)
   if (!f.is_open()) {
     cout << "Error: " << filename << " was not opened successfully! Please "
          << "check the permissions and that it exists.\n";
-    exit(EXIT_FAILURE);
+    options.m_optionsAreValid = false;
+    return options;
   }
 
   // So that we avoid code duplication, read the contents of this file into
@@ -98,13 +100,15 @@ SpgGenOptions SpgGenOptions::readOptionsFromCharArray(const char* input,
   if (options.m_composition == "") {
     cout << "Error: option 'composition' was not set in " << filename << "!\n"
          << "Please set the composition.\n";
-    exit(EXIT_FAILURE);
+    options.m_optionsAreValid = false;
+    return options;
   }
 
   else if (options.m_spacegroups.size() == 0) {
     cout << "Error: option 'spacegroups' was not set in " << filename << "!\n"
          << "Please set the spacegroups.\n";
-    exit(EXIT_FAILURE);
+    options.m_optionsAreValid = false;
+    return options;
   }
 
   return options;
@@ -129,7 +133,7 @@ vector<uint> createSpgVector(string s)
       if (hyphenSplit.size() != 2) {
         cout << "Error understanding the spacegroups option. Please verify that"
              << " it is properly formatted with commas and hyphens.\n";
-        exit(EXIT_FAILURE);
+        return ret;
       }
       // Find the first number, and keep adding numbers till we get to the final
       // one
@@ -155,7 +159,7 @@ latticeStruct interpretLatticeString(const string& s)
   if (theSplit.size() != 6) {
     cout << "Error reading lattice string: " << s << "!\n";
     cout << "Please make sure it is formatted correctly.\n";
-    exit(EXIT_FAILURE);
+    return ret;
   }
 
   ret.a     = stof(trim(theSplit.at(0)));
@@ -188,7 +192,8 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
   if (theSplit.size() != 2) {
     cout << "In options files, '" << this->m_filename << "', error reading "
          << "the following line: '" << line << "'\n";
-    exit(EXIT_FAILURE);
+    m_optionsAreValid = false;
+    return;
   }
 
   string option = trim(theSplit.at(0));
@@ -228,7 +233,8 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
     if (tempSplit.size() != 2 || value.size() != 1) {
       cout << "Error reading 'forceWyckPos' option: " << line
            << "\nProper format is: forceWyckPos <atomicSymbol> = <char>\n";
-      exit(EXIT_FAILURE);
+      m_optionsAreValid = false;
+      return;
     }
     uint atomicNum = ElemInfo::getAtomicNum(tempSplit.at(1));
     m_forcedWyckAssignments.push_back(make_pair(atomicNum, value.at(0)));
@@ -239,7 +245,8 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
     if (tempSplit.size() != 2) {
       cout << "Error reading 'setRadius' option: " << line
            << "\nProper format is: setRadius <atomicSymbol> = <value>\n";
-      exit(EXIT_FAILURE);
+      m_optionsAreValid = false;
+      return;
     }
     uint atomicNum = ElemInfo::getAtomicNum(tempSplit.at(1));
     m_radiusVector.push_back(make_pair(atomicNum, stof(value)));
@@ -268,7 +275,8 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
       cout << "Error: the value given for verbosity, '" << value << "', is "
            << "not a valid option!\nValid options are: 'n' for no output, "
            << "'r' for regular output, or 'v' for verbose output\n";
-      exit(EXIT_FAILURE);
+      m_optionsAreValid = false;
+      return;
     }
     m_verbosity = value.at(0);
   }

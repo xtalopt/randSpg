@@ -35,18 +35,18 @@ class SpgGenOptions {
    */
   static SpgGenOptions readOptions(std::string filename);
 
-  /* Reads the options from a character array (in the complete format of 
+  /* Reads the options from a character array (in the complete format of
    * the input file) and returns a SpgGenOptions object that has the options
    * set.
-   * 
-   * @param input A character array containing the whole input file that is 
-   *              to be read. 
+   *
+   * @param input A character array containing the whole input file that is
+   *              to be read.
    *
    * @param filename The optional name of the file. It is only used when
    *                 printing error messages.
    * @return The SpgGenOptions object that has the options set.
    */
-  static SpgGenOptions readOptionsFromCharArray(const char* input, 
+  static SpgGenOptions readOptionsFromCharArray(const char* input,
                                                 std::string filename = "");
 
   /* Reads a line and sets an option based upon the contents
@@ -87,6 +87,8 @@ class SpgGenOptions {
   int getMaxAttempts() const {return m_maxAttempts;};
   std::string getOutputDir() const {return m_outputDir;};
   char getVerbosity() const {return m_verbosity;};
+  // This will return false if the options are invalid
+  bool areOptionsValid() const {return m_optionsAreValid;};
 
   // Setters
   void setFileName(const std::string& s) {m_filename = s;};
@@ -160,6 +162,8 @@ class SpgGenOptions {
   // and 'v' for verbose.
   char m_verbosity;
 
+  // This will be false if the options are not valid
+  bool m_optionsAreValid;
 };
 
 #endif

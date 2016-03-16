@@ -36,6 +36,12 @@ int main(int argc, char* argv[])
 
   SpgGenOptions options = SpgGenOptions::readOptions(argv[1]);
 
+  if (!options.areOptionsValid()) {
+    cout << "Warning: the options that were received are invalid\n";
+    cout << "Please go back and check them.\n";
+    exit(EXIT_FAILURE);
+  }
+
   // Write the options to the log file
   SpgGen::appendToLogFile(options.getOptionsString());
 
