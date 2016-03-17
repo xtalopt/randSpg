@@ -280,14 +280,14 @@ int main() {
   ss << "<h3>Note:</h3>"
      << "Please download and use the executable version if you wish to see log "
      << "info like the Wyckoff positions each atom was assigned to.<br><br>\n"
-//     << "POSCARS generated since March 20th, 2016: <br>"
-//     << "<br><embed src=\"spgGenCounter.cgi\" />\n"
      << "Number of structures attempted: " << numAttempts << "<br>\n"
      << "Number of succeeds: " << numSucceeds << "<br>\n"
      << "Setup time (in seconds): " << setupWallTime << "<br>\n"
      << "Structure generation time (in seconds): " << loopWallTime << "<br>\n"
      << "Average time per structure attempted (in seconds): "
-     << loopWallTime / ((double)numAttempts) << "<br>\n"
+     << loopWallTime / ((double)numAttempts) << "<br><br>\n"
+     << "Times this webpage has been used since March 17th 2016: "
+     << "<br><embed src=\"spgGenCounter.cgi\" /><br>\n"
      << "</body>\n"
      << "</html>\n";
 
