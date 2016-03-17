@@ -135,6 +135,8 @@ char **getcgivars() {
 
 /***************** end of the getcgivars() module ********************/
 
+// For timings
+#include <chrono>
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -143,6 +145,8 @@ char **getcgivars() {
 #include "spgGen.h"
 #include "spgGenOptions.h"
 #include "utilityFunctions.h"
+
+using namespace std;
 
 int invalidInput(std::string errorMsg)
 {
@@ -160,7 +164,8 @@ int invalidInput(std::string errorMsg)
 
 int main() {
 
-  using namespace std;
+  // Let's time the setup!
+  auto start_setupWall = std::chrono::high_resolution_clock::now();
 
   char** cgivars = getcgivars();
   char* in = NULL;
@@ -197,8 +202,6 @@ int main() {
   }
 
   ss << "<h3>POSCARs:</h3>\n";
-//     << "POSCARS generated since March 20th, 2016: "
-//     << "<br><embed src=\"spgGenCounter.cgi\" />\n";
 
   std::string comp = options.getComposition();
   std::vector<uint> atoms;
@@ -234,6 +237,14 @@ int main() {
   int numOfEach = options.getNumOfEachSpgToGenerate();
   string outDir = options.getOutputDir();
 
+  size_t numSucceeds = 0;
+  size_t numAttempts = spacegroups.size() * numOfEach;
+
+  auto setupWallTime = chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now() - start_setupWall).count() * 0.000000001;
+
+  // Let's time it!
+  auto start_loopWall = std::chrono::high_resolution_clock::now();
+
   // Loop through the ones we are going to create
   for (size_t i = 0; i < spacegroups.size(); i++) {
     uint spg = spacegroups.at(i);
@@ -244,9 +255,17 @@ int main() {
 
       // The volume is set to zero if the job failed.
       if (c.getVolume() == 0) {
-        ss << "<br><br>\n";
+        ss << comp + " -- spgGen with spg of: " + to_string(spg)
+           << "<br>\nFailed to generate crystal. Either it is impossible "
+           << "to generate this crystal with these settings or it failed to "
+           << "generate a crystal after 100 attempts.<br>"
+           << "Use the executable version of the program for more detailed info"
+           << "<br><br>\n";
         continue;
       }
+
+      // If it created a crystal successfully, add this time to the total time
+      numSucceeds++;
 
       // Let's print it to the HTML script!
       string title = comp + " -- spgGen with spg of: " + to_string(spg);
@@ -256,8 +275,20 @@ int main() {
     }
   }
 
+  auto loopWallTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start_loopWall).count() * 0.000000001;
 
-  ss << "</body>\n"
+  ss << "<h3>Note:</h3>"
+     << "Please download and use the executable version if you wish to see log "
+     << "info like the Wyckoff positions each atom was assigned to.<br><br>\n"
+//     << "POSCARS generated since March 20th, 2016: <br>"
+//     << "<br><embed src=\"spgGenCounter.cgi\" />\n"
+     << "Number of structures attempted: " << numAttempts << "<br>\n"
+     << "Number of succeeds: " << numSucceeds << "<br>\n"
+     << "Setup time (in seconds): " << setupWallTime << "<br>\n"
+     << "Structure generation time (in seconds): " << loopWallTime << "<br>\n"
+     << "Average time per structure attempted (in seconds): "
+     << loopWallTime / ((double)numAttempts) << "<br>\n"
+     << "</body>\n"
      << "</html>\n";
 
   // Let's print it!

@@ -13,9 +13,12 @@
 
  ***********************************************************************/
 
+// For timings
+#include <chrono>
 // To remove the log file
 #include <cstdio>
 #include <iostream>
+#include <sstream>
 
 #include "elemInfo.h"
 #include "fileSystemUtils.h"
@@ -30,6 +33,9 @@ int main(int argc, char* argv[])
     cout << "Usage: ./spgGen <inputFileName>\n";
     return -1;
   }
+
+  // Let's time it!
+  auto setup_startTime = chrono::high_resolution_clock::now();
 
   // If there is an old log file here, remove it
   remove(e_logfilename.c_str());
@@ -88,11 +94,22 @@ int main(int argc, char* argv[])
   // Defined in fileSystemUtils.h
   mkDir(outDir);
 
+  size_t numAttempts = spacegroups.size() * numOfEach;
+  size_t numSucceeds = 0;
+
+  double successTime = 0, failTime = 0;
+
+  auto setup_wallTime = chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now() - setup_startTime).count() * 0.000000001;
+
+  // Time the loop
+  auto start_loopTime = chrono::high_resolution_clock::now();
+
   for (size_t i = 0; i < spacegroups.size(); i++) {
     uint spg = spacegroups.at(i);
     // Change the input spg to have the right spacegroup
     input.spg = spg;
     for (size_t j = 0; j < numOfEach; j++) {
+      auto start = chrono::high_resolution_clock::now();
       string filename = outDir + comp + "_" + to_string(spg) +
                         "-" + to_string(j + 1);
       if (e_verbosity != 'n')
@@ -101,8 +118,42 @@ int main(int argc, char* argv[])
       Crystal c = SpgGen::spgGenCrystal(input);
 
       string title = comp + " -- spgGen with spg of: " + to_string(spg);
+
       // The volume is set to zero if the job failed.
-      if (c.getVolume() != 0) c.writePOSCAR(filename, title);
+      if (c.getVolume() != 0) {
+        // Success!
+        c.writePOSCAR(filename, title);
+        successTime += chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now() - start).count() * 0.000000001;
+        numSucceeds++;
+      }
+
+      // We failed! Add this to the fail time
+      else failTime += chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now() - start).count() * 0.000000001;
     }
+  }
+
+  auto loop_wallTime = chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now() - start_loopTime).count() * 0.000000001;
+
+  if (e_verbosity != 'n') {
+    stringstream ss;
+    ss << "\n-------------------------------------------------------------\n"
+       << "Number of structures attempted: " << numAttempts << "\n"
+       << "Number of structures succeeded: " << numSucceeds << "\n"
+       << "Setup wall time (in seconds): " << setup_wallTime << "\n"
+       << "Structure generation wall time (in seconds): "
+       << loop_wallTime << "\n"
+       << "Structure generation wall time per attempt (in seconds): "
+       << loop_wallTime / ((double)numAttempts) << "\n"
+       << "Average success wall time (in seconds): "
+       << ((numSucceeds != 0) ?
+           successTime / ((double)numSucceeds) : 0)
+       << "\n"
+       << "Average failure wall time (in seconds): "
+       << ((numAttempts != numSucceeds) ?
+           failTime / ((double)(numAttempts - numSucceeds)) : 0)
+       << "\n"
+       << "Total wall time (in seconds): " << setup_wallTime + loop_wallTime
+       << "\n------------------------------------------------------------ \n";
+    SpgGen::appendToLogFile(ss.str());
   }
 }
