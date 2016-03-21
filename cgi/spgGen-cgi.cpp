@@ -167,6 +167,10 @@ int main() {
   // Let's time the setup!
   auto start_setupWall = std::chrono::high_resolution_clock::now();
 
+  // Remove the old log file before doing anything else...
+  remove(e_logfilename.c_str());
+
+  // Obtain the cgi variables
   char** cgivars = getcgivars();
   char* in = NULL;
 
