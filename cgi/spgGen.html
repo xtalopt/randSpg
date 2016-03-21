@@ -64,15 +64,17 @@ numOfEachSpgToGenerate = 3
 # If the default min radius of the atom is less than this input value, then
 # the min radius of that atom is set to be this value
 # Value is in Angstroms
-setMinRadii            = 0.3
+
+#setMinRadii            = 0.3
 
 # This scaling factor will scale all radii that were not explicity set
 # The new radii are equal to (radius * scalingFactor)
 # This is particularly useful when changing the pressure of a crystal
-scalingFactor          = 0.5
+
+#scalingFactor          = 0.5
 
 # This sets the maximum number of attempts to generate any given spacegroup
-maxAttempts            = 100
+maxAttempts            = 50
 
 # Verbosity indicates how much output to generate in the log file (the log
 # file will be prepended to the html output)
@@ -109,5 +111,7 @@ the <a href="http://opensource.org/licenses/BSD-3-Clause">"New" BSD
 open source license</a>
 and may be viewed at <a href="http://www.github.com/psavery/spgGen">its Github
 repository</a>.
+
+<br><br>If you encounter any bugs, please email me at psavery@buffalo.edu
 </body>
 </html>

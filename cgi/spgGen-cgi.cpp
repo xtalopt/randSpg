@@ -156,10 +156,10 @@ int invalidInput(std::string errorMsg)
   printf("<body>\n");
   printf("<h1>Invalid input</h1>\n");
   printf(errorMsg.c_str());
-  printf("<br>");
+  printf("<br><br><br>");
   printf("</body>\n");
   printf("</html>\n");
-  return -1;
+  exit(-1);
 }
 
 int main() {
@@ -240,7 +240,45 @@ int main() {
   size_t numSucceeds = 0;
   size_t numAttempts = spacegroups.size() * numOfEach;
 
-  auto setupWallTime = chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now() - start_setupWall).count() * 0.000000001;
+  // Perform final checks
+  // For the online version, we will only allow up to 250 structures to be
+  // generated so that we don't overload the server
+  size_t maxNumStructures = 250;
+  if (numAttempts > maxNumStructures) {
+    stringstream error;
+    error << "Error: for the html version of this program, we only allow up to " << maxNumStructures
+          << " to be generated so we do not overload the server.<br> You are "
+          << "requesting " << numAttempts << " structures. Please reduce this "
+          << "amount or compile and use the executable version of the "
+          << "program <a href=\"http://www.github.com/psavery/spgGen\">here</a>.<br>\n";
+    invalidInput(error.str());
+  }
+
+  size_t maxNumAtoms = 50;
+  if (atoms.size() > maxNumAtoms) {
+    stringstream error;
+    error << "Error: for the html version of this program, we only allow up to " << maxNumAtoms
+          << " atoms per crystal so that we do not overload the server.<br> Your composition "
+          << "has " << atoms.size() << " atoms. Please reduce this "
+          << "amount or compile and use the executable version of the "
+          << "program <a href=\"http://www.github.com/psavery/spgGen\">here</a>.<br>\n";
+    invalidInput(error.str());
+  }
+
+  size_t maxAttempts = 50;
+  if (input.maxAttempts > maxAttempts) {
+    stringstream error;
+    error << "Error: for the html version of this program, we only allow up to " << maxAttempts
+          << " max attempts per crystal so that we do not overload the server.<br> You have requested "
+          << input.maxAttempts << " max attempts. Please reduce this "
+          << "amount or compile and use the executable version of the "
+          << "program <a href=\"http://www.github.com/psavery/spgGen\">here</a>.<br>\n"
+          << "Note: if you do not specify the maxAttempts, the default is 100. So you will need to "
+          << "specify it to 50 or less<br>\n";
+    invalidInput(error.str());
+  }
+
+  auto setupWallTime = chrono::duration_cast<chrono::nanoseconds>(chrono::high_resolution_clock::now() - start_setupWall).count() * 1e-9;
 
   // Let's time it!
   auto start_loopWall = std::chrono::high_resolution_clock::now();
@@ -258,8 +296,9 @@ int main() {
         ss << comp + " -- spgGen with spg of: " + to_string(spg)
            << "<br>\nFailed to generate crystal. Either it is impossible "
            << "to generate this crystal with these settings or it failed to "
-           << "generate a crystal after 100 attempts.<br>"
-           << "Use the executable version of the program for more detailed info"
+           << "generate a crystal after " << input.maxAttempts << " attempts.<br>"
+           << "Use the <a href=\"http://www.github.com/psavery/spgGen\">executable version</a> "
+           << "of the program for more detailed info"
            << "<br><br>\n";
         continue;
       }
@@ -275,7 +314,7 @@ int main() {
     }
   }
 
-  auto loopWallTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start_loopWall).count() * 0.000000001;
+  auto loopWallTime = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - start_loopWall).count() * 1e-9;
 
   ss << "<h3>Note:</h3>"
      << "Please download and use the executable version if you wish to see log "

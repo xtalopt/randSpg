@@ -119,6 +119,7 @@ vector<uint> createSpgVector(string s)
   vector<uint> ret;
 
   s = trim(s);
+  s = removeSpacesAndReturns(s); // important for reading input from html
   // Split it according to commas
   vector<string> ssplit = split(s, ',');
 
@@ -354,13 +355,13 @@ string SpgGenOptions::getOptionsString() const
   s << "spacegroups: " << getSpacegroupsString(m_spacegroups) << "\n";
 
   if (!m_latticeMinsSet) {
-    s << "latticeMins were not explictly set. Using the defaults:\n";
+    s << "latticeMins were not explicitly set. Using the defaults:\n";
     s << getLatticeString(m_latticeMins);
   }
   else s << "latticeMins:\n" << getLatticeString(m_latticeMins);
 
   if (!m_latticeMaxesSet) {
-    s << "latticeMaxes were not explictly set. Using the defaults:\n";
+    s << "latticeMaxes were not explicitly set. Using the defaults:\n";
     s << getLatticeString(m_latticeMaxes);
   }
   else s << "latticeMaxes:\n" << getLatticeString(m_latticeMaxes);
@@ -375,7 +376,7 @@ string SpgGenOptions::getOptionsString() const
   if (m_setAllMinRadii) {
     s << "default minRadii: " << m_minRadii << "\n";
   }
-  s << "explicity set minRadii: \n";
+  s << "explicity set radii: \n";
   for (size_t i = 0; i < m_radiusVector.size(); i++) {
     s << "  " << ElemInfo::getAtomicSymbol(m_radiusVector.at(i).first)
       << ": " << m_radiusVector.at(i).second << "\n";
