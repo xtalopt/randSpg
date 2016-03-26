@@ -601,3 +601,24 @@ void Crystal::printCrystalInfo() const
 {
   cout << getCrystalInfoString();
 }
+
+void Crystal::printIADs() const
+{
+  vector<atomStruct> atoms = getAtoms();
+  for (size_t i = 0; i < atoms.size(); i++) {
+    cout << "For atom with index " << i << " and atomicNum " << atoms.at(i).atomicNum << ", the following are the neighbors:\n";
+    Crystal tempCrystal = *this;
+
+    // We need to center the cell around this atom so that we don't run into the
+    // problem of missing short distances caused by periodicity
+    tempCrystal.centerCellAroundAtom(i);
+
+    size_t neighborInd = 0;
+    double smallestDistance = 1000000.00;
+    vector<atomStruct> tempAtoms = tempCrystal.getAtoms();
+    for (size_t j = i + 1; j < tempAtoms.size(); j++) {
+      double newDistance = getDistance(tempAtoms.at(i), tempAtoms.at(j));
+      cout << "index " << j << " and atomicNum " << tempAtoms.at(j).atomicNum << ": " << newDistance << "\n";
+    }
+  }
+}
