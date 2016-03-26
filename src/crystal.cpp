@@ -444,19 +444,31 @@ bool Crystal::areIADsOkay() const
 
 bool Crystal::areIADsOkay(const atomStruct& as) const
 {
-  atomStruct neighbor;
-  double dist = findNearestNeighborAtomAndDistance(as, neighbor);
-  double minIAD = getMinIAD(as, neighbor);
-  if (dist < minIAD) {
+  Crystal tempCrystal = *this;
+
+  size_t ind = getAtomIndexNum(as);
+
+  // We need to center the cell around this atom so that we don't run into the
+  // problem of missing short distances caused by periodicity
+  tempCrystal.centerCellAroundAtom(ind);
+
+  vector<atomStruct> temp = tempCrystal.getAtoms();
+  for (size_t i = 0; i < temp.size(); i++) {
+    if (i == ind) continue;
+    double minIAD = getMinIAD(temp.at(ind), temp.at(i));
+    double dist = getDistance(temp.at(ind), temp.at(i));
+
+    if (dist < minIAD) {
 #ifdef IAD_DEBUG
-    cout << "In " << __FUNCTION__ << ", minIAD failed!\n";
-    cout << "  The distance is " << dist << " and the minIAD is " << minIAD
-         << "\n";
-    cout << "  Atoms responsible for failure are as follows:\n";
-    printAtomInfo(as);
-    printAtomInfo(neighbor);
+      cout << "In " << __FUNCTION__ << ", minIAD failed!\n";
+      cout << "  The distance is " << dist << " and the minIAD is " << minIAD
+           << "\n";
+      cout << "  Atoms responsible for failure are as follows:\n";
+      printAtomInfo(as);
+      printAtomInfo(neighbor);
 #endif
-    return false;
+      return false;
+    }
   }
   return true;
 }
