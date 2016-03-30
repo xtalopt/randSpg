@@ -16,7 +16,25 @@ add_library (SpgGenerate ${spgGen_SRCS})
 # C++11 is required. MSVC should not need a flag
 if(UNIX)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-endif()
+endif(UNIX)
+
+option(BUILD_RELEASE
+       "Whether to compile with optimizations or not"
+       ON)
+
+# Let's perform some optimizations!
+if (BUILD_RELEASE)
+  message("-- Release build. Please use -DBUILD_RELEASE=OFF if you wish to use a debug build")
+  if(UNIX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+  endif(UNIX)
+  if(MSVC)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Ox")
+  endif(MSVC)
+else (BUILD_RELEASE)
+  message("-- Debug build")
+
+endif (BUILD_RELEASE)
 
 add_executable (spgGen src/main.cpp)
 target_link_libraries (spgGen SpgGenerate)
