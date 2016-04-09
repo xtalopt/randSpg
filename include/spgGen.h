@@ -49,22 +49,64 @@ typedef std::pair<uint, uint> numAndType;
 
 typedef std::pair<std::string, std::string> fillCellInfo;
 
-// Utility struct for creating input for the spgGenCrystal function
 struct spgGenInput {
+  // The space group to be generated. Set in constructor.
   uint spg;
+
+  // The vector of atomic numbers. Set in constructor.
   std::vector<uint> atoms;
+
+  // The min values for the lattice. Set in constructor.
   latticeStruct latticeMins;
+
+  // The max values for the lattice. Set in constructor.
   latticeStruct latticeMaxes;
+
+  // Scaling factor for interatomic distances. For example, "0.5" would imply
+  //that all atomic radii are 0.5 of their original value. Default is 1.0.
   double IADScalingFactor;
+
+  // Minimum radius for atomic radii in Angstroms. All atomic radii below this
+  // radius will be set to this value. Default is 0.0
   double minRadius;
+
+  // A vector of pairs. Each pair is an atomic number followed by a radius in
+  // Angstroms. You may append to this vector to set your own radii. The
+  // default is that it is empty.
   std::vector<std::pair<uint, double>> manualAtomicRadii;
+
+  // Minimum volume for the final crystal in Angstroms cubed. Default is
+  // -1 (No min volume).
   double minVolume;
+
+  // Maximum volume for the final crystal in Angstroms cubed. Default is
+  // -1 (No max volume).
   double maxVolume;
+
+  // A vector of pairs. Each pair is an atomic number followed by a char
+  // representing a Wyckoff letter. This essentially "forces" the program
+  // to use the specified atomic number for the Wyckoff position defined by the
+  // Wyckoff letter. If you wish to have an atom type in a Wyckoff position
+  // multiple times, just add to this vector multiple items of it.
   std::vector<std::pair<uint, char>> forcedWyckAssignments;
+
+  // Verbosity for log file printing. 'v' for verbose (prints all possibilities
+  // found), 'r' for regular (prints Wyckoff assignments), or 'n' for none
+  // (prints nothing other than what the options were set to). Default is 'n'
   char verbosity;
+
+  // Max number of attempts to satisfy the minIAD requirements when placing
+  // atoms in the Wyckoff positions. If it fails this many times, it will abort
+  // the operation. Default is 100.
   int maxAttempts;
-  bool forceMostGeneralWyckPos; // If this is not true, then we are not
-                                // guaranteed to get the right spg
+
+  // This forces the program to use the most general Wyckoff position at
+  // least once. This ensures that the crystal will be of the correct space
+  // group. If this is not set to true, then more compositions are possible for
+  // some space groups, but the final space group will not be guaranteed to be
+  // the correct space group. Default is true.
+  bool forceMostGeneralWyckPos;
+
   // Most basic constructor
   spgGenInput(uint _spg, const std::vector<uint>& _atoms,
                const latticeStruct& _lmins,
