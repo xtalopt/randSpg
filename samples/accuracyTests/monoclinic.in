@@ -1,12 +1,12 @@
-First line is a comment line
+Test for accuracy for spacegroups with monoclinic lattices
 
 # Anything to the right of a hash is a comment
 
 # Composition is set by atomic symbols followed by number as such:
-composition            = Mg4Al2
+composition            = Ti4O8
 
 # Which spacegroups to generate are set as follows (hyphens and commas work)
-spacegroups            = 1-8, 10, 25, 28, 30-32
+spacegroups            = 3-15
 
 # lattice mins and maxes set constraints on the lattice to be generated.
 # Distances are in Angstroms and angles are in degrees.
@@ -18,11 +18,11 @@ latticeMaxes           = 10.0, 10.0, 10.0, 120.0, 120.0, 120.0
 # If the volume is not within this range, it will be rescaled so that it is
 # If you remove minVolume or specify it to be -1, there will be no minVolume
 # Same goes for maxVolume
-minVolume              = 450
-maxVolume              = 500
+minVolume              = 120
+maxVolume              = 140
 
 # numOfEachSpgToGenerate tells us how many crystals of each spg to generate
-numOfEachSpgToGenerate = 3
+numOfEachSpgToGenerate = 10
 
 # For advanced users: by default, the program will only generate a spacegroup
 # for a crystal if it can use the most general Wyckoff position at least

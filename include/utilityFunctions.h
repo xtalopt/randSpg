@@ -50,6 +50,15 @@ static void replaceAll(std::string& str,
   }
 }
 
+static inline bool hasEnding(const std::string& fullString,
+                             const std::string& ending)
+{
+  if (fullString.length() >= ending.length())
+    return (0 == fullString.compare(fullString.length() - ending.length(),
+                                    ending.length(), ending));
+  else return false;
+}
+
 // Replaces all occurrences of "\n" with "<br>" in a string
 static inline std::string useHTMLReturns(const std::string& str)
 {

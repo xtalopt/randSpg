@@ -24,6 +24,7 @@
 #include "fileSystemUtils.h"
 #include "spgGen.h"
 #include "spgGenOptions.h"
+#include "utilityFunctions.h"
 
 using namespace std;
 
@@ -36,6 +37,14 @@ int main(int argc, char* argv[])
 
   // Let's time it!
   auto setup_startTime = chrono::high_resolution_clock::now();
+
+  string logFileName = string(argv[1]);
+
+  // Remove ".in" ending if needed
+  if (hasEnding(logFileName, ".in"))
+    logFileName = logFileName.substr(0, logFileName.length() - 3);
+
+  e_logfilename = logFileName + ".log";
 
   // If there is an old log file here, remove it
   remove(e_logfilename.c_str());
