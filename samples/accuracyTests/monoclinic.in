@@ -62,7 +62,7 @@ scalingFactor          = 0.5
 maxAttempts            = 100
 
 # This sets the output directory
-outputDir              = spgGenOut
+outputDir              = monoclinicOut
 
 # Verbosity indicates how much output to generate in the log file
 # 'n' is no output, 'r' is regular output, and 'v' is verbose output
