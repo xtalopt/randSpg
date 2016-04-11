@@ -554,8 +554,11 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
   }
 
   // If we made it here, we failed to generate the crystal
-  cout << "After " << numAttempts << " attempts: failed to generate "
-       << "a crystal of spg " << spg << ".\n";
+  stringstream errMsg;
+  errMsg << "After " << numAttempts << " attempts: failed to generate "
+         << "a crystal of spg " << spg << ".\n";
+  if (verbosity != 'n') appendToLogFile(errMsg.str());
+  cerr << errMsg.str();
   return Crystal();
 }
 
