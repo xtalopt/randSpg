@@ -155,7 +155,7 @@ int invalidInput(std::string errorMsg)
   printf("<head><title>SpgGen Results</title></head>\n");
   printf("<body>\n");
   printf("<h1>Invalid input</h1>\n");
-  printf(errorMsg.c_str());
+  printf("%s", errorMsg.c_str());
   printf("<br><br><br>");
   printf("</body>\n");
   printf("</html>\n");
@@ -335,7 +335,7 @@ int main() {
      << "</html>\n";
 
   // Let's print it!
-  printf(ss.str().c_str());
+  printf("%s", ss.str().c_str());
 
   /** Free anything that needs to be freed **/
   for (int i=0; cgivars[i]; i++) free(cgivars[i]) ;
