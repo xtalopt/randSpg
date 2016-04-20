@@ -59,7 +59,7 @@ setMinRadii            = 0.3
 scalingFactor          = 0.5
 
 # This sets the maximum number of attempts to generate any given spacegroup
-maxAttempts            = 100
+maxAttempts            = 1000
 
 # This sets the output directory
 outputDir              = cubicOut

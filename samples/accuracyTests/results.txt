@@ -1,0 +1,90 @@
+Findsym tolerance: 0.0001
+forceMostGeneralWyckPos is on
+Overall success rate: 99.913% - all failures are successes if tolerance changed
+Total number of tests: 2300
+
+**** Triclinic ****
+Number of tests: 20
+Success rate is: 100.0 %
+LatticeType : numAttempts : successPercent
+Triclinic    20 100.0 %
+Monoclinic   0 0 %
+Orthorhombic 0 0 %
+Tetragonal   0 0 %
+Trigonal     0 0 %
+Hexagonal    0 0 %
+Cubic        0 0 %
+
+**** Monoclinic ****
+Number of tests: 130
+Success rate is: 100.0 %
+LatticeType : numAttempts : successPercent
+Triclinic    0 0 %
+Monoclinic   130 100.0 %
+Orthorhombic 0 0 %
+Tetragonal   0 0 %
+Trigonal     0 0 %
+Hexagonal    0 0 %
+Cubic        0 0 %
+
+**** Orthorhombic ****
+Number of tests: 590
+Success rate is: 100.0 %
+LatticeType : numAttempts : successPercent
+Triclinic    0 0 %
+Monoclinic   0 0 %
+Orthorhombic 590 100.0 %
+Tetragonal   0 0 %
+Trigonal     0 0 %
+Hexagonal    0 0 %
+Cubic        0 0 %
+
+**** Tetragonal ****
+failure: Ti16O32_140-4 has an actual spg of 97
+Number of tests: 680
+Success rate is: 99.8529411765 %
+LatticeType : numAttempts : successPercent
+Triclinic    0 0 %
+Monoclinic   0 0 %
+Orthorhombic 0 0 %
+Tetragonal   680 99.8529411765 %
+Trigonal     0 0 %
+Hexagonal    0 0 %
+Cubic        0 0 %
+
+**** Trigonal ****
+Number of tests: 250
+Success rate is: 100.0 %
+LatticeType : numAttempts : successPercent
+Triclinic    0 0 %
+Monoclinic   0 0 %
+Orthorhombic 0 0 %
+Tetragonal   0 0 %
+Trigonal     250 100.0 %
+Hexagonal    0 0 %
+Cubic        0 0 %
+
+**** Hexagonal ****
+Number of tests: 270
+Success rate is: 100.0 %
+LatticeType : numAttempts : successPercent
+Triclinic    0 0 %
+Monoclinic   0 0 %
+Orthorhombic 0 0 %
+Tetragonal   0 0 %
+Trigonal     0 0 %
+Hexagonal    270 100.0 %
+Cubic        0 0 %
+
+**** Cubic ****
+failure: Ti96O192_207-2 has an actual spg of 146
+Number of tests: 360
+Success rate is: 99.7222222222 %
+LatticeType : numAttempts : successPercent
+Triclinic    0 0 %
+Monoclinic   0 0 %
+Orthorhombic 0 0 %
+Tetragonal   0 0 %
+Trigonal     0 0 %
+Hexagonal    0 0 %
+Cubic        360 99.7222222222 %
