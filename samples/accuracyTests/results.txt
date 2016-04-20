@@ -88,3 +88,94 @@ Tetragonal   0 0 %
 Trigonal     0 0 %
 Hexagonal    0 0 %
 Cubic        360 99.7222222222 %
+
+
+**** TEST 2 -- forceMostGeneralWyckPos OFF ****
+Findsym tolerance: 0.0001
+forceMostGeneralWyckPos is off
+Overall success rate: 98.044%
+Total number of tests: 2300
+
+**** Triclinic ****
+Number of tests: 20
+Success rate is: 100.0 %
+LatticeType : numAttempts : successPercent
+Triclinic    20 100.0 %
+Monoclinic   0 0 %
+Orthorhombic 0 0 %
+Tetragonal   0 0 %
+Trigonal     0 0 %
+Hexagonal    0 0 %
+Cubic        0 0 %
+
+**** Monoclinic ****
+Number of tests: 130
+Success rate is: 96.9230769231 %
+LatticeType : numAttempts : successPercent
+Triclinic    0 0 %
+Monoclinic   130 96.9230769231 %
+Orthorhombic 0 0 %
+Tetragonal   0 0 %
+Trigonal     0 0 %
+Hexagonal    0 0 %
+Cubic        0 0 %
+
+**** Orthorhombic ****
+Number of tests: 590
+Success rate is: 99.6610169492 %
+LatticeType : numAttempts : successPercent
+Triclinic    0 0 %
+Monoclinic   0 0 %
+Orthorhombic 590 99.6610169492 %
+Tetragonal   0 0 %
+Trigonal     0 0 %
+Hexagonal    0 0 %
+Cubic        0 0 %
+
+**** Tetragonal ****
+Number of tests: 680
+Success rate is: 98.6764705882 %
+LatticeType : numAttempts : successPercent
+Triclinic    0 0 %
+Monoclinic   0 0 %
+Orthorhombic 0 0 %
+Tetragonal   680 98.6764705882 %
+Trigonal     0 0 %
+Hexagonal    0 0 %
+Cubic        0 0 %
+
+**** Trigonal ****
+Number of tests: 250
+Success rate is: 100.0 %
+LatticeType : numAttempts : successPercent
+Triclinic    0 0 %
+Monoclinic   0 0 %
+Orthorhombic 0 0 %
+Tetragonal   0 0 %
+Trigonal     250 100.0 %
+Hexagonal    0 0 %
+Cubic        0 0 %
+
+**** Hexagonal ****
+Number of tests: 270
+Success rate is: 98.5185185185 %
+LatticeType : numAttempts : successPercent
+Triclinic    0 0 %
+Monoclinic   0 0 %
+Orthorhombic 0 0 %
+Tetragonal   0 0 %
+Trigonal     0 0 %
+Hexagonal    270 98.5185185185 %
+Cubic        0 0 %
+
+**** Cubic ****
+Number of tests: 360
+Success rate is: 93.0555555556 %
+LatticeType : numAttempts : successPercent
+Triclinic    0 0 %
+Monoclinic   0 0 %
+Orthorhombic 0 0 %
+Tetragonal   0 0 %
+Trigonal     0 0 %
+Hexagonal    0 0 %
+Cubic        360 93.0555555556 %
