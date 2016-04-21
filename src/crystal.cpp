@@ -452,7 +452,7 @@ bool Crystal::areIADsOkay(const atomStruct& as) const
   // problem of missing short distances caused by periodicity
   tempCrystal.centerCellAroundAtom(ind);
 
-  vector<atomStruct> temp = tempCrystal.getAtoms();
+  const vector<atomStruct>& temp = tempCrystal.getAtoms();
   for (size_t i = 0; i < temp.size(); i++) {
     if (i == ind) continue;
     double minIAD = getMinIAD(temp.at(ind), temp.at(i));

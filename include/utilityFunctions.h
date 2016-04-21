@@ -24,11 +24,9 @@
 static inline std::vector<std::string> split(const std::string& s, char delim)
 {
   std::vector<std::string> elems;
-  std::stringstream ss(s);
+  std::istringstream ss(s); // istringstream is faster to use than stringstream
   std::string item;
-  while (getline(ss, item, delim)) {
-    elems.push_back(item);
-  }
+  while (getline(ss, item, delim)) elems.push_back(item);
   return elems;
 }
 
