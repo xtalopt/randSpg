@@ -102,11 +102,11 @@ class Crystal {
    */
   uint numAtoms() const {return m_atoms.size();};
 
-  /* Set the lattice struct for this cell.
+  /* Set the lattice struct for this cell. Also resets any cached volumes.
    *
    * @param l The new lattice.
    */
-  void setLattice(latticeStruct l) {m_lattice = l;};
+  void setLattice(latticeStruct l) {m_lattice = l; resetVolCaches();};
 
   /* Get the lattice struct for this cell's lattice.
    *
@@ -374,11 +374,20 @@ class Crystal {
    */
   void printIADs() const;
 
+  /* Reset volume caches. -1.0 indicates that it is not cached
+   */
+  void resetVolCaches() {m_unitVolume = -1.0; m_volume = -1.0;};
+
  private:
   latticeStruct m_lattice;
   std::vector<atomStruct> m_atoms;
   // Are we using vdw or covalent radii? We will use vdw by default
   bool m_usingVdwRadii;
+  // A few cached values to reduce computation time
+  // Unit volume
+  mutable double m_unitVolume;
+  // Volume
+  mutable double m_volume;
 };
 
 #endif

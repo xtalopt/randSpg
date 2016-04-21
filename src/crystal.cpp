@@ -39,7 +39,9 @@ using namespace std;
 Crystal::Crystal(latticeStruct l, vector<atomStruct> a, bool usingVdwRad) :
   m_lattice(l),
   m_atoms(a),
-  m_usingVdwRadii(usingVdwRad)
+  m_usingVdwRadii(usingVdwRad),
+  m_unitVolume(-1.0), // These will be cached when the getter is called
+  m_volume(-1.0) // These will be cached when the getter is called
 {
 
 }
@@ -171,15 +173,19 @@ vector<uint> Crystal::getVectorOfAtomicNums() const
 
 double Crystal::getUnitVolume() const
 {
-  const latticeStruct& l = m_lattice;
-  const double alpha = deg2rad(m_lattice.alpha);
-  const double beta = deg2rad(m_lattice.beta);
-  const double gamma = deg2rad(m_lattice.gamma);
-  return sqrt(1.0 -
-              pow(cos(alpha), 2.0) -
-              pow(cos(beta), 2.0) -
-              pow(cos(gamma), 2.0) +
-              2.0 * cos(alpha) * cos(beta) * cos(gamma));
+  // If our volume is not cached, calculate and cache it
+  if (m_unitVolume < 0.0) {
+    const latticeStruct& l = m_lattice;
+    const double alpha = deg2rad(m_lattice.alpha);
+    const double beta = deg2rad(m_lattice.beta);
+    const double gamma = deg2rad(m_lattice.gamma);
+    m_unitVolume = sqrt(1.0 -
+                        pow(cos(alpha), 2.0) -
+                        pow(cos(beta), 2.0) -
+                        pow(cos(gamma), 2.0) +
+                        2.0 * cos(alpha) * cos(beta) * cos(gamma));
+  }
+  return m_unitVolume;
 }
 
 vector<vector<double>> Crystal::getLatticeVecs() const
@@ -222,7 +228,10 @@ vector<vector<double>> Crystal::getLatticeVecs() const
 
 double Crystal::getVolume() const
 {
-  return m_lattice.a * m_lattice.b * m_lattice.c * getUnitVolume();
+  // Check to see it is cached first. If not, cache it before returning
+  if (m_volume < 0.0)
+    m_volume = m_lattice.a * m_lattice.b * m_lattice.c * getUnitVolume();
+  return m_volume;
 }
 
 void Crystal::rescaleVolume(double newVolume)
@@ -241,8 +250,9 @@ void Crystal::rescaleVolume(double newVolume)
   m_lattice.a *= scalingFactor;
   m_lattice.b *= scalingFactor;
   m_lattice.c *= scalingFactor;
-  // This may put the lattice parameters outside the max and min bounds.
-  // Might want to check up on those
+
+  // Reset volume caches
+  resetVolCaches();
 }
 
 double Crystal::getDistance(const atomStruct& as1,
