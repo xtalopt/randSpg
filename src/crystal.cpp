@@ -41,7 +41,9 @@ Crystal::Crystal(latticeStruct l, vector<atomStruct> a, bool usingVdwRad) :
   m_atoms(a),
   m_usingVdwRadii(usingVdwRad),
   m_unitVolume(-1.0), // These will be cached when the getter is called
-  m_volume(-1.0) // These will be cached when the getter is called
+  m_volume(-1.0), // These will be cached when the getter is called
+  m_cartConvMatCached(false),
+  m_cartConvMat{{0.0,0.0,0.0},{0.0,0.0,0.0},{0.0,0.0,0.0}}
 {
 
 }
@@ -143,18 +145,14 @@ bool Crystal::addAtomIfPositionIsEmpty(atomStruct& as)
 atomStruct Crystal::getAtomInCartCoords(const atomStruct& as) const
 {
   atomStruct ret = as;
-  const double& a = m_lattice.a;
-  const double& b = m_lattice.b;
-  const double& c = m_lattice.c;
-  const double alpha = deg2rad(m_lattice.alpha);
-  const double beta = deg2rad(m_lattice.beta);
-  const double gamma = deg2rad(m_lattice.gamma);
-  const double v = getUnitVolume();
+  // If we don't have the cartesian conversion matrix cached, cache it now
+  if (!m_cartConvMatCached) cacheCartConvMat();
+
   // We're just gonna do the matrix multiplication by hand...
-  ret.x = a * as.x + b * cos(gamma) * as.y + c * cos(beta) * as.z;
-  ret.y = b * sin(gamma) * as.y +
-          c * (cos(alpha) - cos(beta) * cos(gamma)) / sin(gamma) * as.z;
-  ret.z = c * v / sin(gamma) * as.z;
+  ret.x = as.x * m_cartConvMat[0][0] + as.y * m_cartConvMat[0][1] + as.z * m_cartConvMat[0][2];
+  ret.y = as.y * m_cartConvMat[1][1] + as.z * m_cartConvMat[1][2];
+  ret.z = as.z * m_cartConvMat[2][2];
+
   // I want to make sure these are all positive
   // When the value is zero, unfortunately, it can be very slightly negative
   // sometimes... So I commented out this assertion
@@ -234,6 +232,27 @@ double Crystal::getVolume() const
   return m_volume;
 }
 
+// Cache the cartesian conversion matrix
+void Crystal::cacheCartConvMat() const
+{
+  const double alpha = deg2rad(m_lattice.alpha);
+  const double beta = deg2rad(m_lattice.beta);
+  const double gamma = deg2rad(m_lattice.gamma);
+  const double v = getUnitVolume();
+
+  m_cartConvMat[0][0] = m_lattice.a;
+  m_cartConvMat[0][1] = m_lattice.b * cos(gamma);
+  m_cartConvMat[0][2] = m_lattice.c * cos(beta);
+  m_cartConvMat[1][0] = 0.0;
+  m_cartConvMat[1][1] = m_lattice.b * sin(gamma);
+  m_cartConvMat[1][2] = m_lattice.c * (cos(alpha) - cos(beta) * cos(gamma)) / sin(gamma);
+  m_cartConvMat[2][0] = 0.0;
+  m_cartConvMat[2][1] = 0.0;
+  m_cartConvMat[2][2] = m_lattice.c * v / sin(gamma);
+
+  m_cartConvMatCached = true;
+}
+
 void Crystal::rescaleVolume(double newVolume)
 {
   if (newVolume < 0) {
@@ -251,8 +270,8 @@ void Crystal::rescaleVolume(double newVolume)
   m_lattice.b *= scalingFactor;
   m_lattice.c *= scalingFactor;
 
-  // Reset volume caches
-  resetVolCaches();
+  // Reset lattice caches
+  resetLatticeCaches();
 }
 
 double Crystal::getDistance(const atomStruct& as1,

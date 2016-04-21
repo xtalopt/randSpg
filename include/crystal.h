@@ -102,11 +102,11 @@ class Crystal {
    */
   uint numAtoms() const {return m_atoms.size();};
 
-  /* Set the lattice struct for this cell. Also resets any cached volumes.
+  /* Set the lattice struct for this cell. Also resets any cached lattice info.
    *
    * @param l The new lattice.
    */
-  void setLattice(latticeStruct l) {m_lattice = l; resetVolCaches();};
+  void setLattice(latticeStruct l) {m_lattice = l; resetLatticeCaches();};
 
   /* Get the lattice struct for this cell's lattice.
    *
@@ -376,18 +376,30 @@ class Crystal {
 
   /* Reset volume caches. -1.0 indicates that it is not cached
    */
-  void resetVolCaches() {m_unitVolume = -1.0; m_volume = -1.0;};
+  void resetLatticeCaches()
+  {
+    m_unitVolume = -1.0;
+    m_volume = -1.0;
+    m_cartConvMatCached = false;
+  };
+
+  // Cache the cartesian conversion matrix
+  void cacheCartConvMat() const;
 
  private:
   latticeStruct m_lattice;
   std::vector<atomStruct> m_atoms;
   // Are we using vdw or covalent radii? We will use vdw by default
   bool m_usingVdwRadii;
+
   // A few cached values to reduce computation time
   // Unit volume
   mutable double m_unitVolume;
   // Volume
   mutable double m_volume;
+  // Matrix for conversion to cartesian coordinates
+  mutable bool m_cartConvMatCached;
+  mutable double m_cartConvMat[3][3];
 };
 
 #endif
