@@ -43,7 +43,7 @@ Crystal::Crystal(latticeStruct l, vector<atomStruct> a, bool usingVdwRad) :
   m_unitVolume(-1.0), // These will be cached when the getter is called
   m_volume(-1.0), // These will be cached when the getter is called
   m_cartConvMatCached(false),
-  m_cartConvMat{{0.0,0.0,0.0},{0.0,0.0,0.0},{0.0,0.0,0.0}}
+  m_cartConvMat{}
 {
 
 }
@@ -149,9 +149,11 @@ atomStruct Crystal::getAtomInCartCoords(const atomStruct& as) const
   if (!m_cartConvMatCached) cacheCartConvMat();
 
   // We're just gonna do the matrix multiplication by hand...
-  ret.x = as.x * m_cartConvMat[0][0] + as.y * m_cartConvMat[0][1] + as.z * m_cartConvMat[0][2];
-  ret.y = as.y * m_cartConvMat[1][1] + as.z * m_cartConvMat[1][2];
-  ret.z = as.z * m_cartConvMat[2][2];
+  // [0] == [0][0]; [1] == [0][1]; [2] == [0][2]
+  // [3] == [1][1]; [4] == [1][2]; [5] == [2][2]
+  ret.x = as.x * m_cartConvMat[0] + as.y * m_cartConvMat[1] + as.z * m_cartConvMat[2];
+  ret.y = as.y * m_cartConvMat[3] + as.z * m_cartConvMat[4];
+  ret.z = as.z * m_cartConvMat[5];
 
   // I want to make sure these are all positive
   // When the value is zero, unfortunately, it can be very slightly negative
@@ -233,6 +235,8 @@ double Crystal::getVolume() const
 }
 
 // Cache the cartesian conversion matrix
+// We are skipping [1][0], [2][0], and [2][1] in this matrix
+// And it is in linear form
 void Crystal::cacheCartConvMat() const
 {
   const double alpha = deg2rad(m_lattice.alpha);
@@ -240,15 +244,12 @@ void Crystal::cacheCartConvMat() const
   const double gamma = deg2rad(m_lattice.gamma);
   const double v = getUnitVolume();
 
-  m_cartConvMat[0][0] = m_lattice.a;
-  m_cartConvMat[0][1] = m_lattice.b * cos(gamma);
-  m_cartConvMat[0][2] = m_lattice.c * cos(beta);
-  m_cartConvMat[1][0] = 0.0;
-  m_cartConvMat[1][1] = m_lattice.b * sin(gamma);
-  m_cartConvMat[1][2] = m_lattice.c * (cos(alpha) - cos(beta) * cos(gamma)) / sin(gamma);
-  m_cartConvMat[2][0] = 0.0;
-  m_cartConvMat[2][1] = 0.0;
-  m_cartConvMat[2][2] = m_lattice.c * v / sin(gamma);
+  m_cartConvMat[0] = m_lattice.a;
+  m_cartConvMat[1] = m_lattice.b * cos(gamma);
+  m_cartConvMat[2] = m_lattice.c * cos(beta);
+  m_cartConvMat[3] = m_lattice.b * sin(gamma);
+  m_cartConvMat[4] = m_lattice.c * (cos(alpha) - cos(beta) * cos(gamma)) / sin(gamma);
+  m_cartConvMat[5] = m_lattice.c * v / sin(gamma);
 
   m_cartConvMatCached = true;
 }

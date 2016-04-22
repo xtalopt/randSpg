@@ -398,8 +398,12 @@ class Crystal {
   // Volume
   mutable double m_volume;
   // Matrix for conversion to cartesian coordinates
+  // Since we have an upper triangle matrix, we don't need [1][0], [1][1], and [2][0]
+  // They are all zero. So we will skip those values to avoid the extra memory usage
+  // Instead, [0][0] is [0], [0][1] is [1], [0][2] is [2], [1][1] is [3], [1][2] is [4], and
+  // [2][2] is [5]
   mutable bool m_cartConvMatCached;
-  mutable double m_cartConvMat[3][3];
+  mutable double m_cartConvMat[6];
 };
 
 #endif
