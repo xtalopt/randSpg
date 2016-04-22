@@ -79,16 +79,6 @@ vector<numAndType> SpgGen::getNumOfEachType(const vector<uint>& atoms)
   return numOfEachType;
 }
 
-// A unique position is a position that has no x, y, or z in it
-bool SpgGen::containsUniquePosition(const wyckPos& pos)
-{
-  vector<string> xyzStrings = split(getWyckCoords(pos), ',');
-  assert(xyzStrings.size() == 3);
-  for (size_t i = 0; i < xyzStrings.size(); i++)
-    if (!isNumber(xyzStrings.at(i))) return false;
-  return true;
-}
-
 // Returns true on success and false on failure
 bool getNumberInFirstTerm(const string& s, double& result, size_t& len)
 {

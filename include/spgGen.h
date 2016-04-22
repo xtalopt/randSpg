@@ -29,9 +29,10 @@ extern std::string e_logfilename;
 extern char e_verbosity;
 
 // wyckPos is a tuple of a char (representing the Wyckoff letter),
-// an int (representing the multiplicity), and a string (that contains the first
-// Wyckoff position)
-typedef std::tuple<char, int, std::string> wyckPos;
+// an int (representing the multiplicity), a string (that contains the first
+// Wyckoff position), and a bool indicating whether the position is unique
+// or not. This bool is part of the tuple for improved speed.
+typedef std::tuple<char, int, std::string, bool> wyckPos;
 
 // Each spacegroup has a variable number of wyckoff positions. So each
 // spacegroup will have it's own vector of wyckoff positions.
@@ -151,9 +152,11 @@ struct spgGenInput {
 class SpgGen {
  public:
 
+  // Get the info from the tuple in the database
   static char getWyckLet(const wyckPos& pos) {return std::get<0>(pos);};
   static uint getMultiplicity(const wyckPos& pos) {return std::get<1>(pos);};
   static std::string getWyckCoords(const wyckPos& pos) {return std::get<2>(pos);};
+  static bool containsUniquePosition(const wyckPos& pos) {return std::get<3>(pos);};
 
   /*
    * Obtain the wyckoff positions of a spacegroup from the database
@@ -264,8 +267,6 @@ class SpgGen {
 
   static std::vector<numAndType> getNumOfEachType(
                                    const std::vector<uint>& atoms);
-
-  static bool containsUniquePosition(const wyckPos& pos);
 
   static std::string getAtomAssignmentsString(const atomAssignments& a);
 
