@@ -236,7 +236,7 @@ vector<string> SpgGen::getVectorOfFillPositions(uint spg)
   return ret;
 }
 
-bool SpgGen::addWyckoffAtomRandomly(Crystal& crystal, wyckPos& position,
+bool SpgGen::addWyckoffAtomRandomly(Crystal& crystal, const wyckPos& position,
                                      uint atomicNum, uint spg, int maxAttempts)
 {
   START_FT;
@@ -458,9 +458,6 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
     return Crystal();
   }
 
-  // Limit the possibilities to be only those that allow the forced Wyckoff
-  // assignments to be satisfied.
-  vector<pair<uint, char>> alreadyUsedForcedWyckAssignments;
   // The tuple is as follows: <atomicNum, wyckLet, numTimesUsed>
   vector<tuple<uint, char, uint>> forcedWyckAssignmentsAndNumber = getForcedWyckAssignmentsAndNumber(forcedWyckAssignments);
 
@@ -520,10 +517,11 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
 
     bool assignmentsSuccessful = true;
     for (size_t j = 0; j < assignments.size(); j++) {
-      wyckPos pos = assignments.at(j).first;
+      const wyckPos& pos = assignments.at(j).first;
       uint atomicNum = assignments.at(j).second;
       if (!addWyckoffAtomRandomly(crystal, pos, atomicNum, spg)) {
         assignmentsSuccessful = false;
+        break;
       }
     }
 

@@ -90,12 +90,14 @@ static inline bool atomsHaveSamePosition(const atomStruct& a1,
   return false;
 }
 
+// For use in the following function
+static const double MIN_DOUBLE = 1e-5;
+
 // We're assuming we're using fractional coordinates...
 static inline void wrapUnitToCell(double& u)
 {
-  double minD = 0.00001;
   while (u < 0.0) u += 1.0;
-  while (u >= 1.0 || fabs(u - 1.0) < minD) u -= 1.0;
+  while (u >= 1.0 || fabs(u - 1.0) < MIN_DOUBLE) u -= 1.0;
 }
 
 static inline void wrapAtomToCell(atomStruct& as)

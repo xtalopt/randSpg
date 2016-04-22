@@ -230,7 +230,7 @@ class SpgGen {
    *
    * @return True if it succeeded, and false if it failed.
    */
-  static bool addWyckoffAtomRandomly(Crystal& crystal, wyckPos& position,
+  static bool addWyckoffAtomRandomly(Crystal& crystal, const wyckPos& position,
                                      uint atomicNum, uint spg,
                                      int maxAttempts = 1000);
 
