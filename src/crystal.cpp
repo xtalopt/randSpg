@@ -39,9 +39,9 @@ using namespace std;
 Crystal::Crystal(latticeStruct l, vector<atomStruct> a, bool usingVdwRad) :
   m_lattice(l),
   m_atoms(a),
-  m_usingVdwRadii(usingVdwRad),
   m_unitVolume(-1.0), // These will be cached when the getter is called
   m_volume(-1.0), // These will be cached when the getter is called
+  m_usingVdwRadii(usingVdwRad),
   m_cartConvMatCached(false),
   m_cartConvMat{}
 {
