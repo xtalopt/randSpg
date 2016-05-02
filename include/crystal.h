@@ -389,14 +389,17 @@ class Crystal {
  private:
   latticeStruct m_lattice;
   std::vector<atomStruct> m_atoms;
-  // Are we using vdw or covalent radii? We will use vdw by default
-  bool m_usingVdwRadii;
 
   // A few cached values to reduce computation time
   // Unit volume
   mutable double m_unitVolume;
   // Volume
   mutable double m_volume;
+
+  // Are we using vdw or covalent radii? We will use covalent by default
+  bool m_usingVdwRadii;
+
+  // More cached values
   // Matrix for conversion to cartesian coordinates
   // Since we have an upper triangle matrix, we don't need [1][0], [1][1], and [2][0]
   // They are all zero. So we will skip those values to avoid the extra memory usage
