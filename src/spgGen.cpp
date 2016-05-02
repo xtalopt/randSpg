@@ -425,6 +425,9 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
   int numAttempts                                               = input.maxAttempts;
   bool forceMostGeneralWyckPos                                  = input.forceMostGeneralWyckPos;
 
+  // Change the atomic radii as necessary
+  ElemInfo::applyScalingFactor(IADScalingFactor);
+
   // Set the min radius
   ElemInfo::setMinRadius(minRadius);
 
@@ -434,9 +437,6 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
     double rad = manualAtomicRadii.at(i).second;
     ElemInfo::setRadius(atomicNum, rad);
   }
-
-  // Change the atomic radii as necessary
-  ElemInfo::applyScalingFactor(IADScalingFactor);
 
   systemPossibilities possibilities = SpgGenCombinatorics::getSystemPossibilities(spg, atoms);
 
