@@ -41,7 +41,7 @@ target_link_libraries (spgGen SpgGenerate)
 
 option( BUILD_CGI
         "Whether to compile the CGI handler in addition to the spgGen code."
-        ON )
+        OFF )
 if(BUILD_CGI)
   add_executable (spgGen.cgi cgi/spgGen-cgi.cpp)
   target_link_libraries (spgGen.cgi SpgGenerate)
