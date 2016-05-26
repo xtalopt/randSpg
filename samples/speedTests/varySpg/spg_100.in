@@ -1,0 +1,71 @@
+Test for speed with Ti30O60
+
+# Anything to the right of a hash is a comment
+
+# Composition is set by atomic symbols followed by number as such:
+composition            = Ti30O60
+
+# Which spacegroups to generate are set as follows (hyphens and commas work)
+spacegroups            = 100
+
+# lattice mins and maxes set constraints on the lattice to be generated.
+# Distances are in Angstroms and angles are in degrees.
+#                           a,    b,    c, alpha,  beta, gamma
+latticeMins            =  3.0,  3.0,  3.0,  60.0,  60.0,  60.0
+latticeMaxes           = 20.0, 20.0, 20.0, 120.0, 120.0, 120.0
+
+# minVolume and maxVolume specify constraints on the volume in Angstroms
+# If the volume is not within this range, it will be rescaled so that it is
+# If you remove minVolume or specify it to be -1, there will be no minVolume
+# Same goes for maxVolume
+minVolume              = 890
+maxVolume              = 910
+
+# numOfEachSpgToGenerate tells us how many crystals of each spg to generate
+numOfEachSpgToGenerate = 100
+
+# For advanced users: by default, the program will only generate a spacegroup
+# for a crystal if it can use the most general Wyckoff position at least
+# once. This is because the spacegroup is not guaranteed if the most
+# general Wyckoff position is not used at least once. The user, however,
+# may turn off that option here by setting it to false.
+# If this is the case, more compositions may be generated for a particular
+# spacegroup, but they may not be the correct spacegroup (about a 50 or 60%
+# chance overall - but it differs with each spacegroup)
+
+#forceMostGeneralWyckPos = false
+
+# For advanced users: this allows us to force an element to be assigned
+# to a specific Wyckoff position. If you wish to force an element to be in
+# the same Wyckoff position multiple times, just repeat the tag multiple times
+# i. e. add 'forceWyckPos Mg = a' on as many lines as you want to force the
+# Wyckoff position
+
+#forceWyckPos Mg        = a
+
+# We can set minimum radii (Angstroms) for individual atoms
+
+#setRadius Ti           = 0.5
+
+# Or for all atoms. A min radius for an individual atom trumps this one
+# If the default min radius of the atom is less than this input value, then
+# the min radius of that atom is set to be this value
+# Value is in Angstroms
+setMinRadii            = 0.3
+
+# This scaling factor will scale all radii that were not explicity set
+# The new radii are equal to (radius * scalingFactor)
+# This is particularly useful when changing the pressure of a crystal
+scalingFactor          = 0.5
+
+# This sets the maximum number of attempts to generate any given spacegroup
+maxAttempts            = 1000
+
+# This sets the output directory
+outputDir              = spg_100
+
+# Verbosity indicates how much output to generate in the log file
+# 'n' is no output, 'r' is regular output, and 'v' is verbose output
+verbosity              = r
+
+# In the output POSCAR, the name is <composition>_<spg>-<index>

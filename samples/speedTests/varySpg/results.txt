@@ -1,0 +1,14 @@
+Tests were performed using a single processor on a
+1.7 GHz AMD Athlon(tm) X4 860K Quad Core Processor
+
+Composition for each was Ti30O60
+
+Spg : Average success wall time (in seconds)
+
+1   : 0.447217
+3   : 13.8751
+5   : 11.225
+10  : 11.8901
+100 : 7.49704
+150 : 39.7245
+200 : 0.988743

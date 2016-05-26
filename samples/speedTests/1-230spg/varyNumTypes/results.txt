@@ -1,0 +1,9 @@
+Tests were performed using a single processor on a
+1.7 GHz AMD Athlon(tm) X4 860K Quad Core Processor
+
+Composition     : Average success wall time (in seconds)
+
+Ti60            :  14.2302
+Ti30O30         :  36.7212
+Ti20Mg20O20     :  48.0002
+Ti15Mg15Si15O15 : 138.2650
