@@ -125,11 +125,11 @@ vector<uint> createSpgVector(string s)
 
   for (size_t i = 0; i < ssplit.size(); i++) {
     // Add all individual numbers
-    if (isNumber(trim(ssplit.at(i)))) ret.push_back(stoi(trim(ssplit.at(i))));
+    if (isNumber(trim(ssplit[i]))) ret.push_back(stoi(trim(ssplit[i])));
     // Add hyphenated numbers
-    else if (contains(ssplit.at(i), '-')) {
+    else if (contains(ssplit[i], '-')) {
       // Split it
-      vector<string> hyphenSplit = split(ssplit.at(i), '-');
+      vector<string> hyphenSplit = split(ssplit[i], '-');
 
       if (hyphenSplit.size() != 2) {
         cerr << "Error understanding the spacegroups option. Please verify that"
@@ -138,8 +138,8 @@ vector<uint> createSpgVector(string s)
       }
       // Find the first number, and keep adding numbers till we get to the final
       // one
-      uint firstNum = stoi(trim(hyphenSplit.at(0)));
-      uint lastNum  = stoi(trim(hyphenSplit.at(1)));
+      uint firstNum = stoi(trim(hyphenSplit[0]));
+      uint lastNum  = stoi(trim(hyphenSplit[1]));
       for (uint i = firstNum; i <= lastNum; i++) ret.push_back(i);
     }
   }
@@ -163,12 +163,12 @@ latticeStruct interpretLatticeString(const string& s)
     return ret;
   }
 
-  ret.a     = stof(trim(theSplit.at(0)));
-  ret.b     = stof(trim(theSplit.at(1)));
-  ret.c     = stof(trim(theSplit.at(2)));
-  ret.alpha = stof(trim(theSplit.at(3)));
-  ret.beta  = stof(trim(theSplit.at(4)));
-  ret.gamma = stof(trim(theSplit.at(5)));
+  ret.a     = stof(trim(theSplit[0]));
+  ret.b     = stof(trim(theSplit[1]));
+  ret.c     = stof(trim(theSplit[2]));
+  ret.alpha = stof(trim(theSplit[3]));
+  ret.beta  = stof(trim(theSplit[4]));
+  ret.gamma = stof(trim(theSplit[5]));
 
   return ret;
 }
@@ -181,10 +181,10 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
   // If the line is empty, return
   // If the line starts with '#', return
   if (line.size() == 0) return;
-  if (line.at(0) == '#') return;
+  if (line[0] == '#') return;
 
   // Remove anything to the right of any # in the line - this is a comment
-  line = split(line, '#').at(0);
+  line = split(line, '#')[0];
 
   // Separate the option and the value
   vector<string> theSplit = split(line, '=');
@@ -196,8 +196,8 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
     return;
   }
 
-  string option = trim(theSplit.at(0));
-  string value  = trim(theSplit.at(1));
+  string option = trim(theSplit[0]);
+  string value  = trim(theSplit[1]);
 
   // Now let's figure out what the option is
   if (option == "composition") {
@@ -218,9 +218,9 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
     m_numOfEachSpgToGenerate = stoi(value);
   }
   else if (option == "forceMostGeneralWyckPos") {
-    if (value.at(0) == 'F' || value.at(0) == 'f')
+    if (value[0] == 'F' || value[0] == 'f')
       m_forceMostGeneralWyckPos = false;
-    else if (value.at(0) == 'T' || value.at(0) == 't')
+    else if (value[0] == 'T' || value[0] == 't')
       m_forceMostGeneralWyckPos = true;
     else {
       cerr << "Error reading 'forceMostGeneralWyckPos' setting: " << value
@@ -236,8 +236,8 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
       m_optionsAreValid = false;
       return;
     }
-    uint atomicNum = ElemInfo::getAtomicNum(tempSplit.at(1));
-    m_forcedWyckAssignments.push_back(make_pair(atomicNum, value.at(0)));
+    uint atomicNum = ElemInfo::getAtomicNum(tempSplit[1]);
+    m_forcedWyckAssignments.push_back(make_pair(atomicNum, value[0]));
   }
   else if (contains(option, "setRadius")) {
     // There should be a space after 'setRadius' with the atomic symbol there
@@ -248,7 +248,7 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
       m_optionsAreValid = false;
       return;
     }
-    uint atomicNum = ElemInfo::getAtomicNum(tempSplit.at(1));
+    uint atomicNum = ElemInfo::getAtomicNum(tempSplit[1]);
     m_radiusVector.push_back(make_pair(atomicNum, stof(value)));
   }
   else if (option == "setMinRadii") {
@@ -271,14 +271,14 @@ void SpgGenOptions::interpretLineAndSetOption(string line)
     m_outputDir = value;
   }
   else if (option == "verbosity") {
-    if (value.at(0) != 'n' && value.at(0) != 'r' && value.at(0) != 'v') {
+    if (value[0] != 'n' && value[0] != 'r' && value[0] != 'v') {
       cerr << "Error: the value given for verbosity, '" << value << "', is "
            << "not a valid option!\nValid options are: 'n' for no output, "
            << "'r' for regular output, or 'v' for verbose output\n";
       m_optionsAreValid = false;
       return;
     }
-    m_verbosity = value.at(0);
+    m_verbosity = value[0];
   }
   else {
     cerr << "Warning: the following line contained an unrecognizable option: "
@@ -294,31 +294,31 @@ string getSpacegroupsString(vector<uint> v)
   for (size_t i = 0; i < v.size(); i++) {
     // Last value
     if (i == v.size() - 1) {
-      ret += to_string(v.at(i));
+      ret += to_string(v[i]);
     }
     // Second to last value
     else if (i == v.size() - 2) {
-      ret += to_string(v.at(i));
+      ret += to_string(v[i]);
       ret += ", ";
     }
     // Anything else
     else {
       // Check for hyphenation
-      if (v.at(i) + 1 == v.at(i + 1) && v.at(i) + 2 == v.at(i + 2)) {
+      if (v[i] + 1 == v[i + 1] && v[i] + 2 == v[i + 2]) {
         // Hyphenate this segment
-        ret += to_string(v.at(i));
+        ret += to_string(v[i]);
         ret += " - ";
         for (size_t j = i; j < v.size(); j++) {
-          if (v.at(j) - v.at(i) != j - i) {
+          if (v[j] - v[i] != j - i) {
             // End the hyphenation
-            ret += to_string(v.at(j - 1));
+            ret += to_string(v[j - 1]);
             ret += ", ";
             i = j - 1;
             break;
           }
           // We reached the final value
           else if (j == v.size() - 1) {
-            ret += to_string(v.at(j));
+            ret += to_string(v[j]);
             i = j;
             break;
           }
@@ -326,7 +326,7 @@ string getSpacegroupsString(vector<uint> v)
       }
       // Just add the number with a comma
       else {
-        ret += to_string(v.at(i));
+        ret += to_string(v[i]);
         ret += ", ";
       }
     }
@@ -378,8 +378,8 @@ string SpgGenOptions::getOptionsString() const
   }
   s << "explicity set radii: \n";
   for (size_t i = 0; i < m_radiusVector.size(); i++) {
-    s << "  " << ElemInfo::getAtomicSymbol(m_radiusVector.at(i).first)
-      << ": " << m_radiusVector.at(i).second << "\n";
+    s << "  " << ElemInfo::getAtomicSymbol(m_radiusVector[i].first)
+      << ": " << m_radiusVector[i].second << "\n";
   }
   s << "scalingFactor: " << m_scalingFactor << "\n";
   s << "maxAttempts: " << m_maxAttempts << "\n";

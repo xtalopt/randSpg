@@ -54,7 +54,7 @@ static inline bool spgMultsAreAllEven(uint spg)
   if (wyckVector.size() == 0) return false;
 
   for (size_t i = 0; i < wyckVector.size(); i++) {
-    if (numIsOdd(SpgGen::getMultiplicity(wyckVector.at(i)))) return false;
+    if (numIsOdd(SpgGen::getMultiplicity(wyckVector[i]))) return false;
   }
   return true;
 }
@@ -68,11 +68,11 @@ vector<numAndType> SpgGen::getNumOfEachType(const vector<uint>& atoms)
     size_t size = 0;
     // If we already counted this one, just continue
     if (std::find(atomsAlreadyCounted.begin(), atomsAlreadyCounted.end(),
-                  atoms.at(i)) != atomsAlreadyCounted.end()) continue;
+                  atoms[i]) != atomsAlreadyCounted.end()) continue;
     for (size_t j = 0; j < atoms.size(); j++)
-      if (atoms.at(j) == atoms.at(i)) size++;
-    numOfEachType.push_back(make_pair(size, atoms.at(i)));
-    atomsAlreadyCounted.push_back(atoms.at(i));
+      if (atoms[j] == atoms[i]) size++;
+    numOfEachType.push_back(make_pair(size, atoms[i]));
+    atomsAlreadyCounted.push_back(atoms[i]);
   }
   // Sort from largest to smallest
   sort(numOfEachType.begin(), numOfEachType.end(), greaterThan);
@@ -91,21 +91,21 @@ bool getNumberInFirstTerm(const string& s, double& result, size_t& len)
   }
 
   bool isNeg = false;
-  if (s.at(i) == '-') {
+  if (s[i] == '-') {
     isNeg = true;
     i++;
     len++;
   }
 
   // If it's just a variable, then the number is 1 or -1
-  if (s.at(i) == 'x' || s.at(i) == 'y' || s.at(i) == 'z') {
+  if (s[i] == 'x' || s[i] == 'y' || s[i] == 'z') {
     result = (isNeg) ? -1 : 1;
     return true;
   }
 
   // Find the length of the number
   size_t j = i;
-  while (j < s.size() && (isDigit(s.at(j)) || s.at(j) == '.')) {
+  while (j < s.size() && (isDigit(s[j]) || s[j] == '.')) {
     len++;
     j++;
   }
@@ -144,7 +144,7 @@ double SpgGen::interpretComponent(const string& component,
   double result = 0;
   while (i < component.size()) {
     // We assume we are adding unless told otherwise
-    if (component.at(i) == '+') i++;
+    if (component[i] == '+') i++;
 
     double numInFront = 0;
     size_t len = 0;
@@ -163,7 +163,7 @@ double SpgGen::interpretComponent(const string& component,
 
     // Figure out which variable we are dealing with...
     // or if we are dealing with one at all...
-    switch (component.at(i)) {
+    switch (component[i]) {
       case 'x':
         result += numInFront * x;
         i++;
@@ -191,17 +191,17 @@ const wyckoffPositions& SpgGen::getWyckoffPositions(uint spg)
   if (spg < 1 || spg > 230) {
     cout << "Error. getWyckoffPositions() was called for a spacegroup "
          << "that does not exist! Given spacegroup is " << spg << endl;
-    return wyckoffPositionsDatabase.at(0);
+    return wyckoffPositionsDatabase[0];
   }
 
-  return wyckoffPositionsDatabase.at(spg);
+  return wyckoffPositionsDatabase[spg];
 }
 
 wyckPos SpgGen::getWyckPosFromWyckLet(uint spg, char wyckLet)
 {
   const wyckoffPositions& wyckpos = getWyckoffPositions(spg);
   for (size_t i = 0; i < wyckpos.size(); i++) {
-    if (getWyckLet(wyckpos.at(i)) == wyckLet) return wyckpos.at(i);
+    if (getWyckLet(wyckpos[i]) == wyckLet) return wyckpos[i];
   }
   cout << "Error in " << __FUNCTION__ << ": wyckLet '" << wyckLet
        << "' not found in spg '" << spg  << "'!\n";
@@ -213,9 +213,9 @@ const fillCellInfo& SpgGen::getFillCellInfo(uint spg)
   if (spg < 1 || spg > 230) {
     cout << "Error. getFillCellInfo() was called for a spacegroup "
          << "that does not exist! Given spacegroup is " << spg << endl;
-    return fillCellVector.at(0);
+    return fillCellVector[0];
   }
-  return fillCellVector.at(spg);
+  return fillCellVector[spg];
 }
 
 vector<string> SpgGen::getVectorOfDuplications(uint spg)
@@ -309,8 +309,8 @@ getModifiedForcedWyckVector(const vector<pair<uint, char>>& v, uint spg)
 {
   vector<pair<uint, wyckPos>> ret;
   for (size_t i = 0; i < v.size(); i++)
-    ret.push_back(make_pair(v.at(i).first,
-                          SpgGen::getWyckPosFromWyckLet(spg, v.at(i).second)));
+    ret.push_back(make_pair(v[i].first,
+                          SpgGen::getWyckPosFromWyckLet(spg, v[i].second)));
   return ret;
 }
 
@@ -326,8 +326,8 @@ getForcedWyckAssignmentsAndNumber(const vector<pair<uint, char>>& forcedWyckAssi
     // Check to see if we've already looked at this assignment
     bool alreadyUsed = false;
     for (size_t j = 0; j < alreadyUsedForcedWyckAssignments.size(); j++) {
-      if (forcedWyckAssignments.at(i) ==
-          alreadyUsedForcedWyckAssignments.at(j)) {
+      if (forcedWyckAssignments[i] ==
+          alreadyUsedForcedWyckAssignments[j]) {
         alreadyUsed = true;
         break;
       }
@@ -337,13 +337,13 @@ getForcedWyckAssignmentsAndNumber(const vector<pair<uint, char>>& forcedWyckAssi
     // Now count how many times we use this
     uint numTimesUsed = 1;
     for (size_t j = i + 1; j < forcedWyckAssignments.size(); j++) {
-      if (forcedWyckAssignments.at(i) == forcedWyckAssignments.at(j))
+      if (forcedWyckAssignments[i] == forcedWyckAssignments[j])
         numTimesUsed++;
     }
-    alreadyUsedForcedWyckAssignments.push_back(forcedWyckAssignments.at(i));
+    alreadyUsedForcedWyckAssignments.push_back(forcedWyckAssignments[i]);
     forcedWyckAssignmentsAndNumber.push_back(make_tuple(
-      forcedWyckAssignments.at(i).first,
-      forcedWyckAssignments.at(i).second,
+      forcedWyckAssignments[i].first,
+      forcedWyckAssignments[i].second,
       numTimesUsed));
   }
   return forcedWyckAssignmentsAndNumber;
@@ -433,8 +433,8 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
 
   // Set some explicit radii
   for (size_t i = 0; i < manualAtomicRadii.size(); i++) {
-    uint atomicNum = manualAtomicRadii.at(i).first;
-    double rad = manualAtomicRadii.at(i).second;
+    uint atomicNum = manualAtomicRadii[i].first;
+    double rad = manualAtomicRadii[i].second;
     ElemInfo::setRadius(atomicNum, rad);
   }
 
@@ -464,9 +464,9 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
   for (size_t i = 0; i < forcedWyckAssignmentsAndNumber.size(); i++) {
     possibilities =
       SpgGenCombinatorics::removePossibilitiesWithoutWyckPos(possibilities,
-                  get<1>(forcedWyckAssignmentsAndNumber.at(i)),
-                  get<2>(forcedWyckAssignmentsAndNumber.at(i)),
-                  get<0>(forcedWyckAssignmentsAndNumber.at(i)));
+                  get<1>(forcedWyckAssignmentsAndNumber[i]),
+                  get<2>(forcedWyckAssignmentsAndNumber[i]),
+                  get<0>(forcedWyckAssignmentsAndNumber[i]));
   }
 
   if (possibilities.size() == 0) {
@@ -509,16 +509,16 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
     cout << "\natomAssignments are the following (atomicNum, wyckLet, wyckPos):"
          << "\n";
     for (size_t j = 0; j < assignments.size(); j++)
-      cout << "  " << assignments.at(j).second << ", "
-           << getWyckLet(assignments.at(j).first)
-           << ", " << getWyckCoords(assignments.at(j).first) << "\n";
+      cout << "  " << assignments[j].second << ", "
+           << getWyckLet(assignments[j].first)
+           << ", " << getWyckCoords(assignments[j].first) << "\n";
     cout << "\n";
 #endif
 
     bool assignmentsSuccessful = true;
     for (size_t j = 0; j < assignments.size(); j++) {
-      const wyckPos& pos = assignments.at(j).first;
-      uint atomicNum = assignments.at(j).second;
+      const wyckPos& pos = assignments[j].first;
+      uint atomicNum = assignments[j].second;
       if (!addWyckoffAtomRandomly(crystal, pos, atomicNum, spg)) {
         assignmentsSuccessful = false;
         break;
@@ -563,7 +563,7 @@ bool SpgGen::isSpgPossible(uint spg, const vector<uint>& atoms)
   vector<numAndType> numOfEachType = getNumOfEachType(atoms);
   bool containsOdd = false;
   for (size_t i = 0; i < numOfEachType.size(); i++) {
-    if (numIsOdd(numOfEachType.at(i).first)) {
+    if (numIsOdd(numOfEachType[i].first)) {
       containsOdd = true;
       break;
     }
@@ -842,7 +842,7 @@ string SpgGen::getAtomAssignmentsString(const atomAssignments& a)
   s << "printing atom assignments:\n";
   s << "Atomic num : Wyckoff letter\n";
   for (size_t i = 0; i < a.size(); i++) {
-    s << a.at(i).second << " : " << getWyckLet(a.at(i).first) << "\n";
+    s << a[i].second << " : " << getWyckLet(a[i].first) << "\n";
   }
   return s.str();
 }

@@ -31,13 +31,13 @@ std::string ElemInfo::getAtomicSymbol(uint atomicNum)
          << __FUNCTION__ << "!\n";
     return 0;
   }
-  return atomicSymbols.at(atomicNum);
+  return atomicSymbols[atomicNum];
 }
 
 uint ElemInfo::getAtomicNum(std::string symbol)
 {
   for (uint i = 0; i < atomicSymbols.size(); i++) {
-    if (atomicSymbols.at(i) == symbol) return i;
+    if (atomicSymbols[i] == symbol) return i;
   }
 
   std::cout << "Error: Invalid symbol, " << symbol << ", was entered into "
@@ -52,7 +52,7 @@ string readLetters(string input)
   size_t i = 0;
   while (true) {
     if (i == input.size()) return ret;
-    if (!isDigit(input.at(i))) ret.push_back(input.at(i));
+    if (!isDigit(input[i])) ret.push_back(input[i]);
     else return ret;
     i++;
   }
@@ -65,7 +65,7 @@ string readNumbers(string input)
   size_t i = 0;
   while (true) {
     if (i == input.size()) return ret;
-    if (isDigit(input.at(i))) ret.push_back(input.at(i));
+    if (isDigit(input[i])) ret.push_back(input[i]);
     else return ret;
     i++;
   }
@@ -117,7 +117,7 @@ double ElemInfo::getVdwRadius(uint atomicNum)
          << __FUNCTION__ << "!\n";
     return 0;
   }
-  return vdwRadii.at(atomicNum);
+  return vdwRadii[atomicNum];
 }
 
 double ElemInfo::getCovalentRadius(uint atomicNum)
@@ -127,7 +127,7 @@ double ElemInfo::getCovalentRadius(uint atomicNum)
          << __FUNCTION__ << "!\n";
     return 0;
   }
-  return covalentRadii.at(atomicNum);
+  return covalentRadii[atomicNum];
 }
 
 void ElemInfo::applyScalingFactor(double sf)

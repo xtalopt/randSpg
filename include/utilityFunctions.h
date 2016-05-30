@@ -77,7 +77,7 @@ static inline std::string removeSpacesAndReturns(const std::string& str)
 static inline void removeEmptyStrings(std::vector<std::string>& v)
 {
   for (size_t i = 0; i < v.size(); i++) {
-    if (v.at(i).size() == 0) v.erase(v.begin() + i);
+    if (v[i].size() == 0) v.erase(v.begin() + i);
   }
 }
 

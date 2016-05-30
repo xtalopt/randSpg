@@ -116,7 +116,7 @@ void Crystal::removeAtomsWithSameCoordinates()
 {
   for (size_t i = 0; i < m_atoms.size(); i++) {
     for (size_t j = i + 1; j < m_atoms.size(); j++) {
-      if (atomsHaveSamePosition(m_atoms.at(i), m_atoms.at(j))) {
+      if (atomsHaveSamePosition(m_atoms[i], m_atoms[j])) {
         removeAtomAt(j);
         j--;
       }
@@ -129,8 +129,8 @@ bool Crystal::addAtomIfPositionIsEmpty(atomStruct& as)
   wrapAtomToCell(as);
   bool positionIsEmpty = true;
   for (size_t i = 0; i < m_atoms.size(); i++) {
-    if (atomsHaveSamePosition(as, m_atoms.at(i)) &&
-        as.atomicNum == m_atoms.at(i).atomicNum) {
+    if (atomsHaveSamePosition(as, m_atoms[i]) &&
+        as.atomicNum == m_atoms[i].atomicNum) {
       positionIsEmpty = false;
       break;
     }
@@ -168,7 +168,7 @@ vector<uint> Crystal::getVectorOfAtomicNums() const
 {
   vector<uint> ret;
   for (size_t i = 0; i < m_atoms.size(); i++) {
-    ret.push_back(m_atoms.at(i).atomicNum);
+    ret.push_back(m_atoms[i].atomicNum);
   }
   return ret;
 }
@@ -310,7 +310,7 @@ double Crystal::findNearestNeighborAtomAndDistance(const atomStruct& as,
   vector<atomStruct> tempAtoms = tempCrystal.getAtoms();
   for (size_t i = 0; i < tempAtoms.size(); i++) {
     if (i == ind) continue;
-    double newDistance = getDistance(tempAtoms.at(ind), tempAtoms.at(i));
+    double newDistance = getDistance(tempAtoms[ind], tempAtoms[i]);
     if (newDistance < smallestDistance) {
       smallestDistance = newDistance;
       neighborInd = i;
@@ -318,7 +318,7 @@ double Crystal::findNearestNeighborAtomAndDistance(const atomStruct& as,
   }
 
   // Set the neighbor
-  neighbor = m_atoms.at(neighborInd);
+  neighbor = m_atoms[neighborInd];
 
 #ifdef NEAREST_NEIGHBOR_DEBUG
   cout << "Nearest neighbor is:\n";
@@ -333,7 +333,7 @@ double Crystal::findNearestNeighborAtomAndDistance(const atomStruct& as,
 int Crystal::getAtomIndexNum(const atomStruct& as) const
 {
   for (size_t i = 0; i < m_atoms.size(); i++) {
-    if (m_atoms.at(i) == as) return i;
+    if (m_atoms[i] == as) return i;
   }
   cout << "Error in " << __FUNCTION__ << ": atom not found!\n";
   return -1;
@@ -354,7 +354,7 @@ void Crystal::centerCellAroundAtom(const atomStruct& as)
 
 void Crystal::centerCellAroundAtom(size_t ind)
 {
-  atomStruct& as = m_atoms.at(ind);
+  atomStruct& as = m_atoms[ind];
 
 #ifdef CENTER_CELL_DEBUG
   cout << "Atom to be centered:\n";
@@ -403,24 +403,24 @@ bool Crystal::fillCellWithAtom(uint spg, const atomStruct& as)
   for (size_t j = 0; j < dupVec.size(); j++) {
     // First, we are going to set up the duplicate vector components
 
-    vector<string> dupComponents = split(dupVec.at(j), ',');
+    vector<string> dupComponents = split(dupVec[j], ',');
 
     // These are all just numbers, so we can just convert them
-    double dupX = stof(dupComponents.at(0));
-    double dupY = stof(dupComponents.at(1));
-    double dupZ = stof(dupComponents.at(2));
+    double dupX = stof(dupComponents[0]);
+    double dupY = stof(dupComponents[1]);
+    double dupZ = stof(dupComponents[2]);
 
     // Next, we are going to loop through all fill positions
     for (size_t k = 0; k < fpVec.size(); k++) {
       // Skip the first one if we are at j = 0. It is always just (x,y,z)
       if (j == 0 && k == 0) continue;
-      vector<string> fpComponents = split(fpVec.at(k), ',');
+      vector<string> fpComponents = split(fpVec[k], ',');
 
-      double newX = SpgGen::interpretComponent(fpComponents.at(0),
+      double newX = SpgGen::interpretComponent(fpComponents[0],
                                                 x, y, z) + dupX;
-      double newY = SpgGen::interpretComponent(fpComponents.at(1),
+      double newY = SpgGen::interpretComponent(fpComponents[1],
                                                 x, y, z) + dupY;
-      double newZ = SpgGen::interpretComponent(fpComponents.at(2),
+      double newZ = SpgGen::interpretComponent(fpComponents[2],
                                                 x, y, z) + dupZ;
 
       atomStruct newAtom(atomicNum, newX, newY, newZ);
@@ -449,7 +449,7 @@ bool Crystal::fillUnitCell(uint spg)
 
   // Loop through all these atoms!
   for (size_t i = 0; i < m_atoms.size(); i++)
-    if(!fillCellWithAtom(spg, m_atoms.at(i))) return false;
+    if(!fillCellWithAtom(spg, m_atoms[i])) return false;
 #ifdef CRYSTAL_DEBUG
   cout << "Filling is complete! Info is now:\n";
   printCrystalInfo();
@@ -469,7 +469,7 @@ bool Crystal::areIADsOkay() const
 {
   // We don't have to check the last atom if we checked all others
   for (size_t i = 0; i < m_atoms.size() - 1; i++) {
-    if (!areIADsOkay(m_atoms.at(i))) return false;
+    if (!areIADsOkay(m_atoms[i])) return false;
   }
   return true;
 }
@@ -487,8 +487,8 @@ bool Crystal::areIADsOkay(const atomStruct& as) const
   const vector<atomStruct>& temp = tempCrystal.getAtoms();
   for (size_t i = 0; i < temp.size(); i++) {
     if (i == ind) continue;
-    double minIAD = getMinIAD(temp.at(ind), temp.at(i));
-    double dist = getDistance(temp.at(ind), temp.at(i));
+    double minIAD = getMinIAD(temp[ind], temp[i]);
+    double dist = getDistance(temp[ind], temp[i]);
 
     if (dist < minIAD) {
 #ifdef IAD_DEBUG
@@ -528,7 +528,7 @@ string Crystal::getPOSCARString(const string& title) const
                             SpgGen::getNumOfEachType(getVectorOfAtomicNums());
   vector<string> symbols;
   for (size_t i = 0; i < atomCounts.size(); i++) {
-    symbols.push_back(ElemInfo::getAtomicSymbol(atomCounts.at(i).second));
+    symbols.push_back(ElemInfo::getAtomicSymbol(atomCounts[i].second));
   }
 
   // Write to the POSCAR!
@@ -543,20 +543,20 @@ string Crystal::getPOSCARString(const string& title) const
   }
 
   for (size_t i = 0; i < symbols.size(); i++) { // Symbols
-    ss << "  " << setw(3) << symbols.at(i);
+    ss << "  " << setw(3) << symbols[i];
   }
   ss << "\n";
 
   for (size_t i = 0; i < atomCounts.size(); i++) { // Atom counts
-    ss << "  " << setw(3) << atomCounts.at(i).first;
+    ss << "  " << setw(3) << atomCounts[i].first;
   }
   ss << "\n";
 
   ss << "Direct\n"; // We're just going to use fractional coordinates
 
   for (size_t i = 0; i < m_atoms.size(); i++) { // Atom coords
-    ss << "  " << m_atoms.at(i).x << "  " << m_atoms.at(i).y << "  "
-      << m_atoms.at(i).z << "\n";
+    ss << "  " << m_atoms[i].x << "  " << m_atoms[i].y << "  "
+      << m_atoms[i].z << "\n";
   }
 
   // We're done!
@@ -594,7 +594,7 @@ void Crystal::printAtomInfo(const atomStruct& as)
 string Crystal::getAtomInfoString() const
 {
   stringstream s;
-  for (size_t i = 0; i < m_atoms.size(); i++) s << getAtomInfoString(m_atoms.at(i));
+  for (size_t i = 0; i < m_atoms.size(); i++) s << getAtomInfoString(m_atoms[i]);
   return s.str();
 }
 
@@ -650,7 +650,7 @@ void Crystal::printIADs() const
 {
   vector<atomStruct> atoms = getAtoms();
   for (size_t i = 0; i < atoms.size(); i++) {
-    cout << "For atom with index " << i << " and atomicNum " << atoms.at(i).atomicNum << ", the following are the neighbors:\n";
+    cout << "For atom with index " << i << " and atomicNum " << atoms[i].atomicNum << ", the following are the neighbors:\n";
     Crystal tempCrystal = *this;
 
     // We need to center the cell around this atom so that we don't run into the
@@ -661,8 +661,8 @@ void Crystal::printIADs() const
     double smallestDistance = 1000000.00;
     vector<atomStruct> tempAtoms = tempCrystal.getAtoms();
     for (size_t j = i + 1; j < tempAtoms.size(); j++) {
-      double newDistance = getDistance(tempAtoms.at(i), tempAtoms.at(j));
-      cout << "index " << j << " and atomicNum " << tempAtoms.at(j).atomicNum << ": " << newDistance << "\n";
+      double newDistance = getDistance(tempAtoms[i], tempAtoms[j]);
+      cout << "index " << j << " and atomicNum " << tempAtoms[j].atomicNum << ": " << newDistance << "\n";
     }
   }
 }

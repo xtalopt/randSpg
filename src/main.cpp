@@ -114,7 +114,7 @@ int main(int argc, char* argv[])
   auto start_loopTime = chrono::high_resolution_clock::now();
 
   for (size_t i = 0; i < spacegroups.size(); i++) {
-    uint spg = spacegroups.at(i);
+    uint spg = spacegroups[i];
     // Change the input spg to have the right spacegroup
     input.spg = spg;
     for (size_t j = 0; j < numOfEach; j++) {

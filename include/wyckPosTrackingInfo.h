@@ -34,9 +34,9 @@ class WyckPosTrackingInfo {
  public:
   WyckPosTrackingInfo(std::vector<wyckPos> pos) :
   keepUsing(true),
-  unique(SpgGen::containsUniquePosition(pos.at(0))),
+  unique(SpgGen::containsUniquePosition(pos[0])),
   numTimesUsed(0),
-  multiplicity(SpgGen::getMultiplicity(pos.at(0))),
+  multiplicity(SpgGen::getMultiplicity(pos[0])),
   positions(pos)
 {
   // We must have a size greater than 0
@@ -52,12 +52,12 @@ class WyckPosTrackingInfo {
 
   wyckPos getRandomWyckPos() const
   {
-    return positions.at(rand() % positions.size());
+    return positions[rand() % positions.size()];
   };
 
   std::vector<wyckPos> getPositions() const {return positions;};
 
-  const wyckPos& getWyckPosAt(uint i) const {return positions.at(i);};
+  const wyckPos& getWyckPosAt(uint i) const {return positions[i];};
   size_t getNumPositions() const {return positions.size();};
  private:
   // This has more than one if there are identical positions
