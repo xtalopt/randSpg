@@ -18,8 +18,8 @@ latticeMaxes           = 10.0, 10.0, 10.0, 120.0, 120.0, 120.0
 # If the volume is not within this range, it will be rescaled so that it is
 # If you remove minVolume or specify it to be -1, there will be no minVolume
 # Same goes for maxVolume
-minVolume              = 140
-maxVolume              = 160
+minVolume              = 20
+maxVolume              = 40
 
 # numOfEachSpgToGenerate tells us how many crystals of each spg to generate
 numOfEachSpgToGenerate = 10
