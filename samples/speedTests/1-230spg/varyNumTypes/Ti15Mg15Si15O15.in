@@ -22,7 +22,7 @@ minVolume              = 790
 maxVolume              = 810
 
 # numOfEachSpgToGenerate tells us how many crystals of each spg to generate
-numOfEachSpgToGenerate = 5
+numOfEachSpgToGenerate = 10
 
 # For advanced users: by default, the program will only generate a spacegroup
 # for a crystal if it can use the most general Wyckoff position at least

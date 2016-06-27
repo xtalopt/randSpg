@@ -3,7 +3,7 @@ Tests were performed using a single processor on a
 
 Composition     : Average success wall time (in seconds)
 
-Ti60            :  14.2302
-Ti30O30         :  36.7212
-Ti20Mg20O20     :  48.0002
-Ti15Mg15Si15O15 : 138.2650
+Ti60            :   0.10467
+Ti30O30         :   0.34748
+Ti20Mg20O20     :   0.87184
+Ti15Mg15Si15O15 :   5.14663

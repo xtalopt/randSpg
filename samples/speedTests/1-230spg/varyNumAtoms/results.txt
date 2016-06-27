@@ -3,11 +3,11 @@ Tests were performed using a single processor on a
 
 Composition : Average success wall time (in seconds)
 
-Ti1O2       :   0.0241
-Ti5O10      :   1.3171
-Ti10O20     :  14.8744
-Ti15O30     :  48.7844
-Ti20O40     :  26.7404
-Ti25O50     : 181.0890
-Ti30O60     :  74.4977
+Ti1O2       :   0.001200
+Ti5O10      :   0.029858
+Ti10O20     :   0.170963
+Ti15O30     :   2.918100
+Ti20O40     :   0.406279
+Ti25O50     :   1.929870
+Ti30O60     :   0.939119
 Ti35O70     : 136.3770
