@@ -525,8 +525,13 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
       }
     }
 
-    // If we succeeded, return the crystal!
-    if (assignmentsSuccessful) {
+    // If we succeeded, and the number of atoms match, return the crystal!
+    // There are rare cases where an atom may be placed on top of another
+    // one and the essentially get merged into one. We check to make sure the
+    // sizes of the atomic numbers match for this reason. We shouldn't have to
+    // worry about types.
+    if (assignmentsSuccessful &&
+        atoms.size() == crystal.getVectorOfAtomicNums().size()) {
       if (verbosity != 'n') appendToLogFile("*** Success! ***\n");
       return crystal;
     }
