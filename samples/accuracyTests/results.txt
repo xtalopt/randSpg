@@ -91,7 +91,7 @@ Cubic        360 100.0 %
 **** TEST 2 -- forceMostGeneralWyckPos OFF ****
 Findsym tolerance: 0.0001
 forceMostGeneralWyckPos is off
-Overall success rate: 98.044%
+Overall success rate: 98.174% (42 failures)
 Total number of tests: 2300
 
 **** Triclinic ****
@@ -107,11 +107,12 @@ Hexagonal    0 0 %
 Cubic        0 0 %
 
 **** Monoclinic ****
+failure: Ti4O8_12-10 has an actual spg of 10
 Number of tests: 130
-Success rate is: 96.9230769231 %
+Success rate is: 99.2307692308 %
 LatticeType : numAttempts : successPercent
 Triclinic    0 0 %
-Monoclinic   130 96.9230769231 %
+Monoclinic   130 99.2307692308 %
 Orthorhombic 0 0 %
 Tetragonal   0 0 %
 Trigonal     0 0 %
@@ -119,18 +120,30 @@ Hexagonal    0 0 %
 Cubic        0 0 %
 
 **** Orthorhombic ****
+failure: Ti16O32_50-1 has an actual spg of 65
+failure: Ti16O32_50-3 has an actual spg of 65
+failure: Ti16O32_72-6 has an actual spg of 65
 Number of tests: 590
-Success rate is: 99.6610169492 %
+Success rate is: 99.4915254237 %
 LatticeType : numAttempts : successPercent
 Triclinic    0 0 %
 Monoclinic   0 0 %
-Orthorhombic 590 99.6610169492 %
+Orthorhombic 590 99.4915254237 %
 Tetragonal   0 0 %
 Trigonal     0 0 %
 Hexagonal    0 0 %
 Cubic        0 0 %
 
 **** Tetragonal ****
+failure: Ti16O32_121-1 has an actual spg of 139
+failure: Ti16O32_125-1 has an actual spg of 123
+failure: Ti16O32_125-3 has an actual spg of 123
+failure: Ti16O32_126-1 has an actual spg of 139
+failure: Ti16O32_126-4 has an actual spg of 139
+failure: Ti16O32_126-7 has an actual spg of 139
+failure: Ti16O32_133-4 has an actual spg of 132
+failure: Ti16O32_140-8 has an actual spg of 123
+failure: Ti16O32_142-7 has an actual spg of 134
 Number of tests: 680
 Success rate is: 98.6764705882 %
 LatticeType : numAttempts : successPercent
@@ -142,7 +155,6 @@ Trigonal     0 0 %
 Hexagonal    0 0 %
 Cubic        0 0 %
 
-**** Trigonal ****
 Number of tests: 250
 Success rate is: 100.0 %
 LatticeType : numAttempts : successPercent
@@ -155,20 +167,49 @@ Hexagonal    0 0 %
 Cubic        0 0 %
 
 **** Hexagonal ****
+failure: Ti24O36_192-10 has an actual spg of 191
+failure: Ti24O36_192-5 has an actual spg of 191
 Number of tests: 270
-Success rate is: 98.5185185185 %
+Success rate is: 99.2592592593 %
 LatticeType : numAttempts : successPercent
 Triclinic    0 0 %
 Monoclinic   0 0 %
 Orthorhombic 0 0 %
 Tetragonal   0 0 %
 Trigonal     0 0 %
-Hexagonal    270 98.5185185185 %
+Hexagonal    270 99.2592592593 %
 Cubic        0 0 %
 
 **** Cubic ****
+failure: Ti96O192_202-2 has an actual spg of 225
+failure: Ti96O192_202-6 has an actual spg of 225
+failure: Ti96O192_203-1 has an actual spg of 227
+failure: Ti96O192_203-4 has an actual spg of 227
+failure: Ti96O192_203-6 has an actual spg of 227
+failure: Ti96O192_209-2 has an actual spg of 225
+failure: Ti96O192_209-4 has an actual spg of 225
+failure: Ti96O192_209-5 has an actual spg of 225
+failure: Ti96O192_209-6 has an actual spg of 225
+failure: Ti96O192_209-7 has an actual spg of 225
+failure: Ti96O192_219-4 has an actual spg of 215
+failure: Ti96O192_219-6 has an actual spg of 215
+failure: Ti96O192_219-7 has an actual spg of 215
+failure: Ti96O192_219-8 has an actual spg of 215
+failure: Ti96O192_226-1 has an actual spg of 221
+failure: Ti96O192_226-2 has an actual spg of 221
+failure: Ti96O192_226-3 has an actual spg of 221
+failure: Ti96O192_226-5 has an actual spg of 221
+failure: Ti96O192_226-6 has an actual spg of 221
+failure: Ti96O192_226-7 has an actual spg of 221
+failure: Ti96O192_226-9 has an actual spg of 221
+failure: Ti96O192_228-1 has an actual spg of 224
+failure: Ti96O192_228-10 has an actual spg of 224
+failure: Ti96O192_228-2 has an actual spg of 224
+failure: Ti96O192_228-4 has an actual spg of 224
+failure: Ti96O192_228-6 has an actual spg of 224
+failure: Ti96O192_228-7 has an actual spg of 224
 Number of tests: 360
-Success rate is: 93.0555555556 %
+Success rate is: 92.5 %
 LatticeType : numAttempts : successPercent
 Triclinic    0 0 %
 Monoclinic   0 0 %
@@ -176,4 +217,4 @@ Orthorhombic 0 0 %
 Tetragonal   0 0 %
 Trigonal     0 0 %
 Hexagonal    0 0 %
-Cubic        360 93.0555555556 %
+Cubic        360 92.5 %
