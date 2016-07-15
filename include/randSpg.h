@@ -1,5 +1,5 @@
 /**********************************************************************
-  spgGen.h - Header file for spacegroup initialization functions
+  randSpg.h - Header file for spacegroup initialization functions
 
   Copyright (C) 2015 - 2016 by Patrick S. Avery
 
@@ -13,15 +13,15 @@
 
  ***********************************************************************/
 
-#ifndef SPG_GEN_H
-#define SPG_GEN_H
+#ifndef RAND_SPG_H
+#define RAND_SPG_H
 
 #include <vector>
 #include <tuple>
 #include <utility>
 
 #include "crystal.h"
-#include "spgGenOptions.h"
+#include "randSpgOptions.h"
 
 // output file name
 extern std::string e_logfilename;
@@ -50,7 +50,7 @@ typedef std::pair<uint, uint> numAndType;
 
 typedef std::pair<std::string, std::string> fillCellInfo;
 
-struct spgGenInput {
+struct randSpgInput {
   // The space group to be generated. Set in constructor.
   uint spg;
 
@@ -109,7 +109,7 @@ struct spgGenInput {
   bool forceMostGeneralWyckPos;
 
   // Most basic constructor
-  spgGenInput(uint _spg, const std::vector<uint>& _atoms,
+  randSpgInput(uint _spg, const std::vector<uint>& _atoms,
                const latticeStruct& _lmins,
                const latticeStruct& _lmaxes) :
                    spg(_spg),
@@ -126,7 +126,7 @@ struct spgGenInput {
                    maxAttempts(100),
                    forceMostGeneralWyckPos(true) {}
   // Defining-everything constructor
-  spgGenInput(uint _spg, const std::vector<uint>& _atoms,
+  randSpgInput(uint _spg, const std::vector<uint>& _atoms,
                const latticeStruct& _lmins,
                const latticeStruct& _lmaxes,
                double _IADSF, double _minRadius,
@@ -149,7 +149,7 @@ struct spgGenInput {
                    forceMostGeneralWyckPos(_fmgwp) {}
 };
 
-class SpgGen {
+class RandSpg {
  public:
 
   // Get the info from the tuple in the database
@@ -263,7 +263,7 @@ class SpgGen {
    * and lattice within the provided lattice constraints. Returns a Crystal
    * with zero volume if it failed to generate one successfully.
    */
-  static Crystal spgGenCrystal(const spgGenInput& input);
+  static Crystal randSpgCrystal(const randSpgInput& input);
 
   static std::vector<numAndType> getNumOfEachType(
                                    const std::vector<uint>& atoms);

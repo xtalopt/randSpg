@@ -1,5 +1,5 @@
 /**********************************************************************
-  utilityFunctions.h - Various utility functions for spgGen
+  utilityFunctions.h - Various utility functions for randSpg
 
   Copyright (C) 2015 - 2016 by Patrick S. Avery
 

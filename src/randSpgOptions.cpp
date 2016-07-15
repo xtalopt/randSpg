@@ -1,5 +1,5 @@
 /**********************************************************************
-  spgGenOptions.cpp - Options class for spacegroup generation.
+  randSpgOptions.cpp - Options class for spacegroup generation.
 
   Copyright (C) 2015 - 2016 by Patrick S. Avery
 
@@ -17,7 +17,7 @@
 #include <iostream>
 
 #include "elemInfo.h"
-#include "spgGenOptions.h"
+#include "randSpgOptions.h"
 #include "utilityFunctions.h"
 
 using namespace std;
@@ -25,7 +25,7 @@ using namespace std;
 latticeStruct defaultLatticeMins(3.0, 3.0, 3.0, 60.0, 60.0, 60.0);
 latticeStruct defaultLatticeMaxes(10.0, 10.0, 10.0, 120.0, 120.0, 120.0);
 
-SpgGenOptions::SpgGenOptions() :
+RandSpgOptions::RandSpgOptions() :
 m_filename(""),
 m_composition(""),
 m_spacegroups(vector<uint>()),
@@ -51,9 +51,9 @@ m_optionsAreValid(true)
 }
 
 // This function is static
-SpgGenOptions SpgGenOptions::readOptions(string filename)
+RandSpgOptions RandSpgOptions::readOptions(string filename)
 {
-  SpgGenOptions options;
+  RandSpgOptions options;
 
   ifstream f;
   f.open(filename);
@@ -80,10 +80,10 @@ SpgGenOptions SpgGenOptions::readOptions(string filename)
 
 // This version of the function reads a character array that contains the full
 // input. It is used for the html version of the code
-SpgGenOptions SpgGenOptions::readOptionsFromCharArray(const char* input,
+RandSpgOptions RandSpgOptions::readOptionsFromCharArray(const char* input,
                                                       string filename)
 {
-  SpgGenOptions options;
+  RandSpgOptions options;
   options.m_filename = filename;
 
   string stdstr(input);
@@ -173,7 +173,7 @@ latticeStruct interpretLatticeString(const string& s)
   return ret;
 }
 
-void SpgGenOptions::interpretLineAndSetOption(string line)
+void RandSpgOptions::interpretLineAndSetOption(string line)
 {
   // First, trim it
   line = trim(line);
@@ -346,7 +346,7 @@ string getLatticeString(const latticeStruct& l)
   return s.str();
 }
 
-string SpgGenOptions::getOptionsString() const
+string RandSpgOptions::getOptionsString() const
 {
   stringstream s;
   s << "\n*** Options from '" << m_filename
@@ -389,7 +389,7 @@ string SpgGenOptions::getOptionsString() const
   return s.str();
 }
 
-void SpgGenOptions::printOptions() const
+void RandSpgOptions::printOptions() const
 {
   cout << getOptionsString();
 }

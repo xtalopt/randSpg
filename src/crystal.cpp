@@ -23,7 +23,7 @@
 #include <fstream>
 
 #include "crystal.h"
-#include "spgGen.h"
+#include "randSpg.h"
 #include "utilityFunctions.h"
 
 // For atomic radii and symbols
@@ -393,8 +393,8 @@ bool Crystal::fillCellWithAtom(uint spg, const atomStruct& as)
     return false;
   }
 
-  vector<string> dupVec = SpgGen::getVectorOfDuplications(spg);
-  vector<string> fpVec = SpgGen::getVectorOfFillPositions(spg);
+  vector<string> dupVec = RandSpg::getVectorOfDuplications(spg);
+  vector<string> fpVec = RandSpg::getVectorOfFillPositions(spg);
 
   double x = as.x;
   double y = as.y;
@@ -416,11 +416,11 @@ bool Crystal::fillCellWithAtom(uint spg, const atomStruct& as)
       if (j == 0 && k == 0) continue;
       vector<string> fpComponents = split(fpVec[k], ',');
 
-      double newX = SpgGen::interpretComponent(fpComponents[0],
+      double newX = RandSpg::interpretComponent(fpComponents[0],
                                                 x, y, z) + dupX;
-      double newY = SpgGen::interpretComponent(fpComponents[1],
+      double newY = RandSpg::interpretComponent(fpComponents[1],
                                                 x, y, z) + dupY;
-      double newZ = SpgGen::interpretComponent(fpComponents[2],
+      double newZ = RandSpg::interpretComponent(fpComponents[2],
                                                 x, y, z) + dupZ;
 
       atomStruct newAtom(atomicNum, newX, newY, newZ);
@@ -525,7 +525,7 @@ string Crystal::getPOSCARString(const string& title) const
   ss << fixed << setprecision(15);
   vector<vector<double>> latticeVecs = getLatticeVecs();
   vector<numAndType> atomCounts =
-                            SpgGen::getNumOfEachType(getVectorOfAtomicNums());
+                            RandSpg::getNumOfEachType(getVectorOfAtomicNums());
   vector<string> symbols;
   for (size_t i = 0; i < atomCounts.size(); i++) {
     symbols.push_back(ElemInfo::getAtomicSymbol(atomCounts[i].second));

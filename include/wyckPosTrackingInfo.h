@@ -1,6 +1,6 @@
 /**********************************************************************
   wyckPosTrackingInfo.h - Class for tracking Wyckoff position
-                          information. It is used in SpgGenCombinatoric.cpp
+                          information. It is used in RandSpgCombinatoric.cpp
                           for findAllCombinations(). It keeps track of
                           which Wyckoff positions to investigate and
                           other information about them.
@@ -22,7 +22,7 @@
 
 #include <cassert>
 
-#include "spgGen.h"
+#include "randSpg.h"
 
 // In here, we keep Wyckoff positions that have the same uniqueness and
 // multiplicity. For now, they can only be non-unique
@@ -34,9 +34,9 @@ class WyckPosTrackingInfo {
  public:
   WyckPosTrackingInfo(std::vector<wyckPos> pos) :
   keepUsing(true),
-  unique(SpgGen::containsUniquePosition(pos[0])),
+  unique(RandSpg::containsUniquePosition(pos[0])),
   numTimesUsed(0),
-  multiplicity(SpgGen::getMultiplicity(pos[0])),
+  multiplicity(RandSpg::getMultiplicity(pos[0])),
   positions(pos)
 {
   // We must have a size greater than 0

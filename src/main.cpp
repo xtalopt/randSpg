@@ -22,8 +22,8 @@
 
 #include "elemInfo.h"
 #include "fileSystemUtils.h"
-#include "spgGen.h"
-#include "spgGenOptions.h"
+#include "randSpg.h"
+#include "randSpgOptions.h"
 #include "utilityFunctions.h"
 
 using namespace std;
@@ -31,7 +31,7 @@ using namespace std;
 int main(int argc, char* argv[])
 {
   if (argc != 2) {
-    cout << "Usage: ./spgGen <inputFileName>\n";
+    cout << "Usage: ./randSpg <inputFileName>\n";
     return -1;
   }
 
@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
   // If there is an old log file here, remove it
   remove(e_logfilename.c_str());
 
-  SpgGenOptions options = SpgGenOptions::readOptions(argv[1]);
+  RandSpgOptions options = RandSpgOptions::readOptions(argv[1]);
 
   if (!options.optionsAreValid()) {
     cout << "Warning: the options that were received are invalid\n";
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
   }
 
   // Write the options to the log file
-  SpgGen::appendToLogFile(options.getOptionsString());
+  RandSpg::appendToLogFile(options.getOptionsString());
 
   vector<uint> atoms;
 
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
   latticeStruct maxes = options.getLatticeMaxes();
 
   // Create the input
-  spgGenInput input(1, atoms, mins, maxes);
+  randSpgInput input(1, atoms, mins, maxes);
 
   // Add various other input options
   input.IADScalingFactor = options.getScalingFactor();
@@ -122,11 +122,11 @@ int main(int argc, char* argv[])
       string filename = outDir + comp + "_" + to_string(spg) +
                         "-" + to_string(j + 1);
       if (e_verbosity != 'n')
-        SpgGen::appendToLogFile(string("\n**** ") + filename + " ****\n");
+        RandSpg::appendToLogFile(string("\n**** ") + filename + " ****\n");
 
-      Crystal c = SpgGen::spgGenCrystal(input);
+      Crystal c = RandSpg::randSpgCrystal(input);
 
-      string title = comp + " -- spgGen with spg of: " + to_string(spg);
+      string title = comp + " -- randSpg with spg of: " + to_string(spg);
 
       // The volume is set to zero if the job failed.
       if (c.getVolume() != 0) {
@@ -163,6 +163,6 @@ int main(int argc, char* argv[])
        << "\n"
        << "Total wall time (in seconds): " << setup_wallTime + loop_wallTime
        << "\n------------------------------------------------------------ \n";
-    SpgGen::appendToLogFile(ss.str());
+    RandSpg::appendToLogFile(ss.str());
   }
 }

@@ -1,21 +1,21 @@
-project(spgGen)
+project(randSpg)
 
 cmake_minimum_required(VERSION 2.6)
 
-set(spgGen_SRCS
+set(randSpg_SRCS
     src/crystal.cpp
     src/elemInfo.cpp
-    src/spgGenCombinatorics.cpp
-    src/spgGenOptions.cpp
-    src/spgGen.cpp)
+    src/randSpgCombinatorics.cpp
+    src/randSpgOptions.cpp
+    src/randSpg.cpp)
 
-include_directories(${spgGen_SOURCE_DIR}/include)
+include_directories(${randSpg_SOURCE_DIR}/include)
 
-add_library (SpgGenerate ${spgGen_SRCS})
+add_library(RandSpg ${randSpg_SRCS})
 
 # C++11 is required. MSVC should not need a flag
 if(UNIX)
-    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 endif(UNIX)
 
 option(BUILD_RELEASE
@@ -37,13 +37,13 @@ else (BUILD_RELEASE)
 
 endif (BUILD_RELEASE)
 
-add_executable (spgGen src/main.cpp)
-target_link_libraries (spgGen SpgGenerate)
+add_executable (randSpg src/main.cpp)
+target_link_libraries (randSpg RandSpg)
 
 option( BUILD_CGI
-        "Whether to compile the CGI handler in addition to the spgGen code."
+        "Whether to compile the CGI handler in addition to the randSpg code."
         OFF )
 if(BUILD_CGI)
-  add_executable (spgGen.cgi cgi/spgGen-cgi.cpp)
-  target_link_libraries (spgGen.cgi SpgGenerate)
+  add_executable (randSpg.cgi cgi/randSpg-cgi.cpp)
+  target_link_libraries (randSpg.cgi RandSpg)
 endif(BUILD_CGI)

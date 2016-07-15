@@ -1,5 +1,5 @@
 
-******    SpgGen    ******
+******    RandSpg    ******
 
 
 **** UNIX COMPILATION ****
@@ -10,7 +10,7 @@ For ubuntu, you may install cmake by entering "sudo apt-get install cmake"
 
 Compilation instructions:
 
-Enter the following into a terminal from the root spgGen directory
+Enter the following into a terminal from the root randSpg directory
 
   mkdir build; cd build; cmake ..; make -j3
 
@@ -18,15 +18,15 @@ The program should be compiled!
 
 To run the program, use the executable that is created in the build directory
 as follows:
-  ./spgGen <inputFileName>
+  ./randSpg <inputFileName>
 
 A sample input file with instructions is included in the root
-directory: spgGen.in. You may copy it to the build directory and then run
+directory: randSpg.in. You may copy it to the build directory and then run
 
-  ./spgGen spgGen.in
+  ./randSpg randSpg.in
 
 For the sample input file, the results are stored in a directory called "temp",
-and log information is stored in "spgGen.log". Check them out!
+and log information is stored in "randSpg.log". Check them out!
 
 The results are stored as POSAR files. If you wish to convert them to another
 file format, you may want to look into OpenBabel.
@@ -43,7 +43,7 @@ You will then need to open an MSVC command prompt (see http://stackoverflow.com/
 for an example of how to do this). The MSVC command prompt has all of the
 environments set up like we need to be.
 
-From the MSVC command prompt, find the spgGen root directory, and then
+From the MSVC command prompt, find the randSpg root directory, and then
 type the following commands in the prompt:
 
   mkdir build
@@ -51,33 +51,33 @@ type the following commands in the prompt:
   cmake .. -G "NMake Makefiles"
   nmake
 
-If all goes well, your spgGen.exe file should now be present in the directory!
+If all goes well, your randSpg.exe file should now be present in the directory!
 
 To run the program, use the executable that is created in the build directory
 as follows:
-  spgGen.exe <inputFileName>
+  randSpg.exe <inputFileName>
 
 A sample input file with instructions is included in the root
-directory: spgGen.in. You may copy it to the build directory and then run
+directory: randSpg.in. You may copy it to the build directory and then run
 
-  spgGen.exe spgGen.in
+  randSpg.exe randSpg.in
 
 For the sample input file, the results are stored in a directory called "temp",
-and log information is stored in "spgGen.log". Check them out!
+and log information is stored in "randSpg.log". Check them out!
 
 The results are stored as POSAR files. If you wish to convert them to another
 file format, you may want to look into OpenBabel.
 
 
 
-**** INSTRUCTIONS FOR CALLING SPGGEN FUNCTIONS IN YOUR OWN CODE ****
+**** INSTRUCTIONS FOR CALLING RANDSPG FUNCTIONS IN YOUR OWN CODE ****
 
 To generate a crystal with the desired space group,
 one simply has to create an input struct and call
-SpgGen::spgGenCrystal with it. The input struct has
+RandSpg::randSpgCrystal with it. The input struct has
 four parameters in its constructor and are as follows:
 
-spgGenInput(uint spg, const std::vector<uint>& atoms,
+randSpgInput(uint spg, const std::vector<uint>& atoms,
                const latticeStruct& lmins,
                const latticeStruct& lmaxes);
 
@@ -93,13 +93,13 @@ latticeStruct(double a, double b, double c,
 where a, b, and c are the lengths of the lattice vectors in Angstroms and
 alpha, beta, and gamma are the angles of the lattice. One latticeStruct
 needs to be made for the minimum values, and one needs to be made for
-the maximum values for the spgGen input.
+the maximum values for the randSpg input.
 
 
 The input struct contains data members
 that are defined as follows:
 
-struct spgGenInput {
+struct randSpgInput {
   // The space group to be generated. Set in constructor.
   uint spg;
 
@@ -159,7 +159,7 @@ struct spgGenInput {
 }
 
 After leaving these options as their default values or setting them,
-you may call SpgGen::spgGenCrystal(spgGenInput input) by using the
+you may call RandSpg::randSpgCrystal(randSpgInput input) by using the
 input as the parameter. A crystal object is returned. Basic
 functions for a Crystal object are:
 

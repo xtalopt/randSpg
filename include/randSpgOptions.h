@@ -1,5 +1,5 @@
 /**********************************************************************
-  spgGenOptions.h - Options class for spacegroup initialization.
+  randSpgOptions.h - Options class for spacegroup initialization.
 
   Copyright (C) 2015 - 2016 by Patrick S. Avery
 
@@ -13,8 +13,8 @@
 
  ***********************************************************************/
 
-#ifndef SPG_GEN_OPTIONS_H
-#define SPG_GEN_OPTIONS_H
+#ifndef RAND_SPG_OPTIONS_H
+#define RAND_SPG_OPTIONS_H
 
 #include <string>
 #include <vector>
@@ -22,21 +22,21 @@
 // This is for 'latticeStruct'
 #include "crystal.h"
 
-class SpgGenOptions {
+class RandSpgOptions {
  public:
-  explicit SpgGenOptions();
+  explicit RandSpgOptions();
 
-  /* Reads options from a specified file and returns a SpgGenOptions object
+  /* Reads options from a specified file and returns a RandSpgOptions object
    * that has the options set.
    *
    * @param filename The name of the file to be read.
    *
-   * @return The SpgGenOptions object that has the options set.
+   * @return The RandSpgOptions object that has the options set.
    */
-  static SpgGenOptions readOptions(std::string filename);
+  static RandSpgOptions readOptions(std::string filename);
 
   /* Reads the options from a character array (in the complete format of
-   * the input file) and returns a SpgGenOptions object that has the options
+   * the input file) and returns a RandSpgOptions object that has the options
    * set.
    *
    * @param input A character array containing the whole input file that is
@@ -44,9 +44,9 @@ class SpgGenOptions {
    *
    * @param filename The optional name of the file. It is only used when
    *                 printing error messages.
-   * @return The SpgGenOptions object that has the options set.
+   * @return The RandSpgOptions object that has the options set.
    */
-  static SpgGenOptions readOptionsFromCharArray(const char* input,
+  static RandSpgOptions readOptionsFromCharArray(const char* input,
                                                 std::string filename = "");
 
   /* Reads a line and sets an option based upon the contents

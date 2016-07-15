@@ -142,8 +142,8 @@ char **getcgivars() {
 #include <iostream>
 
 #include "elemInfo.h"
-#include "spgGen.h"
-#include "spgGenOptions.h"
+#include "randSpg.h"
+#include "randSpgOptions.h"
 #include "utilityFunctions.h"
 
 using namespace std;
@@ -152,7 +152,7 @@ int invalidInput(std::string errorMsg)
 {
   printf("Content-type: text/html\n\n");
   printf("<html>\n");
-  printf("<head><title>SpgGen Results</title></head>\n");
+  printf("<head><title>RandSpg Results</title></head>\n");
   printf("<body>\n");
   printf("<h1>Invalid input</h1>\n");
   printf("%s", errorMsg.c_str());
@@ -178,7 +178,7 @@ int main() {
     char *key = cgivars[i];
     char *val = cgivars[i+1];
     // This should be the only cgi variable
-    if (strcmp(key, "spgGenInput") == 0) in = val;
+    if (strcmp(key, "randSpgInput") == 0) in = val;
   }
 
   // Add newline characters to the ends of these lines so we can read the
@@ -188,7 +188,7 @@ int main() {
   string inputStr, line;
   while (getline(lines, line)) inputStr += (line + "\n");
 
-  SpgGenOptions options = SpgGenOptions::readOptionsFromCharArray(inputStr.c_str());
+  RandSpgOptions options = RandSpgOptions::readOptionsFromCharArray(inputStr.c_str());
 
   if (!options.optionsAreValid())
     return invalidInput("Some options are invalid. Please check your input.");
@@ -196,7 +196,7 @@ int main() {
   std::stringstream ss;
   ss << "Content-type: text/html\n\n"
      << "<html>\n"
-     << "<head><title>SpgGen Results</title></head>\n"
+     << "<head><title>RandSpg Results</title></head>\n"
      << "<body>\n";
 
   // Let's print the spg options to the start of this unless verbosity is 'n'
@@ -223,7 +223,7 @@ int main() {
   latticeStruct maxes = options.getLatticeMaxes();
 
   // Create the input
-  spgGenInput input(1, atoms, mins, maxes);
+  randSpgInput input(1, atoms, mins, maxes);
 
   // Add various other input options
   input.IADScalingFactor = options.getScalingFactor();
@@ -254,7 +254,7 @@ int main() {
           << " to be generated so we do not overload the server.<br> You are "
           << "requesting " << numAttempts << " structures. Please reduce this "
           << "amount or compile and use the executable version of the "
-          << "program <a href=\"http://www.github.com/psavery/spgGen\">here</a>.<br>\n";
+          << "program <a href=\"http://www.github.com/psavery/randSpg\">here</a>.<br>\n";
     invalidInput(error.str());
   }
 
@@ -265,7 +265,7 @@ int main() {
           << " atoms per crystal so that we do not overload the server.<br> Your composition "
           << "has " << atoms.size() << " atoms. Please reduce this "
           << "amount or compile and use the executable version of the "
-          << "program <a href=\"http://www.github.com/psavery/spgGen\">here</a>.<br>\n";
+          << "program <a href=\"http://www.github.com/psavery/randSpg\">here</a>.<br>\n";
     invalidInput(error.str());
   }
 
@@ -276,7 +276,7 @@ int main() {
           << " max attempts per crystal so that we do not overload the server.<br> You have requested "
           << input.maxAttempts << " max attempts. Please reduce this "
           << "amount or compile and use the executable version of the "
-          << "program <a href=\"http://www.github.com/psavery/spgGen\">here</a>.<br>\n"
+          << "program <a href=\"http://www.github.com/psavery/randSpg\">here</a>.<br>\n"
           << "Note: if you do not specify the maxAttempts, the default is 100. So you will need to "
           << "specify it to 50 or less<br>\n";
     invalidInput(error.str());
@@ -293,15 +293,15 @@ int main() {
     // Change the input spg to have the right spacegroup
     input.spg = spg;
     for (size_t j = 0; j < numOfEach; j++) {
-      Crystal c = SpgGen::spgGenCrystal(input);
+      Crystal c = RandSpg::randSpgCrystal(input);
 
       // The volume is set to zero if the job failed.
       if (c.getVolume() == 0) {
-        ss << comp + " -- spgGen with spg of: " + to_string(spg)
+        ss << comp + " -- randSpg with spg of: " + to_string(spg)
            << "<br>\nFailed to generate crystal. Either it is impossible "
            << "to generate this crystal with these settings or it failed to "
            << "generate a crystal after " << input.maxAttempts << " attempts.<br>"
-           << "Use the <a href=\"http://www.github.com/psavery/spgGen\">executable version</a> "
+           << "Use the <a href=\"http://www.github.com/psavery/randSpg\">executable version</a> "
            << "of the program for more detailed info"
            << "<br><br>\n";
         continue;
@@ -311,7 +311,7 @@ int main() {
       numSucceeds++;
 
       // Let's print it to the HTML script!
-      string title = comp + " -- spgGen with spg of: " + to_string(spg);
+      string title = comp + " -- randSpg with spg of: " + to_string(spg);
       ss << useHTMLReturns(c.getPOSCARString(title));
 
       ss << "<br><br>\n";
@@ -330,7 +330,7 @@ int main() {
      << "Average time per structure attempted (in seconds): "
      << loopWallTime / ((double)numAttempts) << "<br><br>\n"
      << "Times this webpage has been used since March 17th 2016: "
-     << "<br><embed src=\"spgGenCounter.cgi\" /><br>\n"
+     << "<br><embed src=\"randSpgCounter.cgi\" /><br>\n"
      << "</body>\n"
      << "</html>\n";
 

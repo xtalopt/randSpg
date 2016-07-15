@@ -1,5 +1,5 @@
 /**********************************************************************
-  spgGen.cpp - Functions for spacegroup generation.
+  randSpg.cpp - Functions for spacegroup generation.
 
   Copyright (C) 2015 - 2016 by Patrick S. Avery
 
@@ -15,8 +15,8 @@
 
 #include "elemInfo.h"
 
-#include "spgGen.h"
-#include "spgGenCombinatorics.h"
+#include "randSpg.h"
+#include "randSpgCombinatorics.h"
 #include "wyckoffDatabase.h"
 #include "fillCellDatabase.h"
 #include "utilityFunctions.h"
@@ -33,33 +33,33 @@
 #include <iostream>
 
 // Define these for debug output
-//#define SPGGEN_DEBUG
-//#define SPGGEN_WYCK_DEBUG
+//#define RANDSPG_DEBUG
+//#define RANDSPG_WYCK_DEBUG
 
 // Uncomment the right side of this line to output function starts and endings
 #define START_FT //FunctionTracker functionTracker(__FUNCTION__);
 
 using namespace std;
 
-// These are externs declared in spgGen.h
-string e_logfilename = "spgGen.log";
+// These are externs declared in randSpg.h
+string e_logfilename = "randSpg.log";
 char e_verbosity = 'r';
 
 // Check if all the multiplicities of a spacegroup are even
 static inline bool spgMultsAreAllEven(uint spg)
 {
   START_FT;
-  wyckoffPositions wyckVector = SpgGen::getWyckoffPositions(spg);
+  wyckoffPositions wyckVector = RandSpg::getWyckoffPositions(spg);
   // An error message should already be printed if this returns false
   if (wyckVector.size() == 0) return false;
 
   for (size_t i = 0; i < wyckVector.size(); i++) {
-    if (numIsOdd(SpgGen::getMultiplicity(wyckVector[i]))) return false;
+    if (numIsOdd(RandSpg::getMultiplicity(wyckVector[i]))) return false;
   }
   return true;
 }
 
-vector<numAndType> SpgGen::getNumOfEachType(const vector<uint>& atoms)
+vector<numAndType> RandSpg::getNumOfEachType(const vector<uint>& atoms)
 {
   START_FT;
   vector<uint> atomsAlreadyCounted;
@@ -130,13 +130,13 @@ bool getNumberInFirstTerm(const string& s, double& result, size_t& len)
 }
 
 // This might be a little bit too long to be inline...
-double SpgGen::interpretComponent(const string& component,
+double RandSpg::interpretComponent(const string& component,
                                    double x, double y, double z)
 {
   START_FT;
 
   if (component.size() == 0) {
-    cout << "Error in SpgGen::interpretComponent(): component is empty!\n";
+    cout << "Error in RandSpg::interpretComponent(): component is empty!\n";
     return -1;
   }
 
@@ -185,7 +185,7 @@ double SpgGen::interpretComponent(const string& component,
   return result;
 }
 
-const wyckoffPositions& SpgGen::getWyckoffPositions(uint spg)
+const wyckoffPositions& RandSpg::getWyckoffPositions(uint spg)
 {
   START_FT;
   if (spg < 1 || spg > 230) {
@@ -197,7 +197,7 @@ const wyckoffPositions& SpgGen::getWyckoffPositions(uint spg)
   return wyckoffPositionsDatabase[spg];
 }
 
-wyckPos SpgGen::getWyckPosFromWyckLet(uint spg, char wyckLet)
+wyckPos RandSpg::getWyckPosFromWyckLet(uint spg, char wyckLet)
 {
   const wyckoffPositions& wyckpos = getWyckoffPositions(spg);
   for (size_t i = 0; i < wyckpos.size(); i++) {
@@ -208,7 +208,7 @@ wyckPos SpgGen::getWyckPosFromWyckLet(uint spg, char wyckLet)
   return wyckPos();
 }
 
-const fillCellInfo& SpgGen::getFillCellInfo(uint spg)
+const fillCellInfo& RandSpg::getFillCellInfo(uint spg)
 {
   if (spg < 1 || spg > 230) {
     cout << "Error. getFillCellInfo() was called for a spacegroup "
@@ -218,7 +218,7 @@ const fillCellInfo& SpgGen::getFillCellInfo(uint spg)
   return fillCellVector[spg];
 }
 
-vector<string> SpgGen::getVectorOfDuplications(uint spg)
+vector<string> RandSpg::getVectorOfDuplications(uint spg)
 {
   fillCellInfo fcInfo = getFillCellInfo(spg);
   string duplicateString = fcInfo.first;
@@ -228,7 +228,7 @@ vector<string> SpgGen::getVectorOfDuplications(uint spg)
   return ret;
 }
 
-vector<string> SpgGen::getVectorOfFillPositions(uint spg)
+vector<string> RandSpg::getVectorOfFillPositions(uint spg)
 {
   fillCellInfo fcInfo = getFillCellInfo(spg);
   string positionsString = fcInfo.second;
@@ -236,11 +236,11 @@ vector<string> SpgGen::getVectorOfFillPositions(uint spg)
   return ret;
 }
 
-bool SpgGen::addWyckoffAtomRandomly(Crystal& crystal, const wyckPos& position,
+bool RandSpg::addWyckoffAtomRandomly(Crystal& crystal, const wyckPos& position,
                                      uint atomicNum, uint spg, int maxAttempts)
 {
   START_FT;
-#ifdef SPGGEN_WYCK_DEBUG
+#ifdef RANDSPG_WYCK_DEBUG
   cout << "At beginning of addWyckoffAtomRandomly(), atom info is:\n";
   crystal.printAtomInfo();
   cout << "Attempting to add an atom of atomicNum " << atomicNum
@@ -294,7 +294,7 @@ bool SpgGen::addWyckoffAtomRandomly(Crystal& crystal, const wyckPos& position,
 
   if (!success) return false;
 
-#ifdef SPGGEN_WYCK_DEBUG
+#ifdef RANDSPG_WYCK_DEBUG
     cout << "After an atom with atomic num " << atomicNum << " was added and "
          << "the cell filled, the following is the atom info:\n";
     crystal.printAtomInfo();
@@ -310,7 +310,7 @@ getModifiedForcedWyckVector(const vector<pair<uint, char>>& v, uint spg)
   vector<pair<uint, wyckPos>> ret;
   for (size_t i = 0; i < v.size(); i++)
     ret.push_back(make_pair(v[i].first,
-                          SpgGen::getWyckPosFromWyckLet(spg, v[i].second)));
+                          RandSpg::getWyckPosFromWyckLet(spg, v[i].second)));
   return ret;
 }
 
@@ -362,13 +362,13 @@ Crystal createValidCrystal(uint spg, const latticeStruct& latticeMins,
     numAttempts++;
 
     // First let's get a lattice...
-    latticeStruct st = SpgGen::generateLatticeForSpg(spg, latticeMins, latticeMaxes);
+    latticeStruct st = RandSpg::generateLatticeForSpg(spg, latticeMins, latticeMaxes);
     Crystal crystal(st);
 
     // Make sure it's a valid lattice
     if (st.a == 0 || st.b == 0 || st.c == 0 ||
         st.alpha == 0 || st.beta == 0 || st.gamma == 0) {
-      cout << "Error in SpgGen::createValidCrystal(): an invalid lattice was "
+      cout << "Error in RandSpg::createValidCrystal(): an invalid lattice was "
            << "generated.\n";
       return Crystal();
     }
@@ -406,7 +406,7 @@ Crystal createValidCrystal(uint spg, const latticeStruct& latticeMins,
   return ret;
 }
 
-Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
+Crystal RandSpg::randSpgCrystal(const randSpgInput& input)
 {
   START_FT;
 
@@ -438,20 +438,20 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
     ElemInfo::setRadius(atomicNum, rad);
   }
 
-  systemPossibilities possibilities = SpgGenCombinatorics::getSystemPossibilities(spg, atoms);
+  systemPossibilities possibilities = RandSpgCombinatorics::getSystemPossibilities(spg, atoms);
 
   if (possibilities.size() == 0) {
-    cout << "Error in SpgGen::" << __FUNCTION__ << "(): this spg '" << spg
+    cout << "Error in RandSpg::" << __FUNCTION__ << "(): this spg '" << spg
          << "' cannot be generated with this composition\n";
     return Crystal();
   }
 
   // force the most general Wyckoff position to be used at least once?
   if (forceMostGeneralWyckPos)
-    possibilities = SpgGenCombinatorics::removePossibilitiesWithoutGeneralWyckPos(possibilities, spg);
+    possibilities = RandSpgCombinatorics::removePossibilitiesWithoutGeneralWyckPos(possibilities, spg);
 
   if (possibilities.size() == 0) {
-    cout << "Error in SpgGen::" << __FUNCTION__ << "(): this spg '" << spg
+    cout << "Error in RandSpg::" << __FUNCTION__ << "(): this spg '" << spg
          << "' cannot be generated with this composition.\n";
     cout << "It can be generated if option 'forceMostGeneralWyckPos' is "
          << "turned off, but the correct spacegroup will not be guaranteed.\n";
@@ -463,24 +463,24 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
 
   for (size_t i = 0; i < forcedWyckAssignmentsAndNumber.size(); i++) {
     possibilities =
-      SpgGenCombinatorics::removePossibilitiesWithoutWyckPos(possibilities,
+      RandSpgCombinatorics::removePossibilitiesWithoutWyckPos(possibilities,
                   get<1>(forcedWyckAssignmentsAndNumber[i]),
                   get<2>(forcedWyckAssignmentsAndNumber[i]),
                   get<0>(forcedWyckAssignmentsAndNumber[i]));
   }
 
   if (possibilities.size() == 0) {
-    cout << "Error in SpgGen::" << __FUNCTION__ << "(): this spg '" << spg
+    cout << "Error in RandSpg::" << __FUNCTION__ << "(): this spg '" << spg
          << "' cannot be generated with this composition due to the forced "
          << "Wyckoff position constraints.\nPlease change them or remove them "
          << "if you wish to generate the space group.\n";
     return Crystal();
   }
 
-  //SpgGenCombinatorics::printSystemPossibilities(possibilities);
+  //RandSpgCombinatorics::printSystemPossibilities(possibilities);
   // If we desire verbose output, print the system possibility to the log file
   if (verbosity == 'v')
-    appendToLogFile(SpgGenCombinatorics::getVerbosePossibilitiesString(possibilities));
+    appendToLogFile(RandSpgCombinatorics::getVerbosePossibilitiesString(possibilities));
 
   // Create a modified forced wyck vector for later...
   vector<pair<uint, wyckPos>> modifiedForcedWyckVector = getModifiedForcedWyckVector(forcedWyckAssignments, spg);
@@ -492,7 +492,7 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
                                          minVolume, maxVolume);
 
     // Now, let's assign some atoms!
-    atomAssignments assignments = SpgGenCombinatorics::getRandomAtomAssignments(possibilities, modifiedForcedWyckVector);
+    atomAssignments assignments = RandSpgCombinatorics::getRandomAtomAssignments(possibilities, modifiedForcedWyckVector);
 
     //printAtomAssignments(assignments);
     // If we desire any output, print the atom assignments to the log file
@@ -500,12 +500,12 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
       appendToLogFile(getAtomAssignmentsString(assignments));
 
     if (assignments.size() == 0) {
-      cout << "Error in SpgGen::spgGenXtal(): atoms were not successfully"
+      cout << "Error in RandSpg::randSpgXtal(): atoms were not successfully"
            << " assigned positions in assignAtomsToWyckPos()\n";
       continue;
     }
 
-#ifdef SPGGEN_DEBUG
+#ifdef RANDSPG_DEBUG
     cout << "\natomAssignments are the following (atomicNum, wyckLet, wyckPos):"
          << "\n";
     for (size_t j = 0; j < assignments.size(); j++)
@@ -555,7 +555,7 @@ Crystal SpgGen::spgGenCrystal(const spgGenInput& input)
   return Crystal();
 }
 
-bool SpgGen::isSpgPossible(uint spg, const vector<uint>& atoms)
+bool RandSpg::isSpgPossible(uint spg, const vector<uint>& atoms)
 {
   START_FT;
 
@@ -579,7 +579,7 @@ bool SpgGen::isSpgPossible(uint spg, const vector<uint>& atoms)
   // If the test failed, we must just try to assign atoms and see if it works
   // The third boolean parameter is telling it to find only one combination
   // This speeds it up significantly
-  if (SpgGenCombinatorics::getSystemPossibilities(spg, atoms,
+  if (RandSpgCombinatorics::getSystemPossibilities(spg, atoms,
                                                    true, false).size() == 0)
     return false;
 
@@ -602,7 +602,7 @@ static inline T getLargest(const T& a, const T& b, const T& c)
   else return c;
 }
 
-latticeStruct SpgGen::generateLatticeForSpg(uint spg,
+latticeStruct RandSpg::generateLatticeForSpg(uint spg,
                                              const latticeStruct& mins,
                                              const latticeStruct& maxes)
 {
@@ -841,7 +841,7 @@ latticeStruct SpgGen::generateLatticeForSpg(uint spg,
   return st;
 }
 
-string SpgGen::getAtomAssignmentsString(const atomAssignments& a)
+string RandSpg::getAtomAssignmentsString(const atomAssignments& a)
 {
   stringstream s;
   s << "printing atom assignments:\n";
@@ -852,13 +852,13 @@ string SpgGen::getAtomAssignmentsString(const atomAssignments& a)
   return s.str();
 }
 
-void SpgGen::printAtomAssignments(const atomAssignments& a)
+void RandSpg::printAtomAssignments(const atomAssignments& a)
 {
   cout << getAtomAssignmentsString(a);
 }
 
 // The name of the log file is available in the header as an extern
-void SpgGen::appendToLogFile(const std::string& text)
+void RandSpg::appendToLogFile(const std::string& text)
 {
   fstream fs;
   fs.open(e_logfilename, std::fstream::out | std::fstream::app);

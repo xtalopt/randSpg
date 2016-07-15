@@ -1,5 +1,5 @@
 /**********************************************************************
-  spgGenCombinatorics.cpp - Functions for solving the complicated combinatorics
+  randSpgCombinatorics.cpp - Functions for solving the complicated combinatorics
                             problems for spacegroup generation
 
   Copyright (C) 2015 - 2016 by Patrick S. Avery
@@ -18,8 +18,8 @@
 #include <sstream>
 
 #include "rng.h"
-#include "spgGen.h"
-#include "spgGenCombinatorics.h"
+#include "randSpg.h"
+#include "randSpgCombinatorics.h"
 #include "wyckPosTrackingInfo.h"
 
 // For FunctionTracker
@@ -31,7 +31,7 @@
 using namespace std;
 
 // Define this for debug output
-//#define PRINT_SPG_GEN_COMB_DEBUG
+//#define PRINT_RAND_SPG_COMB_DEBUG
 
 // This is used in 'findAllCombinations()'
 struct combinationSettings {
@@ -52,13 +52,13 @@ struct combinationSettings {
 
 typedef std::vector<WyckPosTrackingInfo> usageTracker;
 
-#ifdef PRINT_SPG_GEN_COMB_DEBUG
+#ifdef PRINT_RAND_SPG_COMB_DEBUG
 static inline void printSingleAtomPossibility(const singleAtomPossibility&
                                               possib)
 {
   cout << "   singleAtomPossibility is:\n";
   for (size_t i = 0; i < possib.size(); i++)
-    cout << "    " << SpgGen::getWyckLet(possib[i]) << "\n";
+    cout << "    " << RandSpg::getWyckLet(possib[i]) << "\n";
 }
 
 static inline void printSingleAtomPossibilities(const singleAtomPossibilities&
@@ -96,7 +96,7 @@ static inline void printAtomAssignments(const atomAssignments& assigns)
   cout << "Printing atom assignments!\n";
   for (size_t i = 0; i < assigns.size(); i++) {
     cout << "  atomicNum is '" << assigns[i].second << "' and wyckLet is '"
-         << SpgGen::getWyckLet(assigns[i].first) << "'.\n";
+         << RandSpg::getWyckLet(assigns[i].first) << "'.\n";
   }
   cout << "\n\n";
 }
@@ -176,10 +176,10 @@ convertToPossibility(const usageTracker& tempTracker, uint atomicNum)
 static inline bool wyckPositionsAreSimilar(const wyckPos& wyckPos1,
                                            const wyckPos& wyckPos2)
 {
-  if (SpgGen::containsUniquePosition(wyckPos1) ==
-      SpgGen::containsUniquePosition(wyckPos2) &&
-      SpgGen::getMultiplicity(wyckPos1) ==
-      SpgGen::getMultiplicity(wyckPos2)) return true;
+  if (RandSpg::containsUniquePosition(wyckPos1) ==
+      RandSpg::containsUniquePosition(wyckPos2) &&
+      RandSpg::getMultiplicity(wyckPos1) ==
+      RandSpg::getMultiplicity(wyckPos2)) return true;
   return false;
 }
 
@@ -192,7 +192,7 @@ static vector<vector<wyckPos>> groupSimilarWyckPositions(
   vector<vector<wyckPos>> ret;
   for (size_t i = 0; i < wyckVec.size(); i++) {
     const wyckPos& pos_i = wyckVec[i];
-    char wyckLet = SpgGen::getWyckLet(pos_i);
+    char wyckLet = RandSpg::getWyckLet(pos_i);
     // If we've already used this one, don't include it
     if (!vecContains<char>(wyckPositionsUsed, wyckLet)) {
       wyckPositionsUsed.push_back(wyckLet);
@@ -201,7 +201,7 @@ static vector<vector<wyckPos>> groupSimilarWyckPositions(
       // Add on similar positions
       for (size_t j = i + 1; j < wyckVec.size(); j++) {
         const wyckPos& pos_j = wyckVec[j];
-        char wyckLet_j = SpgGen::getWyckLet(pos_j);
+        char wyckLet_j = RandSpg::getWyckLet(pos_j);
         // wyckPositionsUsed should not contain the character, but check
         // just in case
         if (wyckPositionsAreSimilar(pos_i, pos_j) &&
@@ -231,7 +231,7 @@ static usageTracker createUsageTracker(const wyckoffPositions& wyckVec)
 
 static inline usageTracker createUsageTracker(uint spg)
 {
-  return createUsageTracker(SpgGen::getWyckoffPositions(spg));
+  return createUsageTracker(RandSpg::getWyckoffPositions(spg));
 }
 
 // Checks to see if the Wyckoff positions in a similar wyckoff vector
@@ -239,7 +239,7 @@ static inline usageTracker createUsageTracker(uint spg)
 static inline bool similarWyckPosAndNumToChooseIsUnique(const similarWyckPosAndNumToChoose& s)
 {
   if (s.choosablePositions.size() == 0) return false;
-  return SpgGen::containsUniquePosition(s.choosablePositions[0]);
+  return RandSpg::containsUniquePosition(s.choosablePositions[0]);
 }
 
 // Check to make sure we don't use more unique positions than are available
@@ -420,13 +420,13 @@ static void findOnlyOneCombinationIfPossible(singleAtomPossibilities& appendVec,
 
 // Returns all system possibilities that can be found
 systemPossibilities
-SpgGenCombinatorics::getSystemPossibilities(uint spg,
+RandSpgCombinatorics::getSystemPossibilities(uint spg,
                                              const vector<uint>& atoms,
                                              bool findOnlyOne,
                                              bool findOnlyNonUnique)
 {
   START_FT;
-  vector<numAndType> numOfEachType = SpgGen::getNumOfEachType(atoms);
+  vector<numAndType> numOfEachType = RandSpg::getNumOfEachType(atoms);
 
   systemPossibilities sysPossibilities;
   sysPossibilities.reserve(numOfEachType.size());
@@ -452,7 +452,7 @@ SpgGenCombinatorics::getSystemPossibilities(uint spg,
     // system possibilities either. Return empty
     if (saPossibilities.size() == 0) return systemPossibilities();
 
-#ifdef PRINT_SPG_GEN_COMB_DEBUG
+#ifdef PRINT_RAND_SPG_COMB_DEBUG
     cout << "For atomic num '" << atomicNum << "' calling "
          << "printSingleAtomPossibilities()\n";
     printSingleAtomPossibilities(saPossibilities);
@@ -461,7 +461,7 @@ SpgGenCombinatorics::getSystemPossibilities(uint spg,
     sysPossibilities = joinSingleWithSystem(saPossibilities, sysPossibilities);
   }
 
-#ifdef PRINT_SPG_GEN_COMB_DEBUG
+#ifdef PRINT_RAND_SPG_COMB_DEBUG
   printSystemPossibilities(sysPossibilities);
 #endif
 
@@ -480,9 +480,9 @@ uint countNumTimesWyckPosMayBeUsed(const systemPossibility& sysPos,
       const similarWyckPositions& cp = assigns[j].choosablePositions;
       for (size_t k = 0; k < cp.size(); k++) {
         const wyckPos& wp = cp[k];
-        if (SpgGen::getWyckLet(wp) == wyckLet) {
+        if (RandSpg::getWyckLet(wp) == wyckLet) {
           // If this is a unique wyckoff position, we may only use it once
-          if (SpgGen::containsUniquePosition(wp)) return 1;
+          if (RandSpg::containsUniquePosition(wp)) return 1;
           // Otherwise, we can use it up to the maximum number of times
           else numTimesUsed += numToChoose;
         }
@@ -507,9 +507,9 @@ uint countNumTimesWyckPosMayBeUsedForSpecificAtom(
       const similarWyckPositions& cp = assigns[j].choosablePositions;
       for (size_t k = 0; k < cp.size(); k++) {
         const wyckPos& wp = cp[k];
-        if (SpgGen::getWyckLet(wp) == wyckLet) {
+        if (RandSpg::getWyckLet(wp) == wyckLet) {
           // If this is a unique wyckoff position, we may only use it once
-          if (SpgGen::containsUniquePosition(wp)) return 1;
+          if (RandSpg::containsUniquePosition(wp)) return 1;
           // Otherwise, we can use it up to the maximum number of times
           else numTimesUsed += numToChoose;
         }
@@ -518,7 +518,7 @@ uint countNumTimesWyckPosMayBeUsedForSpecificAtom(
   }
   return numTimesUsed;
 }
-systemPossibilities SpgGenCombinatorics::removePossibilitiesWithoutWyckPos(
+systemPossibilities RandSpgCombinatorics::removePossibilitiesWithoutWyckPos(
                                           const systemPossibilities& sysPos,
                                           char wyckLet,
                                           uint minNumUses)
@@ -532,7 +532,7 @@ systemPossibilities SpgGenCombinatorics::removePossibilitiesWithoutWyckPos(
 }
 
 // This version also specifies the atomic number
-systemPossibilities SpgGenCombinatorics::removePossibilitiesWithoutWyckPos(
+systemPossibilities RandSpgCombinatorics::removePossibilitiesWithoutWyckPos(
                                           const systemPossibilities& sysPos,
                                           char wyckLet,
                                           uint minNumUses,
@@ -546,12 +546,12 @@ systemPossibilities SpgGenCombinatorics::removePossibilitiesWithoutWyckPos(
   return ret;
 }
 
-systemPossibilities SpgGenCombinatorics::removePossibilitiesWithoutGeneralWyckPos(const systemPossibilities& sysPos,
+systemPossibilities RandSpgCombinatorics::removePossibilitiesWithoutGeneralWyckPos(const systemPossibilities& sysPos,
    uint spg,
    uint minNumUses)
 {
-  const wyckoffPositions& wp = SpgGen::getWyckoffPositions(spg);
-  return removePossibilitiesWithoutWyckPos(sysPos, SpgGen::getWyckLet(wp[wp.size() - 1]), minNumUses);
+  const wyckoffPositions& wp = RandSpg::getWyckoffPositions(spg);
+  return removePossibilitiesWithoutWyckPos(sysPos, RandSpg::getWyckLet(wp[wp.size() - 1]), minNumUses);
 }
 
 // We call this when a unique position is assigned when getting
@@ -565,7 +565,7 @@ void removePositionFromSystemPossibility(systemPossibility& pos, char wyckLet)
     for (size_t j = 0; j < siPos.assigns.size(); j++) {
       similarWyckPositions& simPos = siPos.assigns[j].choosablePositions;
       for (size_t k = 0; k < simPos.size(); k++) {
-        if (SpgGen::getWyckLet(simPos[k]) == wyckLet) {
+        if (RandSpg::getWyckLet(simPos[k]) == wyckLet) {
           simPos.erase(simPos.begin() + k);
           k--;
         }
@@ -574,13 +574,13 @@ void removePositionFromSystemPossibility(systemPossibility& pos, char wyckLet)
   }
 }
 
-systemPossibility SpgGenCombinatorics::getRandomSystemPossibility(const systemPossibilities& sysPoss)
+systemPossibility RandSpgCombinatorics::getRandomSystemPossibility(const systemPossibilities& sysPoss)
 {
   return sysPoss[getRandInt(0, sysPoss.size() - 1)];
 }
 
 // Get random atom assignments from all the possible system possibilities
-atomAssignments SpgGenCombinatorics::getRandomAtomAssignments(const systemPossibilities& sysPoss)
+atomAssignments RandSpgCombinatorics::getRandomAtomAssignments(const systemPossibilities& sysPoss)
 {
   // We will call the one with the "forcedWyckPositions" vector as an
   // empty vector
@@ -612,7 +612,7 @@ void decrementChoiceFromSystemPossibility(systemPossibility& sysPos, uint atomic
   }
 }
 
-atomAssignments SpgGenCombinatorics::getRandomAtomAssignments(const systemPossibilities& sysPoss, const vector<pair<uint, wyckPos>>& forcedWyckPositions)
+atomAssignments RandSpgCombinatorics::getRandomAtomAssignments(const systemPossibilities& sysPoss, const vector<pair<uint, wyckPos>>& forcedWyckPositions)
 {
   START_FT;
   atomAssignments ret;
@@ -641,8 +641,8 @@ atomAssignments SpgGenCombinatorics::getRandomAtomAssignments(const systemPossib
         atomsLeft--;
         // If we used a unique position, then remove all of this position from
         // the rest of the choices so we don't accidentally re-use it
-        if (SpgGen::containsUniquePosition(wyckPos))
-          removePositionFromSystemPossibility(tempPos, SpgGen::getWyckLet(wyckPos));
+        if (RandSpg::containsUniquePosition(wyckPos))
+          removePositionFromSystemPossibility(tempPos, RandSpg::getWyckLet(wyckPos));
       }
     }
   }
@@ -650,28 +650,28 @@ atomAssignments SpgGenCombinatorics::getRandomAtomAssignments(const systemPossib
   return ret;
 }
 
-string SpgGenCombinatorics::getSimilarWyckPosAndNumToChooseString(const similarWyckPosAndNumToChoose& simPos)
+string RandSpgCombinatorics::getSimilarWyckPosAndNumToChooseString(const similarWyckPosAndNumToChoose& simPos)
 {
   stringstream s;
   s << "   printing similar Wyck pos and num to choose:\n";
   s << "   numToChoose is: " << simPos.numToChoose << "\n";
   if (simPos.choosablePositions.size() != 0)
     s << "   uniqueness is: "
-      << (SpgGen::containsUniquePosition(simPos.choosablePositions[0]) ? "true\n" : "false\n");
+      << (RandSpg::containsUniquePosition(simPos.choosablePositions[0]) ? "true\n" : "false\n");
   s << "   Wyckoff positions are:\n    { ";
   for (size_t i = 0; i < simPos.choosablePositions.size(); i++) {
-    s << SpgGen::getWyckLet(simPos.choosablePositions[i]) << " ";
+    s << RandSpg::getWyckLet(simPos.choosablePositions[i]) << " ";
   }
   s << "}\n";
   return s.str();
 }
 
-void SpgGenCombinatorics::printSimilarWyckPosAndNumToChoose(const similarWyckPosAndNumToChoose& simPos)
+void RandSpgCombinatorics::printSimilarWyckPosAndNumToChoose(const similarWyckPosAndNumToChoose& simPos)
 {
   cout << getSimilarWyckPosAndNumToChooseString(simPos);
 }
 
-string SpgGenCombinatorics::getSingleAtomPossibilityString(const singleAtomPossibility& pos)
+string RandSpgCombinatorics::getSingleAtomPossibilityString(const singleAtomPossibility& pos)
 {
   stringstream s;
   s << "  Printing single atom possibility:\n";
@@ -682,12 +682,12 @@ string SpgGenCombinatorics::getSingleAtomPossibilityString(const singleAtomPossi
   return s.str();
 }
 
-void SpgGenCombinatorics::printSingleAtomPossibility(const singleAtomPossibility& pos)
+void RandSpgCombinatorics::printSingleAtomPossibility(const singleAtomPossibility& pos)
 {
   cout << getSingleAtomPossibilityString(pos);
 }
 
-string SpgGenCombinatorics::getSystemPossibilityString(const systemPossibility& pos)
+string RandSpgCombinatorics::getSystemPossibilityString(const systemPossibility& pos)
 {
   stringstream s;
   s << "\n Printing system possibility:\n";
@@ -695,12 +695,12 @@ string SpgGenCombinatorics::getSystemPossibilityString(const systemPossibility& 
   return s.str();
 }
 
-void SpgGenCombinatorics::printSystemPossibility(const systemPossibility& pos)
+void RandSpgCombinatorics::printSystemPossibility(const systemPossibility& pos)
 {
   cout << getSystemPossibilityString(pos);
 }
 
-string SpgGenCombinatorics::getSystemPossibilitiesString(const systemPossibilities& pos)
+string RandSpgCombinatorics::getSystemPossibilitiesString(const systemPossibilities& pos)
 {
   stringstream s;
   s << "Printing system possibilities:\n";
@@ -708,7 +708,7 @@ string SpgGenCombinatorics::getSystemPossibilitiesString(const systemPossibiliti
   return s.str();
 }
 
-string SpgGenCombinatorics::getVerbosePossibilitiesString(const systemPossibilities& pos)
+string RandSpgCombinatorics::getVerbosePossibilitiesString(const systemPossibilities& pos)
 {
   stringstream s;
   s << "Printing system possibilities:\n";
@@ -723,12 +723,12 @@ string SpgGenCombinatorics::getVerbosePossibilitiesString(const systemPossibilit
         s << "      We will choose " << simPos.numToChoose 
           << " of the following positions:\n        { ";
         for (size_t l = 0; l < simPos.choosablePositions.size(); l++) {
-          s << SpgGen::getWyckLet(simPos.choosablePositions[l]) << " ";
+          s << RandSpg::getWyckLet(simPos.choosablePositions[l]) << " ";
         }
         s << "}\n";
         if (simPos.choosablePositions.size() != 0)
           s << "        uniqueness is: "
-            << (SpgGen::containsUniquePosition(simPos.choosablePositions[0]) ? "true - positions are not re-usable\n" : "false - positions are re-usable\n");
+            << (RandSpg::containsUniquePosition(simPos.choosablePositions[0]) ? "true - positions are not re-usable\n" : "false - positions are re-usable\n");
       }
     }
     s << "  End of possibility " << i+1 << "\n\n";
@@ -736,7 +736,7 @@ string SpgGenCombinatorics::getVerbosePossibilitiesString(const systemPossibilit
   return s.str();
 }
 
-void SpgGenCombinatorics::printSystemPossibilities(const systemPossibilities& pos)
+void RandSpgCombinatorics::printSystemPossibilities(const systemPossibilities& pos)
 {
   cout << getSystemPossibilitiesString(pos);
 }
