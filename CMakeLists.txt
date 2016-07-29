@@ -11,12 +11,12 @@ set(randSpg_SRCS
 
 include_directories(${randSpg_SOURCE_DIR}/include)
 
-add_library(RandSpg ${randSpg_SRCS})
+add_library(RandSpgLib ${randSpg_SRCS})
 
 # C++11 is required. MSVC should not need a flag
-if(UNIX)
+if(UNIX OR MINGW)
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
-endif(UNIX)
+endif(UNIX OR MINGW)
 
 option(BUILD_RELEASE
        "Whether to compile with optimizations or not"
@@ -38,12 +38,12 @@ else (BUILD_RELEASE)
 endif (BUILD_RELEASE)
 
 add_executable (randSpg src/main.cpp)
-target_link_libraries (randSpg RandSpg)
+target_link_libraries (randSpg RandSpgLib)
 
 option( BUILD_CGI
         "Whether to compile the CGI handler in addition to the randSpg code."
         OFF )
 if(BUILD_CGI)
   add_executable (randSpg.cgi cgi/randSpg-cgi.cpp)
-  target_link_libraries (randSpg.cgi RandSpg)
+  target_link_libraries (randSpg.cgi RandSpgLib)
 endif(BUILD_CGI)

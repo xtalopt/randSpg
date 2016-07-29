@@ -12,7 +12,10 @@ Compilation instructions:
 
 Enter the following into a terminal from the root randSpg directory
 
-  mkdir build; cd build; cmake ..; make -j3
+  mkdir build
+  cd build
+  cmake ..
+  make -j3
 
 The program should be compiled!
 
@@ -37,9 +40,11 @@ file format, you may want to look into OpenBabel.
 
 In order to compile with Windows, one needs cmake and MSVC 2013 or greater
 (other Windows compilers may work as well, but the CMakeLists.txt or
-code may need to be adjusted a little bit)
+code may need to be adjusted a little bit). It has been tested on 2015 as well
+and it works.
 
-You will then need to open an MSVC command prompt (see http://stackoverflow.com/questions/21476588/where-is-developer-command-prompt-for-vs2013
+You will then need to open an MSVC command prompt (see
+http://stackoverflow.com/questions/21476588/where-is-developer-command-prompt-for-vs2013
 for an example of how to do this). The MSVC command prompt has all of the
 environments set up like we need to be.
 
@@ -65,9 +70,40 @@ directory: randSpg.in. You may copy it to the build directory and then run
 For the sample input file, the results are stored in a directory called "temp",
 and log information is stored in "randSpg.log". Check them out!
 
-The results are stored as POSAR files. If you wish to convert them to another
+The results are stored as POSCAR files. If you wish to convert them to another
 file format, you may want to look into OpenBabel.
 
+
+**** WINDOWS MINGW COMPILATION ****
+
+You need to have the MINGW bin directory in your path for this to work.
+
+From a command prompt, find the randSpg root directory, and then
+type the following commands in the prompt:
+
+  mkdir build
+  cd build
+  cmake .. -G "MinGW Makefiles"
+  mingw32-make
+
+Or whatever your command is for "make" with mingw.
+If all goes well, your randSpg.exe file should now be present in the directory!
+
+To run the program, use the executable that is created in the build directory
+as follows:
+  randSpg.exe <inputFileName>
+
+A sample input file with instructions is included in the root
+directory: randSpg.in. You may copy it to the build directory and then run
+
+  randSpg.exe randSpg.in
+
+For the sample input file, the results are stored in a directory called
+"randSpgOut", and log information is stored in "randSpg.log".
+Check them out!
+
+The results are stored as VASP POSCAR files. If you wish to convert them to
+another file format, you may want to look into OpenBabel.
 
 
 **** INSTRUCTIONS FOR CALLING RANDSPG FUNCTIONS IN YOUR OWN CODE ****
