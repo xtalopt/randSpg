@@ -49,6 +49,9 @@ See "RUNNING THE PROGRAM" section below.
 
 **** WINDOWS MINGW COMPILATION ****
 
+WARNING: a slightly different random number generator is used for MinGW. This
+shouldn't affect things too much, however...
+
 You need to have cmake and the MinGW bin directory in your path for this to
 work.
 
