@@ -2,7 +2,7 @@
 ******    RandSpg    ******
 
 
-**** UNIX COMPILATION ****
+**** UNIX (LINUX \ OS X) COMPILATION ****
 
 In order to compile, one simply needs cmake and a c++11 compiler.
 
@@ -17,36 +17,22 @@ Enter the following into a terminal from the root randSpg directory
   cmake ..
   make -j3
 
-The program should be compiled!
+The program should be compiled! This has been tested with GCC on Linux and OS X.
 
-To run the program, use the executable that is created in the build directory
-as follows:
-  ./randSpg <inputFileName>
-
-A sample input file with instructions is included in the root
-directory: randSpg.in. You may copy it to the build directory and then run
-
-  ./randSpg randSpg.in
-
-For the sample input file, the results are stored in a directory called "temp",
-and log information is stored in "randSpg.log". Check them out!
-
-The results are stored as POSAR files. If you wish to convert them to another
-file format, you may want to look into OpenBabel.
-
+See "RUNNING THE PROGRAM" section below.
 
 
 **** WINDOWS MSVC COMPILATION ****
 
-In order to compile with Windows, one needs cmake and MSVC 2013 or greater
+In order to compile with VC on Windows, one needs cmake and MSVC 2013 or greater
 (other Windows compilers may work as well, but the CMakeLists.txt or
-code may need to be adjusted a little bit). It has been tested on 2015 as well
-and it works.
+code may need to be adjusted a little bit). It has been tested on VC 2013 and
+VC 2015.
 
 You will then need to open an MSVC command prompt (see
 http://stackoverflow.com/questions/21476588/where-is-developer-command-prompt-for-vs2013
 for an example of how to do this). The MSVC command prompt has all of the
-environments set up like we need to be.
+environments set up like we need them to be.
 
 From the MSVC command prompt, find the randSpg root directory, and then
 type the following commands in the prompt:
@@ -58,25 +44,13 @@ type the following commands in the prompt:
 
 If all goes well, your randSpg.exe file should now be present in the directory!
 
-To run the program, use the executable that is created in the build directory
-as follows:
-  randSpg.exe <inputFileName>
-
-A sample input file with instructions is included in the root
-directory: randSpg.in. You may copy it to the build directory and then run
-
-  randSpg.exe randSpg.in
-
-For the sample input file, the results are stored in a directory called "temp",
-and log information is stored in "randSpg.log". Check them out!
-
-The results are stored as POSCAR files. If you wish to convert them to another
-file format, you may want to look into OpenBabel.
+See "RUNNING THE PROGRAM" section below.
 
 
 **** WINDOWS MINGW COMPILATION ****
 
-You need to have the MINGW bin directory in your path for this to work.
+You need to have cmake and the MinGW bin directory in your path for this to
+work.
 
 From a command prompt, find the randSpg root directory, and then
 type the following commands in the prompt:
@@ -89,18 +63,23 @@ type the following commands in the prompt:
 Or whatever your command is for "make" with mingw.
 If all goes well, your randSpg.exe file should now be present in the directory!
 
+See "RUNNING THE PROGRAM" section below.
+
+
+**** RUNNING THE PROGRAM ****
+
 To run the program, use the executable that is created in the build directory
 as follows:
-  randSpg.exe <inputFileName>
+  ./randSpg <inputFileName>
 
 A sample input file with instructions is included in the root
 directory: randSpg.in. You may copy it to the build directory and then run
 
-  randSpg.exe randSpg.in
+  ./randSpg randSpg.in
 
 For the sample input file, the results are stored in a directory called
-"randSpgOut", and log information is stored in "randSpg.log".
-Check them out!
+"randSpgOut" (may be changed in the input file), and log information is
+stored in "randSpg.log". Check them out!
 
 The results are stored as VASP POSCAR files. If you wish to convert them to
 another file format, you may want to look into OpenBabel.
@@ -127,9 +106,9 @@ latticeStruct(double a, double b, double c,
               double alpha, double beta, double gamma);
 
 where a, b, and c are the lengths of the lattice vectors in Angstroms and
-alpha, beta, and gamma are the angles of the lattice. One latticeStruct
-needs to be made for the minimum values, and one needs to be made for
-the maximum values for the randSpg input.
+alpha, beta, and gamma are the angles (in degrees) of the lattice. One
+latticeStruct needs to be made for the minimum values, and one needs to be
+made for the maximum values for the randSpg input.
 
 
 The input struct contains data members
@@ -149,7 +128,7 @@ struct randSpgInput {
   latticeStruct latticeMaxes;
 
   // Scaling factor for interatomic distances. For example, "0.5" would imply
-  //that all atomic radii are 0.5 of their original value. Default is 1.0.
+  // that all atomic radii are 0.5 of their original value. Default is 1.0.
   double IADScalingFactor;
 
   // Minimum radius for atomic radii in Angstroms. All atomic radii below this
@@ -207,4 +186,5 @@ writePOSCAR(const string& filename, const string& title); // Writes a POSCAR fil
 
 More info is given in the header files of these classes.
 
-A static library (".a" extension) is generated by default from the CMakeLists.txt settings. You'll then just need to link to this library.
+A static library ("libRandSpgLib.a") is generated by default from the
+CMakeLists.txt settings. You'll then just need to link to this library.
