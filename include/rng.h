@@ -23,18 +23,33 @@
 // Creating a new distribution each time is supposedly very fast...
 static inline double getRandDouble(double min, double max)
 {
-  // This one may not be thread-safe. thread_local is not supported in msvc2013
+  // Unfortunately, MinGW does not make use of these modern random number
+  // generators, so we have to resort to an old fashioned method (which may
+  // not be as good...)
+#ifdef __MINGW32__
+  return (static_cast<double>(rand()) / static_cast<double>(RAND_MAX)) *
+         (max - min) + min;
+#else
+  // These random number generators are probably better.
   std::mt19937 generator(std::random_device{}());
   std::uniform_real_distribution<double> distribution(min, max);
   return distribution(generator);
+#endif
 }
 
 static inline int getRandInt(int min, int max)
 {
-  // This one may not be thread-safe. thread_local is not supported in msvc2013
+  // Unfortunately, MinGW does not make use of these modern random number
+  // generators, so we have to resort to an old fashioned method (which may
+  // not be as good...)
+#ifdef __MINGW32__
+  return rand() % (max + 1 - min) + min;
+#else
+  // These random number generators are probably better.
   std::mt19937 generator(std::random_device{}());
   std::uniform_int_distribution<int> distribution(min, max);
   return distribution(generator);
+#endif
 }
 
 #endif
