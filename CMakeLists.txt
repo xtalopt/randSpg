@@ -25,9 +25,9 @@ option(BUILD_RELEASE
 # Let's perform some optimizations!
 if (BUILD_RELEASE)
   message("-- Release build. Please use -DBUILD_RELEASE=OFF if you wish to use a debug build")
-  if(UNIX)
+  if(UNIX OR MINGW)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
-  endif(UNIX)
+  endif(UNIX OR MINGW)
   if(MSVC)
     SET(CMAKE_BUILD_TYPE "Release")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /O2")
