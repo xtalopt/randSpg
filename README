@@ -127,9 +127,15 @@ directory: randSpg.in. You may copy it to the build directory and then run
 
   ./randSpg randSpg.in
 
-For the sample input file, the results are stored in a directory called
-"randSpgOut" (may be changed in the input file), and log information is
-stored in "randSpg.log". Check them out!
+For the sample input file, the results are stored in an output directory
+called "randSpgOut" (may be changed in the input file), and log information
+is stored in "randSpg.log". In the output directory, the output files are
+named as <composition>_<spg>-<index>. Using the default verbosity, if you
+open the log file, you can see how the options were interpreted, and you can
+see which atomic numbers were assigned to which Wyckoff positions (on both
+failures and successes). The end of the log file shows the number of structures
+attempted, the number of structures that succeeded in being generated,
+and timings for different parts of the program.
 
 The results are stored as VASP POSCAR files. If you wish to convert them to
 another file format, you may want to look into OpenBabel.
