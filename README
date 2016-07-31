@@ -122,10 +122,15 @@ To run the program, use the executable that is created in the build directory
 as follows:
   ./randSpg <inputFileName>
 
-A sample input file with instructions is included in the root
+A sample input file with instructions is included in the 'sample'
 directory: randSpg.in. You may copy it to the build directory and then run
 
   ./randSpg randSpg.in
+
+A sample log file and a sample output file are included in the sample
+directory. Please note that the sample, randSpg.in, creates more than one
+output file (only one is in the sample directory), and it places them in an
+output directory.
 
 For the sample input file, the results are stored in an output directory
 called "randSpgOut" (may be changed in the input file), and log information
@@ -267,7 +272,7 @@ CMakeLists.txt settings. You'll then just need to link to this library.
 cgi/*                  : Files for the website and CGI interface
 CMakeLists.txt         : Build system config
 COPYING                : Licensing information
-randSpg.in             : Sample input file
+sample/*              : Sample input file, log file, and output file
 tests/*                : Various tests and results for accuracy and performance
 
 *** Files in src/ or include/ ***

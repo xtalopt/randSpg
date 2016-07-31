@@ -1,0 +1,375 @@
+
+*** Options from 'randSpg.in' have been set as follows***
+composition: Mg4Al2
+spacegroups: 1 - 8, 10, 25, 28, 30 - 32
+latticeMins:
+  a:     3
+  b:     3
+  c:     3
+  alpha: 60
+  beta:  60
+  gamma: 60
+latticeMaxes:
+  a:     10
+  b:     10
+  c:     10
+  alpha: 120
+  beta:  120
+  gamma: 120
+minVolume: 450
+maxVolume: 500
+numOfEachSpgToGenerate: 3
+default minRadii: 0.3
+explicity set radii: 
+scalingFactor: 0.5
+maxAttempts: 100
+outputDir: randSpgOut
+output verbosity: r
+
+
+**** randSpgOut/Mg4Al2_1-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : a
+12 : a
+12 : a
+12 : a
+13 : a
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_1-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : a
+12 : a
+12 : a
+12 : a
+13 : a
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_1-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : a
+12 : a
+12 : a
+12 : a
+13 : a
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_2-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : b
+12 : c
+12 : e
+12 : h
+13 : i
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_2-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : i
+12 : i
+13 : d
+13 : h
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_2-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : f
+12 : c
+12 : b
+12 : d
+13 : i
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_3-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : d
+12 : c
+12 : e
+13 : e
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_3-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : d
+12 : c
+12 : e
+13 : a
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_3-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : a
+12 : a
+12 : e
+13 : e
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_4-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : a
+12 : a
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_4-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : a
+12 : a
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_4-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : a
+12 : a
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_5-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : c
+13 : b
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_5-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : c
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_5-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : c
+13 : b
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_6-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : c
+12 : c
+13 : b
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_6-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : b
+12 : a
+12 : b
+12 : b
+13 : c
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_6-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : c
+12 : c
+13 : b
+13 : b
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_7-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : a
+12 : a
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_7-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : a
+12 : a
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_7-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : a
+12 : a
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_8-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : b
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_8-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : b
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_8-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : b
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_10-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : o
+13 : k
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_10-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : o
+13 : b
+13 : f
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_10-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : o
+13 : n
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_25-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : i
+13 : e
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_25-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : i
+13 : g
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_25-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : i
+13 : b
+13 : c
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_28-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : d
+13 : b
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_28-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : d
+13 : b
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_28-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : d
+13 : b
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_30-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : c
+13 : b
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_30-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : c
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_30-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : c
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_31-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : b
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_31-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : b
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_31-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : b
+13 : a
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_32-1 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : c
+13 : b
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_32-2 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : c
+13 : b
+*** Success! ***
+
+**** randSpgOut/Mg4Al2_32-3 ****
+printing atom assignments:
+Atomic num : Wyckoff letter
+12 : c
+13 : b
+*** Success! ***
+
+-------------------------------------------------------------
+Number of structures attempted: 42
+Number of structures succeeded: 42
+Setup wall time (in seconds): 0.000310871
+Structure generation wall time (in seconds): 0.011816
+Structure generation wall time per attempt (in seconds): 0.000281333
+Average success wall time (in seconds): 0.000281101
+Average failure wall time (in seconds): 0
+Total wall time (in seconds): 0.0121268
+------------------------------------------------------------ 
