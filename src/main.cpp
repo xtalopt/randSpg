@@ -82,6 +82,7 @@ int main(int argc, char* argv[])
   input.IADScalingFactor = options.getScalingFactor();
   input.minRadius = options.getMinRadii();
   input.manualAtomicRadii = options.getRadiusVector();
+  input.customMinIADs = options.getCustomMinIADs();
   input.minVolume = options.getMinVolume();
   input.maxVolume = options.getMaxVolume();
   input.forcedWyckAssignments = options.getForcedWyckAssignments();

@@ -81,6 +81,7 @@ class RandSpgOptions {
   std::vector<std::pair<uint, double>> getRadiusVector() const {return m_radiusVector;};
   bool setAllMinRadii() const {return m_setAllMinRadii;};
   double getMinRadii() const {return m_minRadii;};
+  std::vector<std::pair<std::pair<uint, uint>, double>> getCustomMinIADs() const {return m_customMinIADs;};
   double getScalingFactor() const {return m_scalingFactor;};
   double getMinVolume() const {return m_minVolume;};
   double getMaxVolume() const {return m_maxVolume;};
@@ -101,6 +102,7 @@ class RandSpgOptions {
   void setForcedWyckoffAssignments(std::vector<std::pair<uint, char>> v) {m_forcedWyckAssignments = v;};
   void setRadiusVector(const std::vector<std::pair<uint, double>>& v) {m_radiusVector = v;};
   void setMinRadii(double d) {m_minRadii = d; m_setAllMinRadii = true;};
+  void setCustomMinIADs(std::vector<std::pair<std::pair<uint, uint>, double>>& v) {m_customMinIADs = v;};
   void setScalingFactor(double d) {m_scalingFactor = d;};
   void setMinVolume(double d) {m_minVolume = d;};
   void setMaxVolume(double d) {m_maxVolume = d;};
@@ -143,6 +145,11 @@ class RandSpgOptions {
 
   // m_minRadii: the minimum radius for all atoms
   double m_minRadii;
+
+  // custom minIADs that the user can set. In the innermost pair, the first
+  // uint is the first atomic number, and the second uint is the second atomic
+  // number. These two are paired with a double (the minIAD).
+  std::vector<std::pair<std::pair<uint, uint>, double>> m_customMinIADs;
 
   // m_scalingFactor: the scaling factor for the atomic radii
   // new radii will be default radii * scaling factor

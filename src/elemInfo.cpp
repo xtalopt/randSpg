@@ -23,6 +23,8 @@ using namespace std;
 vector<string> ElemInfo::atomicSymbols = ElemInfoDatabase::_atomicSymbols;
 vector<double> ElemInfo::covalentRadii = ElemInfoDatabase::_covalentRadii;
 vector<double> ElemInfo::vdwRadii      = ElemInfoDatabase::_vdwRadii;
+vector<pair<pair<uint,uint>,double>> ElemInfo::customMinIADList =
+                                     vector<pair<pair<uint,uint>,double>>();
 
 std::string ElemInfo::getAtomicSymbol(uint atomicNum)
 {
@@ -171,4 +173,34 @@ double ElemInfo::getRadius(uint atomicNum, bool usingVdwRadius)
 {
   if (usingVdwRadius) return getVdwRadius(atomicNum);
   else return getCovalentRadius(atomicNum);
+}
+
+// Find a custom set of minimum interatomic distances. If there isn't
+// one, return -1.0
+double ElemInfo::customMinIAD(uint atomicNum1, uint atomicNum2)
+{
+  for (size_t i = 0; i < customMinIADList.size(); ++i) {
+    if ((customMinIADList[i].first.first == atomicNum1 &&
+         customMinIADList[i].first.second == atomicNum2) ||
+        (customMinIADList[i].first.first == atomicNum2 &&
+         customMinIADList[i].first.second == atomicNum1)) {
+      return customMinIADList[i].second;
+    }
+  }
+  return -1.0;
+}
+
+void ElemInfo::appendCustomMinIAD(uint atomicNum1, uint atomicNum2,
+                                  double minIAD)
+{
+  if (customMinIAD(atomicNum1, atomicNum2) == -1.0) {
+    customMinIADList.push_back(make_pair(make_pair(atomicNum1,
+                                                   atomicNum2), minIAD));
+    return;
+  }
+
+  // If we made it here, we have a problem
+  std::cout << "Error: Pair of atomic numbers: (" << atomicNum1 << ","
+            << atomicNum2 << ") have already been entered as a custom pair!\n"
+            << "Ignoring this new custom minIAD.\n";
 }

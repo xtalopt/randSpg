@@ -42,6 +42,12 @@ numOfEachSpgToGenerate = 3
 # We can set minimum radii (Angstroms) for individual atoms
 #setRadius Ti           = 0.5
 
+# We can set custom minimum interatomic distances between pairs of atoms.
+# For the specific atom pair, the custom interatomic distance will be
+# required for a correct structure. The syntax is:
+# customMinIAD <atomicSymbol1> <atomicSymbol2> = <minIAD>
+#customMinIAD Al Mg = 1.0
+
 # or for all atoms. A min radius for an individual atom gets precedence over
 # this one. If the default min radius of the atom is less than this input
 # value, then the min radius of that atom is set to be this value.

@@ -62,11 +62,24 @@ class ElemInfo {
 
   static double getRadius(uint atomicNum, bool usingVdwRadius);
 
+  // Find the custom minimum interatomic distance for this pair of atoms. If
+  // there isn't one, return -1.0.
+  static double customMinIAD(uint atomicNum1, uint atomicNum2);
+
+  // Add a custom minIAD to the list of custom minIADs
+  static void appendCustomMinIAD(uint atomicNum1,
+                                 uint atomicNum2,
+                                 double minIAD);
+
+  // Clear the customMinIAD list
+  static void clearCustomMinIADs() {customMinIADList.clear();};
+
  private:
   // Retain a copy of the database pieces here so they may be edited
   static std::vector<std::string> atomicSymbols;
   static std::vector<double> covalentRadii;
   static std::vector<double> vdwRadii;
+  static std::vector<std::pair<std::pair<uint,uint>,double>> customMinIADList;
 
 }; // class ElemInfo
 

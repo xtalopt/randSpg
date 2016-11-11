@@ -449,7 +449,7 @@ bool Crystal::fillUnitCell(uint spg)
 
   // Loop through all these atoms!
   for (size_t i = 0; i < m_atoms.size(); i++)
-    if(!fillCellWithAtom(spg, m_atoms[i])) return false;
+    if (!fillCellWithAtom(spg, m_atoms[i])) return false;
 #ifdef CRYSTAL_DEBUG
   cout << "Filling is complete! Info is now:\n";
   printCrystalInfo();
@@ -460,6 +460,10 @@ bool Crystal::fillUnitCell(uint spg)
 // Radii should have already been scaled and set before calling this
 double Crystal::getMinIAD(const atomStruct& as1, const atomStruct& as2) const
 {
+  // Check to see if we have a custom IAD and return it if we do
+  if (ElemInfo::customMinIAD(as1.atomicNum, as2.atomicNum) != -1.0)
+    return ElemInfo::customMinIAD(as1.atomicNum, as2.atomicNum);
+
   double rad1 = ElemInfo::getRadius(as1.atomicNum, m_usingVdwRadii);
   double rad2 = ElemInfo::getRadius(as2.atomicNum, m_usingVdwRadii);
   return rad1 + rad2;

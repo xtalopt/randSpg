@@ -76,6 +76,11 @@ struct randSpgInput {
   // default is that it is empty.
   std::vector<std::pair<uint, double>> manualAtomicRadii;
 
+  // custom minIADs that the user can set. In the innermost pair, the first
+  // uint is the first atomic number, and the second uint is the second atomic
+  // number. These two are paired with a double (the minIAD).
+  std::vector<std::pair<std::pair<uint, uint>, double>> customMinIADs;
+
   // Minimum volume for the final crystal in Angstroms cubed. Default is
   // -1 (No min volume).
   double minVolume;

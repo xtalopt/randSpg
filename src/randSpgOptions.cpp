@@ -39,6 +39,7 @@ m_forcedWyckAssignments(vector<pair<uint, char>>()),
 m_radiusVector(vector<pair<uint, double>>()),
 m_setAllMinRadii(false),
 m_minRadii(0),
+m_customMinIADs(vector<pair<pair<uint, uint>, double>>()),
 m_scalingFactor(1.0),
 m_minVolume(-1),
 m_maxVolume(-1),
@@ -254,6 +255,21 @@ void RandSpgOptions::interpretLineAndSetOption(string line)
   else if (option == "setMinRadii") {
     m_setAllMinRadii = true;
     m_minRadii       = stof(value);
+  }
+  else if (contains(option, "customMinIAD")) {
+    // There should be two atomic symbols separated by spaces after this name
+    vector<string> tempSplit = split(option, ' ');
+    if (tempSplit.size() != 3) {
+      cerr << "Error reading 'customMinIAD' option: " << line
+           << "\nProper format is: customMinIAD "
+           << "<atomicSymbol1> <atomicSymbol2> = <value>\n";
+      m_optionsAreValid = false;
+      return;
+    }
+    uint atomicNum1 = ElemInfo::getAtomicNum(tempSplit[1]);
+    uint atomicNum2 = ElemInfo::getAtomicNum(tempSplit[2]);
+    m_customMinIADs.push_back(make_pair(make_pair(atomicNum1, atomicNum2),
+                                        stof(value)));
   }
   else if (option == "scalingFactor") {
     m_scalingFactor = stof(value);

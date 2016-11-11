@@ -418,6 +418,7 @@ Crystal RandSpg::randSpgCrystal(const randSpgInput& input)
   double IADScalingFactor                                       = input.IADScalingFactor;
   double minRadius                                              = input.minRadius;
   const std::vector<std::pair<uint, double>>& manualAtomicRadii = input.manualAtomicRadii;
+  const std::vector<std::pair<std::pair<uint, uint>, double>>& customMinIADs = input.customMinIADs;
   double minVolume                                              = input.minVolume;
   double maxVolume                                              = input.maxVolume;
   vector<pair<uint, char>> forcedWyckAssignments                = input.forcedWyckAssignments;
@@ -436,6 +437,16 @@ Crystal RandSpg::randSpgCrystal(const randSpgInput& input)
     uint atomicNum = manualAtomicRadii[i].first;
     double rad = manualAtomicRadii[i].second;
     ElemInfo::setRadius(atomicNum, rad);
+  }
+
+  // Set the custom minIADs
+  // Clear any previous runs first
+  ElemInfo::clearCustomMinIADs();
+  for (size_t i = 0; i < customMinIADs.size(); ++i) {
+    uint atomicNum1 = customMinIADs[i].first.first;
+    uint atomicNum2 = customMinIADs[i].first.second;
+    double minIAD = customMinIADs[i].second;
+    ElemInfo::appendCustomMinIAD(atomicNum1, atomicNum2, minIAD);
   }
 
   systemPossibilities possibilities = RandSpgCombinatorics::getSystemPossibilities(spg, atoms);
