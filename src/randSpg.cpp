@@ -236,6 +236,22 @@ vector<string> RandSpg::getVectorOfFillPositions(uint spg)
   return ret;
 }
 
+inline unsigned char numVariablesInCoord(const string& coord)
+{
+  bool x = false, y = false, z = false;
+  for (size_t i = 0; i < coord.size(); ++i) {
+    if (coord[i] == 'x')
+      x = true;
+    else if (coord[i] == 'y')
+      y = true;
+    else if (coord[i] == 'z')
+      z = true;
+    if (x && y && z)
+      break;
+  }
+  return x + y + z;
+}
+
 bool RandSpg::addWyckoffAtomRandomly(Crystal& crystal, const wyckPos& position,
                                      uint atomicNum, uint spg, int maxAttempts)
 {
@@ -246,11 +262,26 @@ bool RandSpg::addWyckoffAtomRandomly(Crystal& crystal, const wyckPos& position,
   cout << "Attempting to add an atom of atomicNum " << atomicNum
        << " at position " << getWyckCoords(position) << "\n";
 #endif
+  string wyckCoords = getWyckCoords(position);
 
   // If this contains a unique position, we only need to try once
   // Otherwise, we'd be repeatedly trying the same thing...
   if (containsUniquePosition(position)) {
     maxAttempts = 1;
+  }
+  // Originally, we just kept maxAttempts at 1000. However, because of a
+  // reviewer for the paper, we are changing it to scale with the number
+  // of variables. It probably does not matter much... but the equation
+  // is completely made up to keep the max attempts in the range of
+  // 500 - 1500.
+  // maxAttempts = numVariables * 500
+  else {
+    // This should never be zero if containsUniquePosition() is false
+    unsigned char numVariables = numVariablesInCoord(wyckCoords);
+    maxAttempts = numVariables * 500;
+    // Just a safety check - should not happen
+    if (maxAttempts == 0)
+      maxAttempts = 500;
   }
 
   int i = 0;
@@ -262,7 +293,7 @@ bool RandSpg::addWyckoffAtomRandomly(Crystal& crystal, const wyckPos& position,
     double y = getRandDouble(0,1);
     double z = getRandDouble(0,1);
 
-    vector<string> components = split(getWyckCoords(position), ',');
+    vector<string> components = split(wyckCoords, ',');
 
     // Interpret the three components of the Wyckoff position coordinates...
     double newX = interpretComponent(components[0], x, y, z);
