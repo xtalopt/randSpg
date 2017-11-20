@@ -2,6 +2,8 @@ project(randSpg)
 
 cmake_minimum_required(VERSION 2.6)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 set(randSpg_SRCS
     src/crystal.cpp
     src/elemInfo.cpp
@@ -47,3 +49,10 @@ if(BUILD_CGI)
   add_executable (randSpg.cgi cgi/randSpg-cgi.cpp)
   target_link_libraries (randSpg.cgi RandSpgLib)
 endif(BUILD_CGI)
+
+option(BUILD_PYTHON_BINDINGS
+       "Whether or not to build the Python bindings using Pybind11."
+       OFF)
+if(BUILD_PYTHON_BINDINGS)
+  add_subdirectory(python)
+endif(BUILD_PYTHON_BINDINGS)
